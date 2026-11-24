@@ -1,0 +1,2 @@
+# Assignment attachments
+A student can attach a single UTF-8 text file to an existing ungraded submission before its deadline. Files are limited to 5 MB, stored in the database, and downloaded only by the enrolled owner or assigned instructor. Downloads are forced attachments. PDF, Office documents, images and archives are intentionally disabled until private object storage, upload limits, malware scanning and retention are validated. Configure a reverse-proxy request body limit and storage quotas before deployment.

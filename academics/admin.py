@@ -57,3 +57,6 @@ admin.site.register(WaitlistEntry)
 from .evaluations import EvaluationWindow, CourseEvaluation
 admin.site.register(EvaluationWindow)
 admin.site.register(CourseEvaluation)
+
+from .timing import QuizPolicy
+admin.site.register(QuizPolicy)

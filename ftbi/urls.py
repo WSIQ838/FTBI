@@ -44,3 +44,6 @@ urlpatterns += [path('courses/<int:pk>/discussions/',dv.discussions,name='discus
 
 from academics import evaluation_views as ev
 urlpatterns += [path('evaluations/',ev.evaluations,name='evaluations'),path('evaluations/<int:pk>/',ev.evaluate,name='evaluate')]
+
+from academics import attachment_views as av
+urlpatterns += [path('submissions/<int:pk>/attachment/upload/',av.upload_attachment,name='upload_attachment'),path('submissions/<int:pk>/attachment/',av.download_attachment,name='download_attachment')]

@@ -1,0 +1,2 @@
+# Timed assessments
+An administrator can set a quiz policy with a duration and shuffled question order. The clock starts on first access (not when a browser timer starts), and the server enforces the earlier of the session deadline and quiz closing time. One session and one submitted attempt per student are allowed. Question content is not snapshotted; instructors must not change published questions after sessions start. Retakes and accommodations remain unsupported.

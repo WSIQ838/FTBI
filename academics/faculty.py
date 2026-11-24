@@ -60,7 +60,7 @@ def question(request,pk,item=0):
     if quiz.published:
         from django.http import HttpResponseForbidden
         return HttpResponseForbidden("Unpublish the quiz before editing questions.")
-    if quiz.attempt_set.exists():
+    if quiz.attempt_set.exists() or quiz.quizsession_set.exists():
         from django.http import HttpResponseForbidden
         return HttpResponseForbidden("Questions are locked after attempts.")
     obj=get_object_or_404(Question,pk=item,quiz=quiz) if item else Question(quiz=quiz)

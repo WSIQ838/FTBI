@@ -1,3 +1,6 @@
+from datetime import timedelta
+from random import SystemRandom
+from .timing import QuizPolicy, QuizSession
 from django.contrib.auth.decorators import login_required
 from django.db import transaction
 from django.shortcuts import render,get_object_or_404,redirect
@@ -16,14 +19,29 @@ def take_quiz(request,pk):
     quiz=get_object_or_404(Quiz,pk=pk,published=True,course__published=True,course__enrollments__student=request.user,course__enrollments__active=True)
     if Attempt.objects.filter(quiz=quiz,student=request.user).exists() or timezone.now()>=quiz.closes:
         return HttpResponseForbidden("Quiz is closed or already submitted.")
-    questions=list(quiz.questions.order_by("pk"))
+    policy=QuizPolicy.objects.filter(quiz=quiz).first()
+    if policy:
+        now=timezone.now()
+        ids=list(quiz.questions.order_by("pk").values_list("pk",flat=True))
+        if policy.shuffle:
+            SystemRandom().shuffle(ids)
+        session,_=QuizSession.objects.get_or_create(quiz=quiz,student=request.user,defaults={"started":now,"expires":min(quiz.closes,now+timedelta(minutes=max(1,policy.minutes))),"question_ids":ids})
+        if timezone.now()>=session.expires:
+            return HttpResponseForbidden("Assessment time has expired.")
+        lookup={q.pk:q for q in quiz.questions.all()}
+        if set(lookup)!=set(session.question_ids):
+            return HttpResponseForbidden("Assessment changed; contact your instructor.")
+        questions=[lookup[i] for i in session.question_ids]
+    else:
+        session=None
+        questions=list(quiz.questions.order_by("pk"))
     if not questions:
         return HttpResponseForbidden("Quiz has no questions.")
     if request.method=="POST":
         answers=[request.POST.get("q"+str(q.pk)) for q in questions]
         if any(a not in ("A","B","C","D") for a in answers):
-            return render(request,"take_quiz.html",{"quiz":quiz,"questions":questions,"error":"Answer every question."},status=400)
+            return render(request,"take_quiz.html",{"quiz":quiz,"questions":questions,"session":session,"error":"Answer every question."},status=400)
         with transaction.atomic():
             attempt,created=Attempt.objects.get_or_create(quiz=quiz,student=request.user,defaults={"score":sum(a==q.correct for a,q in zip(answers,questions)),"total":len(questions)})
         return redirect("quizzes")
-    return render(request,"take_quiz.html",{"quiz":quiz,"questions":questions})
+    return render(request,"take_quiz.html",{"quiz":quiz,"questions":questions,"session":session})

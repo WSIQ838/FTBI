@@ -92,3 +92,7 @@ from .discussions import Discussion, DiscussionReply
 from .prerequisites import Prerequisite, WaitlistEntry
 
 from .evaluations import EvaluationWindow, CourseEvaluation
+
+from .attachments import SubmissionAttachment
+
+from .timing import QuizPolicy, QuizSession
