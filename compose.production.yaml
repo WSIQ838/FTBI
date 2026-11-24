@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ftbi
+      POSTGRES_USER: ftbi
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL","pg_isready -U ftbi -d ftbi"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+  web:
+    build: .
+    restart: unless-stopped
+    environment:
+      DJANGO_DEBUG: "0"
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?required}
+      DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:?required}
+      DJANGO_TRUST_PROXY: "1"
+      POSTGRES_HOST: db
+      POSTGRES_DB: ftbi
+      POSTGRES_USER: ftbi
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "127.0.0.1:8000:8000"
+    command: ["sh","-c","python manage.py check_release && python manage.py collectstatic --noinput && gunicorn ftbi.wsgi:application --bind 0.0.0.0:8000 --workers 3 --access-logfile -"]
+volumes:
+  pgdata:

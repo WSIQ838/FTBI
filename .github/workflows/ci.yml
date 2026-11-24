@@ -1,0 +1,47 @@
+name: FTBI validation
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        database: [sqlite, postgres]
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: ftbi
+          POSTGRES_USER: ftbi
+          POSTGRES_PASSWORD: ci-only-password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U ftbi"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      DJANGO_DEBUG: "1"
+      POSTGRES_HOST: ${{ matrix.database == 'postgres' && '127.0.0.1' || '' }}
+      POSTGRES_DB: ftbi
+      POSTGRES_USER: ftbi
+      POSTGRES_PASSWORD: ci-only-password
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python manage.py makemigrations academics
+      - run: python manage.py migrate
+      - run: python manage.py check
+      - run: python manage.py test --verbosity 2
+      - uses: actions/upload-artifact@v4
+        if: matrix.database == 'sqlite'
+        with:
+          name: generated-migrations
+          path: academics/migrations/
