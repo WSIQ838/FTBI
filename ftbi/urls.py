@@ -29,3 +29,6 @@ urlpatterns += [path('degree/',degree_views.degree,name='degree'),path('degree/g
 
 from academics.gradebook_views import gradebook
 urlpatterns += [path('courses/<int:pk>/gradebook/',gradebook,name='gradebook')]
+
+from academics import operation_views as ov
+urlpatterns += [path('inbox/',ov.inbox,name='inbox'),path('inbox/<int:pk>/read/',ov.mark_read,name='mark_read'),path('records/',ov.records,name='records'),path('reports/',ov.reports,name='reports')]

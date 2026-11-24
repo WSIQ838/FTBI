@@ -24,3 +24,13 @@ admin.site.register(GraduationApplication)
 from .gradebook import GradeCategory, AssignmentWeight
 admin.site.register(GradeCategory)
 admin.site.register(AssignmentWeight)
+
+from .operations import FinancialAidAward, TransferCredit, TranscriptRequest, Message, AuditEvent
+for model in [FinancialAidAward, TransferCredit, TranscriptRequest]:
+    admin.site.register(model)
+@admin.register(AuditEvent)
+class AuditAdmin(admin.ModelAdmin):
+    list_display=("created","actor","action","target")
+    def has_add_permission(self,request): return False
+    def has_change_permission(self,request,obj=None): return False
+    def has_delete_permission(self,request,obj=None): return False
