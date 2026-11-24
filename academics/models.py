@@ -61,6 +61,7 @@ class Assignment(models.Model):
     def __str__(self): return self.title
 
 class Submission(models.Model):
+    rubric_scores = models.JSONField(default=dict, blank=True)
     assignment = models.ForeignKey(Assignment, on_delete=models.PROTECT, related_name="submissions")
     student = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="submissions")
     body = models.TextField()
@@ -105,3 +106,5 @@ from .diplomas import IssuedDiploma
 from .exam_extensions import ExamAccommodation,BankQuestion
 
 from .recovery_models import RecoveryCode
+
+from .assessment_policy import AssignmentPolicy, RubricCriterion, SubmissionRevision

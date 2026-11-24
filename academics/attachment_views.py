@@ -10,7 +10,8 @@ from django.utils import timezone
 from django.db import transaction
 from django import forms
 from django.utils.http import content_disposition_header
-from .models import Submission,Enrollment
+from .models import Submission,Enrollment,Assignment
+from .assessment_policy import submission_open
 from .attachments import SubmissionAttachment
 
 LIMIT=5*1024*1024
@@ -60,8 +61,9 @@ def upload_attachment(request,pk):
     form=AttachmentForm(request.POST if request.method=="POST" else None,request.FILES if request.method=="POST" else None)
     if request.method=="POST" and form.is_valid():
         with transaction.atomic():
+            Assignment.objects.select_for_update().get(pk=submission.assignment_id)
             locked=Submission.objects.select_for_update().get(pk=pk)
-            if locked.grade is not None or timezone.now()>locked.assignment.due:
+            if not submission_open(locked.assignment, locked, attachment=True):
                 return HttpResponseForbidden("Submission closed.")
             file=form.cleaned_data["file"]
             name=PurePath(file.name).name[:200]
