@@ -40,3 +40,8 @@ if FTBI_PAYMENT_URL and (urlparse(FTBI_PAYMENT_URL).scheme != 'https' or not url
     raise RuntimeError('FTBI_PAYMENT_URL must be an HTTPS URL')
 
 MIDDLEWARE.append('academics.audit_middleware.MutationAuditMiddleware')
+
+MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
+if os.environ.get('DJANGO_TRUST_PROXY') == '1':
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
