@@ -21,6 +21,14 @@ class QuizTests(TestCase):
         self.client.force_login(other)
         self.assertEqual(self.client.get(url).status_code,404)
         self.client.force_login(student)
-        self.assertEqual(self.client.post(url,{"q"+str(item.pk):"B"}).status_code,302)
+        self.assertEqual(self.client.post(url,{"attempt_number":"1","q"+str(item.pk):"B"}).status_code,302)
         self.assertEqual(Attempt.objects.get().score,1)
-        self.assertEqual(self.client.post(url,{"q"+str(item.pk):"A"}).status_code,403)
+        self.assertEqual(self.client.post(url,{"attempt_number":"1","q"+str(item.pk):"A"}).status_code,403)
+
+        from .exam_extensions import ExamAccommodation
+        ExamAccommodation.objects.create(quiz=q,student=student,extra_attempts=1)
+        self.assertEqual(self.client.get(url).status_code,200)
+        self.assertEqual(self.client.post(url,{"attempt_number":"1","q"+str(item.pk):"B"}).status_code,403)
+        self.assertEqual(self.client.post(url,{"attempt_number":"2","q"+str(item.pk):"A"}).status_code,302)
+        self.assertEqual(list(Attempt.objects.order_by("number").values_list("score",flat=True)),[1,0])
+        self.assertEqual(self.client.get(url).status_code,403)
