@@ -1,0 +1,2 @@
+# Faculty course tools
+Bulk grading supports up to 100 submissions per assignment with course ownership checks and an audit event. Copy content into an empty unpublished course from another course assigned to the same instructor; syllabus, lessons and assignments are copied with an optional due-date shift. Quizzes, weights, student records and enrollments are not copied. Students can view submission/grade counts and export visible published calendar events as ICS. Calendar export is a snapshot, not a public feed. Rubrics and resubmission history remain outstanding.
