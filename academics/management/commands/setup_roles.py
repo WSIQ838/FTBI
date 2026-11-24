@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
 
 ROLES={
+    "Security Administration":["accountsecurity","accountsession","securityincident","durablenotification","accountcontrolevent"],
     "Registrar":["studentprofile","registrationwindow","waitlistentry","prerequisite","application","enrollment","finalgrade","transfercredit","transcriptrequest","issuedtranscript","graduationapplication","degreerequirement","examaccommodation","advisorassignment","issueddiploma"],
     "Academic Advisor":["advisorassignment"],
     "Admissions":["application"],

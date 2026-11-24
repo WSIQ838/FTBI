@@ -1,0 +1,40 @@
+name: Production stack smoke
+on:
+  push:
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  stack:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      DJANGO_SECRET_KEY: ci-only-disposable-stack-key-never-use-in-production-583240923
+      POSTGRES_PASSWORD: ci-only-disposable-db-password
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
+      FTBI_DOMAIN: localhost
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker compose -f compose.production.yaml build web
+      - run: docker compose -f compose.production.yaml up -d --wait db cache
+      - run: docker compose -f compose.production.yaml run --rm web python manage.py migrate --noinput
+      - run: docker compose -f compose.production.yaml up -d --wait --wait-timeout 180 web
+      - name: Verify production database, Redis and HTTP readiness
+        run: docker compose -f compose.production.yaml exec -T web python scripts/stack_probe.py
+      - name: Exercise PostgreSQL dump and disposable restore
+        run: |
+          docker compose -f compose.production.yaml exec -T db pg_dump -U ftbi -Fc ftbi > /tmp/ftbi-ci.dump
+          docker compose -f compose.production.yaml exec -T db createdb -U ftbi ftbi_restore_test_ci
+          docker compose -f compose.production.yaml exec -T db pg_restore -U ftbi --exit-on-error -d ftbi_restore_test_ci < /tmp/ftbi-ci.dump
+          docker compose -f compose.production.yaml exec -T db psql -U ftbi -d ftbi_restore_test_ci -v ON_ERROR_STOP=1 -c "SELECT COUNT(*) FROM django_migrations;"
+      - name: Capture container logs
+        if: always()
+        run: docker compose -f compose.production.yaml logs --no-color > stack-smoke.log
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: stack-smoke
+          path: stack-smoke.log
+      - name: Remove disposable CI services and volumes
+        if: always()
+        run: docker compose -f compose.production.yaml down -v

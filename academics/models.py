@@ -120,3 +120,5 @@ from .recovery_models import RecoveryCode
 from .assessment_policy import AssignmentPolicy, RubricCriterion, SubmissionRevision
 from .billing import TuitionSchedule, Invoice, PaymentAllocation, PaymentPlan, Installment, AllocationOperation
 from .learning import LearningModule, LessonCompletion, CompletionPolicy, CourseCertificate
+from .notification_models import DurableNotification, NotificationPreference
+from .account_security import AccountSecurity, AccountSession, SecurityIncident, AccountControlEvent

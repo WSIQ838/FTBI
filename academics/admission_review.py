@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.views.decorators.http import require_POST
 from .registrar import Application,StudentProfile
 from .operations import AuditEvent
+from .notification_models import notify
 
 class DecisionForm(forms.Form):
     decision=forms.ChoiceField(choices=[("accepted","Accept"),("rejected","Reject")])
@@ -32,6 +33,7 @@ def decide(request,pk):
         item.status=form.cleaned_data["decision"]
         item.save(update_fields=["status"])
         AuditEvent.objects.create(actor=request.user,action="admission_"+item.status,target=str(item.pk))
+        notify(item.applicant,"admissions","Admissions decision available","Your application decision is available in your private admissions portal.",f"admission-decision:{item.pk}:{item.status}")
     return redirect("admission_review")
 
 @login_required

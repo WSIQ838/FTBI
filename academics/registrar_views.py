@@ -8,6 +8,7 @@ from django import forms
 from .models import Enrollment
 from .prerequisites import WaitlistEntry, prerequisites_met
 from .registrar import StudentProfile, RegistrationWindow, Application
+from .notification_models import notify
 
 class ApplicationForm(forms.ModelForm):
     class Meta:
@@ -47,7 +48,10 @@ def register(request, pk):
         if Enrollment.objects.filter(course=window.course,active=True).count() >= window.capacity or (first and first.student_id != profile.pk):
             WaitlistEntry.objects.get_or_create(course=window.course,student=profile)
             return redirect("student_record")
-        Enrollment.objects.update_or_create(student=request.user,course=window.course,defaults={"active":True})
+        enrollment,_=Enrollment.objects.update_or_create(student=request.user,course=window.course,defaults={"active":True})
+        from .operations import AuditEvent
+        event=AuditEvent.objects.create(actor=request.user,action="course_registered",target=str(window.course_id))
+        notify(request.user,"enrollment","Enrollment confirmed",f"Enrollment in {window.course.code} is confirmed.",f"enrollment:{event.pk}")
         queue.filter(student=profile).delete()
     return redirect("student_record")
 

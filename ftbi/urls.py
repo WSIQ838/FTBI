@@ -93,6 +93,8 @@ urlpatterns += [path('admissions/review/',admission_review.review_queue,name='ad
 urlpatterns += [path('apply/activate/<int:pk>/<str:token>/',public_admissions.activate,name='applicant_activate')]
 
 from ftbi import recovery
+from academics import account_views
+urlpatterns += [path('account/sessions/',account_views.sessions,name='account_sessions'),path('account/sessions/<int:pk>/revoke/',account_views.revoke_session,name='revoke_session'),path('account/security-control/',account_views.account_control,name='account_control'),path('account/notifications/',account_views.notification_history,name='notification_history'),path('account/notifications/preferences/',account_views.preferences,name='notification_preferences'),path('account/notifications/<int:pk>/read/',account_views.read_notification,name='read_notification'),path('account/password/',auth_views.PasswordChangeView.as_view(template_name='form.html',extra_context={'heading':'Change password'},success_url='/account/sessions/'),name='password_change')]
 urlpatterns += [path('account/recovery/codes/',recovery.generate,name='recovery_codes'),path('account/recovery/verify/',recovery.recover,name='mfa_recover')]
 
 from academics import course_tools

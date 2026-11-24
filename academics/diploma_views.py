@@ -1,5 +1,5 @@
 from io import BytesIO
-from xml.sax.saxutils import escape
+from html import escape
 from django.conf import settings
 from django.contrib.auth.decorators import login_required,permission_required
 from django.db import transaction

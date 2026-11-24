@@ -12,6 +12,7 @@ from .registrar import StudentProfile
 from .services import LedgerEntry
 from .payments import PaymentRequest
 from .operations import AuditEvent
+from .notification_models import notify
 
 
 class TuitionSchedule(models.Model):
@@ -106,6 +107,7 @@ def verify_manual_payment(payment,actor):
     payment.status="verified"; payment.reviewed_by=actor
     payment.save(update_fields=["status","reviewed_by","ledger"])
     AuditEvent.objects.create(actor=actor,action="manual_payment_verified",target=str(payment.pk))
+    notify(payment.student.user,"payment","Payment confirmed","A verified payment has been credited to your account. View the private receipt in Payments.",f"payment-confirmed:{payment.pk}")
     return payment
 
 

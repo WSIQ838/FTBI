@@ -32,6 +32,7 @@ CSRF_COOKIE_SECURE = not DEBUG
 SECURE_SSL_REDIRECT = not DEBUG
 
 MIDDLEWARE.append('ftbi.security.PrivateResponseMiddleware')
+MIDDLEWARE.insert(MIDDLEWARE.index('django.contrib.auth.middleware.AuthenticationMiddleware')+1,'ftbi.account_sessions.AccountSessionGate')
 SECURE_CONTENT_TYPE_NOSNIFF = True
 
 from urllib.parse import urlparse
