@@ -11,3 +11,6 @@ urlpatterns = [
     path("assignments/<int:pk>/submit/", views.submit, name="submit"),
     path("submissions/<int:pk>/grade/", views.grade, name="grade"),
 ]
+
+from academics import registrar_views as rv
+urlpatterns += [path('record/',rv.student_record,name='student_record'),path('catalog/',rv.catalog,name='catalog'),path('register/<int:pk>/',rv.register,name='register'),path('admissions/',rv.admissions,name='admissions')]

@@ -70,3 +70,5 @@ class Submission(models.Model):
     class Meta:
         constraints = [models.UniqueConstraint(fields=["assignment","student"], name="unique_submission")]
     def __str__(self): return f"{self.assignment} / {self.student}"
+
+from .registrar import StudentProfile, RegistrationWindow, Application

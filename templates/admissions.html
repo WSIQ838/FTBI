@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block content %}<h1>Admissions</h1><section><h2>My applications</h2>{% for a in applications %}<p>{{ a.program }} — {{ a.get_status_display }}</p>{% empty %}<p>No applications.</p>{% endfor %}</section><section><h2>New application</h2><form method="post">{% csrf_token %}{{ form.as_p }}<button>Submit application</button></form></section>{% endblock %}
