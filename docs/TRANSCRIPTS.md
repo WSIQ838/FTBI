@@ -1,0 +1,2 @@
+# Transcript issuance
+A registrar with explicit permissions can issue a private snapshot of released final grades. The student can view the issued record from their records page. The SHA-256 checksum is for integrity comparison, not a digital signature. This does not send the transcript to third parties, certify accreditation or implement revocation. Institutional approval and secure delivery policies are required.

@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block content %}<h1>Transcript issuance</h1>{% for item in items %}<article><p>{{ item.student }} · {{ item.destination }}</p><form method="post" action="{% url 'issue_transcript' item.pk %}">{% csrf_token %}<button>Issue academic record</button></form></article>{% empty %}<p>No pending requests.</p>{% endfor %}{% endblock %}

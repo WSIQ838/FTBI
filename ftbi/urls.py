@@ -32,3 +32,6 @@ urlpatterns += [path('courses/<int:pk>/gradebook/',gradebook,name='gradebook')]
 
 from academics import operation_views as ov
 urlpatterns += [path('inbox/',ov.inbox,name='inbox'),path('inbox/<int:pk>/read/',ov.mark_read,name='mark_read'),path('records/',ov.records,name='records'),path('reports/',ov.reports,name='reports')]
+
+from academics import transcript_views as tv
+urlpatterns += [path('transcripts/queue/',tv.transcript_queue,name='transcript_queue'),path('transcripts/issue/<int:pk>/',tv.issue,name='issue_transcript'),path('transcripts/<uuid:identifier>/',tv.transcript,name='transcript')]
