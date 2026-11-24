@@ -77,3 +77,6 @@ urlpatterns += [path('advising/',advisor_views.caseload,name='caseload'),path('a
 
 from academics import bank_views
 urlpatterns += [path('question-bank/',bank_views.bank,name='question_bank'),path('quizzes/<int:pk>/bank-import/',bank_views.import_question,name='bank_import')]
+
+from ftbi import health
+urlpatterns += [path('health/live/',health.live,name='health_live'),path('health/ready/',health.ready,name='health_ready')]

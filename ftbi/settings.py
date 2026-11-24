@@ -105,3 +105,8 @@ FTBI_EMAIL_REMINDERS = os.environ.get('FTBI_EMAIL_REMINDERS','0') == '1'
 
 FTBI_CLAMAV_HOST = os.environ.get('FTBI_CLAMAV_HOST','')
 FTBI_CLAMAV_PORT = int(os.environ.get('FTBI_CLAMAV_PORT','3310'))
+
+FTBI_REDIS_URL = os.environ.get('FTBI_REDIS_URL','')
+if FTBI_REDIS_URL:
+    CACHES = {'default':{'BACKEND':'django.core.cache.backends.redis.RedisCache','LOCATION':FTBI_REDIS_URL}}
+SESSION_COOKIE_HTTPONLY = True

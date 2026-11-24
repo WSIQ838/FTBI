@@ -16,6 +16,8 @@ services:
     build: .
     environment:
       DJANGO_DEBUG: "1"
+      FTBI_INSTITUTION_NAME: ${FTBI_INSTITUTION_NAME:-FTBI Academic Portal}
+      FTBI_INSTITUTION_SHORT_NAME: ${FTBI_INSTITUTION_SHORT_NAME:-FTBI}
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?Set DJANGO_SECRET_KEY}
       POSTGRES_HOST: db
       POSTGRES_DB: ftbi
@@ -26,6 +28,6 @@ services:
         condition: service_healthy
     ports:
       - "127.0.0.1:8000:8000"
-    command: ["sh", "-c", "python manage.py migrate --run-syncdb && python manage.py runserver 0.0.0.0:8000"]
+    command: ["sh", "-c", "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"]
 volumes:
   pgdata:
