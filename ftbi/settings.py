@@ -60,3 +60,22 @@ INSTALLED_APPS += ['django_otp','django_otp.plugins.otp_totp']
 MIDDLEWARE += ['django_otp.middleware.OTPMiddleware','ftbi.mfa.MFAGate']
 FTBI_REQUIRE_MFA = os.environ.get('FTBI_REQUIRE_MFA','0') == '1'
 FTBI_REQUIRE_STAFF_MFA = os.environ.get('FTBI_REQUIRE_STAFF_MFA','0' if DEBUG else '1') == '1'
+
+FTBI_OIDC_ENABLED = os.environ.get('FTBI_OIDC_ENABLED','0') == '1'
+if FTBI_OIDC_ENABLED:
+    INSTALLED_APPS.append('mozilla_django_oidc')
+    AUTHENTICATION_BACKENDS = ['ftbi.identity.InstitutionalOIDCBackend','django.contrib.auth.backends.ModelBackend']
+    OIDC_RP_CLIENT_ID = os.environ['OIDC_RP_CLIENT_ID']
+    OIDC_RP_CLIENT_SECRET = os.environ['OIDC_RP_CLIENT_SECRET']
+    OIDC_RP_SIGN_ALGO = 'RS256'
+    OIDC_CREATE_USER = False
+    OIDC_USE_NONCE = True
+    OIDC_VERIFY_SSL = True
+    OIDC_RP_SCOPES = 'openid'
+    OIDC_STORE_ACCESS_TOKEN = False
+    OIDC_STORE_ID_TOKEN = False
+    for _name in ['OIDC_OP_AUTHORIZATION_ENDPOINT','OIDC_OP_TOKEN_ENDPOINT','OIDC_OP_USER_ENDPOINT','OIDC_OP_JWKS_ENDPOINT']:
+        _value = os.environ[_name]
+        if urlparse(_value).scheme != 'https' or not urlparse(_value).hostname:
+            raise RuntimeError(_name+' must use HTTPS')
+        globals()[_name] = _value

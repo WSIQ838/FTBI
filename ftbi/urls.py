@@ -1,10 +1,13 @@
+from django.conf import settings
+from django.urls import include
+from ftbi.login_security import LimitedLoginView
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path
 from academics import views
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("login/", auth_views.LoginView.as_view(), name="login"),
+    path("login/", LimitedLoginView.as_view(), name="login"),
     path("logout/", auth_views.LogoutView.as_view(), name="logout"),
     path("", views.dashboard, name="dashboard"),
     path("courses/<int:pk>/", views.course, name="course"),
@@ -50,3 +53,6 @@ urlpatterns += [path('submissions/<int:pk>/attachment/upload/',av.upload_attachm
 
 from ftbi import mfa
 urlpatterns += [path('account/mfa/setup/',mfa.setup,name='mfa_setup'),path('account/mfa/verify/',mfa.verify,name='mfa_verify')]
+
+if settings.FTBI_OIDC_ENABLED:
+    urlpatterns += [path('oidc/',include('mozilla_django_oidc.urls'))]

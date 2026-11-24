@@ -96,3 +96,5 @@ from .evaluations import EvaluationWindow, CourseEvaluation
 from .attachments import SubmissionAttachment
 
 from .timing import QuizPolicy, QuizSession
+
+from .identity_models import IdentityLink
