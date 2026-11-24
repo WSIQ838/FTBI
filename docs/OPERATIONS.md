@@ -1,0 +1,2 @@
+# Operations
+Staff maintain financial aid awards and transfer-credit approvals in admin. Students can view released awards and approved transfer credits and request official transcripts; actual issuance is a manual registrar process. Transfer records are not yet integrated into the degree audit. Messaging is limited to active student/instructor course relationships. Institutional reports are aggregate counts. AuditEvent currently records transcript requests only; it is not a comprehensive audit system.

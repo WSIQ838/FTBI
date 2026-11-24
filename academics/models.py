@@ -80,3 +80,5 @@ from .quizzes import Quiz, Question, Attempt
 from .degree import DegreeRequirement, GraduationApplication
 
 from .gradebook import GradeCategory, AssignmentWeight
+
+from .operations import FinancialAidAward, TransferCredit, TranscriptRequest, Message, AuditEvent
