@@ -9,3 +9,5 @@ django-otp>=1.6,<2
 mozilla-django-oidc>=4,<5
 
 reportlab>=4.2,<5
+
+stripe>=11,<14

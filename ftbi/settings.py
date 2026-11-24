@@ -85,3 +85,12 @@ FTBI_INSTITUTION_SHORT_NAME = os.environ.get('FTBI_INSTITUTION_SHORT_NAME','FTBI
 TEMPLATES[0]['OPTIONS']['context_processors'].append('ftbi.context.institution')
 
 FTBI_PUBLIC_ADMISSIONS = os.environ.get('FTBI_PUBLIC_ADMISSIONS','0') == '1'
+
+FTBI_STRIPE_ENABLED = os.environ.get('FTBI_STRIPE_ENABLED','0') == '1'
+if FTBI_STRIPE_ENABLED:
+    STRIPE_SECRET_KEY = os.environ['STRIPE_SECRET_KEY']
+    STRIPE_WEBHOOK_SECRET = os.environ['STRIPE_WEBHOOK_SECRET']
+    FTBI_PUBLIC_ORIGIN = os.environ['FTBI_PUBLIC_ORIGIN'].rstrip('/')
+    _origin = urlparse(FTBI_PUBLIC_ORIGIN)
+    if _origin.scheme != 'https' or not _origin.hostname or _origin.path or _origin.query or _origin.fragment or _origin.username or _origin.password:
+        raise RuntimeError('FTBI_PUBLIC_ORIGIN must be an HTTPS origin')
