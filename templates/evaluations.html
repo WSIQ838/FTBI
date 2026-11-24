@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block content %}<h1>Course evaluations</h1>{% for w in windows %}<article><a href="{% url 'evaluate' w.pk %}">{{ w.course }}</a></article>{% empty %}<p>No open evaluations.</p>{% endfor %}{% endblock %}

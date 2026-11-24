@@ -53,3 +53,7 @@ admin.site.register(DiscussionReply)
 from .prerequisites import Prerequisite, WaitlistEntry
 admin.site.register(Prerequisite)
 admin.site.register(WaitlistEntry)
+
+from .evaluations import EvaluationWindow, CourseEvaluation
+admin.site.register(EvaluationWindow)
+admin.site.register(CourseEvaluation)
