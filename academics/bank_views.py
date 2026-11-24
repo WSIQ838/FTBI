@@ -9,7 +9,7 @@ from .exam_extensions import BankQuestion
 class BankForm(forms.ModelForm):
     class Meta:
         model=BankQuestion
-        fields=["prompt","option_a","option_b","option_c","option_d","correct"]
+        fields=["kind","prompt","points","option_a","option_b","option_c","option_d","correct","answer_key"]
 @login_required
 def bank(request):
     if not Course.objects.filter(instructor=request.user).exists():

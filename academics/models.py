@@ -76,7 +76,7 @@ from .registrar import StudentProfile, RegistrationWindow, Application
 
 from .services import FinalGrade, Attendance, Announcement, CalendarEvent, LedgerEntry, AdvisingNote, Practicum, LearningOutcome, LibraryResource
 
-from .quizzes import Quiz, Question, Attempt
+from .quizzes import Quiz, Question, Attempt, AttemptAnswer
 
 from .degree import DegreeRequirement, GraduationApplication
 

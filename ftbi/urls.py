@@ -22,6 +22,8 @@ from academics.service_views import student_services
 urlpatterns += [path('services/',student_services,name='student_services')]
 
 from academics import quiz_views
+from academics import exam_grading
+urlpatterns += [path('quizzes/<int:pk>/policy/',exam_grading.exam_policy,name='exam_policy'),path('quizzes/<int:pk>/grading/',exam_grading.exam_queue,name='exam_queue'),path('attempts/<int:pk>/grade/',exam_grading.grade_attempt,name='grade_attempt')]
 urlpatterns += [path('quizzes/',quiz_views.quizzes,name='quizzes'),path('quizzes/<int:pk>/',quiz_views.take_quiz,name='take_quiz')]
 
 from academics import faculty

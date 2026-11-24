@@ -44,6 +44,8 @@ Inherited [x] entries are prior implementation claims, not production acceptance
 [~] = Partially implemented or requiring additional validation.
 [ ] = Outstanding.
 
+PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
+
 ## 1. Learning Management System
 
 - [x] Student dashboard
@@ -66,9 +68,9 @@ Inherited [x] entries are prior implementation claims, not production acceptance
 - [x] Basic learning progress tracking
 - [x] Calendar export
 - [~] Complete course content import and export
-- [ ] Assignment rubrics
-- [ ] Assignment resubmission policies
-- [ ] Assignment submission version history
+- [x] Assignment rubrics (PR #22; SQLite/PostgreSQL CI 45502910804)
+- [x] Assignment resubmission policies (PR #22; SQLite/PostgreSQL CI 45502910804)
+- [x] Assignment submission version history (PR #22; SQLite/PostgreSQL CI 45502910804)
 - [ ] Lesson completion tracking
 - [ ] Learning module prerequisites
 - [ ] Course completion certificates

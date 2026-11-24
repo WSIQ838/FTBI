@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block content %}<h1>Grade {{ quiz.title }}</h1>{% for attempt in attempts %}<p><a href="{% url 'grade_attempt' attempt.pk %}">{{ attempt.student }} — attempt {{ attempt.number }}</a>: {{ attempt.graded|yesno:"Graded,Needs grading" }}</p>{% empty %}<p>No attempts.</p>{% endfor %}{% endblock %}
