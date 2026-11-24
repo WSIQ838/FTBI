@@ -21,6 +21,8 @@ services:
       DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?required}
       DJANGO_ALLOWED_HOSTS: ${DJANGO_ALLOWED_HOSTS:?required}
       DJANGO_TRUST_PROXY: "1"
+      FTBI_REQUIRE_MFA: "1"
+      FTBI_REQUIRE_STAFF_MFA: "1"
       POSTGRES_HOST: db
       POSTGRES_DB: ftbi
       POSTGRES_USER: ftbi

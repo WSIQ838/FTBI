@@ -47,3 +47,6 @@ urlpatterns += [path('evaluations/',ev.evaluations,name='evaluations'),path('eva
 
 from academics import attachment_views as av
 urlpatterns += [path('submissions/<int:pk>/attachment/upload/',av.upload_attachment,name='upload_attachment'),path('submissions/<int:pk>/attachment/',av.download_attachment,name='download_attachment')]
+
+from ftbi import mfa
+urlpatterns += [path('account/mfa/setup/',mfa.setup,name='mfa_setup'),path('account/mfa/verify/',mfa.verify,name='mfa_verify')]

@@ -55,3 +55,8 @@ EMAIL_USE_TLS = True
 EMAIL_TIMEOUT = 15
 DEFAULT_FROM_EMAIL = os.environ.get('SMTP_FROM','noreply@example.invalid')
 PASSWORD_RESET_TIMEOUT = 3600
+
+INSTALLED_APPS += ['django_otp','django_otp.plugins.otp_totp']
+MIDDLEWARE += ['django_otp.middleware.OTPMiddleware','ftbi.mfa.MFAGate']
+FTBI_REQUIRE_MFA = os.environ.get('FTBI_REQUIRE_MFA','0') == '1'
+FTBI_REQUIRE_STAFF_MFA = os.environ.get('FTBI_REQUIRE_STAFF_MFA','0' if DEBUG else '1') == '1'
