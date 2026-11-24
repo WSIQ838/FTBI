@@ -3,7 +3,7 @@ from django.contrib.auth.models import Group, Permission
 
 ROLES={
     "Registrar":["studentprofile","registrationwindow","application","enrollment","finalgrade","transfercredit","transcriptrequest","issuedtranscript","graduationapplication","degreerequirement"],
-    "Finance":["ledgerentry","financialaidaward"],
+    "Finance":["ledgerentry","financialaidaward","paymentrequest"],
     "Academic Administration":["department","program","term","course","gradecategory","assignmentweight","attendance","learningoutcome","practicum","announcement","calendarevent","libraryresource"],
     "Institutional Reporting":["studentprofile","enrollment","application"],
 }

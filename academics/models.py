@@ -84,3 +84,5 @@ from .gradebook import GradeCategory, AssignmentWeight
 from .operations import FinancialAidAward, TransferCredit, TranscriptRequest, Message, AuditEvent
 
 from .transcripts import IssuedTranscript
+
+from .payments import PaymentRequest

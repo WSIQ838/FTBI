@@ -33,3 +33,10 @@ SECURE_SSL_REDIRECT = not DEBUG
 
 MIDDLEWARE.append('ftbi.security.PrivateResponseMiddleware')
 SECURE_CONTENT_TYPE_NOSNIFF = True
+
+from urllib.parse import urlparse
+FTBI_PAYMENT_URL = os.environ.get('FTBI_PAYMENT_URL','')
+if FTBI_PAYMENT_URL and (urlparse(FTBI_PAYMENT_URL).scheme != 'https' or not urlparse(FTBI_PAYMENT_URL).hostname):
+    raise RuntimeError('FTBI_PAYMENT_URL must be an HTTPS URL')
+
+MIDDLEWARE.append('academics.audit_middleware.MutationAuditMiddleware')

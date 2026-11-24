@@ -35,3 +35,6 @@ urlpatterns += [path('inbox/',ov.inbox,name='inbox'),path('inbox/<int:pk>/read/'
 
 from academics import transcript_views as tv
 urlpatterns += [path('transcripts/queue/',tv.transcript_queue,name='transcript_queue'),path('transcripts/issue/<int:pk>/',tv.issue,name='issue_transcript'),path('transcripts/<uuid:identifier>/',tv.transcript,name='transcript')]
+
+from academics.payment_views import payment_portal
+urlpatterns += [path('payments/',payment_portal,name='payment_portal')]
