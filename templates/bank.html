@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block content %}<h1>My reusable question bank</h1><section><form method="post">{% csrf_token %}{{ form.as_p }}<button>Save question</button></form></section>{% for q in questions %}<article>{{ q.prompt }}</article>{% empty %}<p>No questions.</p>{% endfor %}{% endblock %}

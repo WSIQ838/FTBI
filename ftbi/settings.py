@@ -102,3 +102,6 @@ if FTBI_AI_ENABLED:
 
 SMTP_CONFIGURED = bool(os.environ.get('SMTP_HOST'))
 FTBI_EMAIL_REMINDERS = os.environ.get('FTBI_EMAIL_REMINDERS','0') == '1'
+
+FTBI_CLAMAV_HOST = os.environ.get('FTBI_CLAMAV_HOST','')
+FTBI_CLAMAV_PORT = int(os.environ.get('FTBI_CLAMAV_PORT','3310'))

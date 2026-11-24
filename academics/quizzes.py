@@ -21,8 +21,9 @@ class Question(models.Model):
 class Attempt(models.Model):
     quiz=models.ForeignKey(Quiz,on_delete=models.PROTECT)
     student=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT)
+    number=models.PositiveSmallIntegerField(default=1)
     score=models.PositiveIntegerField()
     total=models.PositiveIntegerField()
     submitted=models.DateTimeField(auto_now_add=True)
     class Meta:
-        constraints=[models.UniqueConstraint(fields=["quiz","student"],name="one_quiz_attempt")]
+        constraints=[models.UniqueConstraint(fields=["quiz","student","number"],name="unique_numbered_attempt")]

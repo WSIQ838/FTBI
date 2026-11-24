@@ -10,8 +10,9 @@ class QuizPolicy(models.Model):
 class QuizSession(models.Model):
     quiz=models.ForeignKey(Quiz,on_delete=models.PROTECT)
     student=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT)
+    number=models.PositiveSmallIntegerField(default=1)
     started=models.DateTimeField()
     expires=models.DateTimeField()
     question_ids=models.JSONField(default=list)
     class Meta:
-        constraints=[models.UniqueConstraint(fields=["quiz","student"],name="unique_quiz_session")]
+        constraints=[models.UniqueConstraint(fields=["quiz","student","number"],name="unique_numbered_session")]

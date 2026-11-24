@@ -101,3 +101,5 @@ from .identity_models import IdentityLink
 
 from .advising import AdvisorAssignment
 from .diplomas import IssuedDiploma
+
+from .exam_extensions import ExamAccommodation,BankQuestion

@@ -74,3 +74,6 @@ urlpatterns += [path('assistant/',assistant_views.assistant,name='assistant')]
 
 from academics import advisor_views,diploma_views
 urlpatterns += [path('advising/',advisor_views.caseload,name='caseload'),path('advising/<int:pk>/',advisor_views.advise,name='advise'),path('diplomas/queue/',diploma_views.diploma_queue,name='diploma_queue'),path('diplomas/issue/<int:pk>/',diploma_views.issue_diploma,name='issue_diploma'),path('diplomas/<uuid:identifier>/pdf/',diploma_views.diploma_pdf,name='diploma_pdf')]
+
+from academics import bank_views
+urlpatterns += [path('question-bank/',bank_views.bank,name='question_bank'),path('quizzes/<int:pk>/bank-import/',bank_views.import_question,name='bank_import')]
