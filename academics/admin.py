@@ -16,3 +16,7 @@ for model in [FinalGrade, Attendance, Announcement, CalendarEvent, LedgerEntry, 
 from .quizzes import Quiz, Question, Attempt
 for model in [Quiz, Question, Attempt]:
     admin.site.register(model)
+
+from .degree import DegreeRequirement, GraduationApplication
+admin.site.register(DegreeRequirement)
+admin.site.register(GraduationApplication)
