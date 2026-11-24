@@ -125,3 +125,12 @@ class SecurityIncidentAdmin(admin.ModelAdmin):
     list_display=("title","severity","status","owner","updated")
     list_filter=("severity","status")
     def has_delete_permission(self,request,obj=None): return False
+
+from .ai_governance import AIConfiguration,AIUsage,KnowledgeDocument
+admin.site.register(AIConfiguration,AssessmentRecordAdmin)
+admin.site.register(AIUsage,AssessmentRecordAdmin)
+@admin.register(KnowledgeDocument)
+class KnowledgeDocumentAdmin(admin.ModelAdmin):
+    list_display=("title","audience","approved","updated")
+    list_filter=("audience","approved")
+    search_fields=("title","body")

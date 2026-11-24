@@ -76,6 +76,8 @@ from academics import workspaces
 urlpatterns += [path('workspaces/',workspaces.workspaces,name='workspaces'),path('reports/summary.csv',workspaces.institutional_csv,name='institutional_csv')]
 
 from academics import assistant_views
+from academics import ai_admin_views
+urlpatterns += [path('ai/configuration/',ai_admin_views.configuration,name='ai_configuration'),path('ai/usage/',ai_admin_views.usage,name='ai_usage')]
 urlpatterns += [path('assistant/',assistant_views.assistant,name='assistant')]
 
 from academics import advisor_views,diploma_views

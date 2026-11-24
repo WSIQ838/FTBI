@@ -83,3 +83,25 @@ class AccountConcurrencyTests(TransactionTestCase):
         self.assertEqual(self.simultaneous(lambda i: clients[i].post('/payments/webhook/',body,content_type='application/json',HTTP_STRIPE_SIGNATURE=f't={stamp},v1={signature}').status_code),[200,200])
         self.assertEqual(LedgerEntry.objects.filter(student=self.profiles[0]).count(),1)
         self.assertEqual(LedgerEntry.objects.get().amount,-25)
+
+
+@skipUnlessDBFeature("has_select_for_update")
+@override_settings(FTBI_AI_MODEL="test-model")
+class AIQuotaConcurrencyTests(TransactionTestCase):
+    def test_parallel_requests_cannot_bypass_hourly_quota(self):
+        from django.core.exceptions import ValidationError
+        from .ai_governance import AIConfiguration,AIUsage,reserve_request
+        user=get_user_model().objects.create_user("ai-user")
+        AIConfiguration.objects.create(pk=1,enabled=True,monthly_budget=10,input_price_per_million=1,output_price_per_million=2,hourly_user_limit=1,policy_reference="Test")
+        barrier=Barrier(2)
+        def reserve(_):
+            close_old_connections()
+            try:
+                barrier.wait(timeout=10)
+                try: reserve_request(user,"study","Question","Instructions")
+                except ValidationError: return "blocked"
+                return "reserved"
+            finally: close_old_connections()
+        with ThreadPoolExecutor(max_workers=2) as executor: outcomes=list(executor.map(reserve,range(2)))
+        self.assertEqual(sorted(outcomes),["blocked","reserved"])
+        self.assertEqual(AIUsage.objects.count(),1)
