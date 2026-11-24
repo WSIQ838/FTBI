@@ -60,3 +60,6 @@ admin.site.register(CourseEvaluation)
 
 from .timing import QuizPolicy
 admin.site.register(QuizPolicy)
+
+from .identity_models import IdentityLink
+admin.site.register(IdentityLink)
