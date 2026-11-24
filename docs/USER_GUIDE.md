@@ -7,3 +7,7 @@ Open an assigned course and select Manage course content. Create lessons, assign
 Use Django admin with the appropriate institutional group permissions. Maintain student profiles, programs, enrollment, registration windows, released final grades, degree requirements and graduation decisions. Issue transcript snapshots from the transcript queue. Finance verifies receipts through Finance billing, which credits the ledger atomically. See FINANCE.md; an unverified reference does not change the ledger.
 ## Release status
 Development preview only. Verify migrations, run all tests, review institutional grading rules, privacy, accessibility, MFA/SSO and deployment controls before real use.
+
+## Personal academic records
+
+From your academic record, manage emergency contacts, download portal-visible records, view academic standing and request an enrollment-verification letter. The letter records active enrollments at issuance. Course withdrawal requires an open withdrawal window and registrar review; submitting a request does not immediately withdraw you. View the resulting decision in your academic record and notifications.

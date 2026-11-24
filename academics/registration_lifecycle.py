@@ -19,6 +19,8 @@ def promote_locked(window):
         if not entry:
             break
         profile=entry.student
+        from .student_records import WithdrawalRequest
+        if WithdrawalRequest.objects.filter(enrollment__student=profile.user,enrollment__course=window.course,status="approved").exists(): break
         if profile.status!="active" or profile.registration_hold or not profile.user.is_active or not prerequisites_met(profile,window.course):
             # Preserve queue order until registrar resolves an ineligible head.
             break

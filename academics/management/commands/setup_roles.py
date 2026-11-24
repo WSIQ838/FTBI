@@ -4,7 +4,7 @@ from django.contrib.auth.models import Group, Permission
 ROLES={
     "AI Administration":["aiconfiguration","aiusage","knowledgedocument"],
     "Security Administration":["accountsecurity","accountsession","securityincident","durablenotification","accountcontrolevent"],
-    "Registrar":["studentprofile","registrationwindow","waitlistentry","prerequisite","application","enrollment","finalgrade","transfercredit","transcriptrequest","issuedtranscript","graduationapplication","degreerequirement","examaccommodation","advisorassignment","issueddiploma"],
+    "Registrar":["withdrawalwindow","withdrawalrequest","gradingscale","standingpolicy","academicstanding","emergencycontact","studentstatusrecord","enrollmentverification","studentprofile","registrationwindow","waitlistentry","prerequisite","application","enrollment","finalgrade","transfercredit","transcriptrequest","issuedtranscript","graduationapplication","degreerequirement","examaccommodation","advisorassignment","issueddiploma"],
     "Academic Advisor":["advisorassignment"],
     "Admissions":["application"],
     "IT Audit":["auditevent"],

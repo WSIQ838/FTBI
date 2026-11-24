@@ -16,6 +16,9 @@ urlpatterns = [
 ]
 
 from academics import registrar_views as rv
+from academics import student_record_views as srv
+urlpatterns += [path('registrar/final-grades/',srv.final_grade_queue,name='final_grade_queue'),path('registrar/final-grades/<int:pk>/release/',srv.release_final_grade,name='release_final_grade')]
+urlpatterns += [path('enrollment/<int:pk>/withdraw/',srv.request_withdrawal,name='request_withdrawal'),path('registrar/withdrawals/',srv.withdrawals,name='withdrawal_queue'),path('registrar/withdrawals/<int:pk>/decide/',srv.decide_withdrawal,name='decide_withdrawal'),path('account/emergency-contacts/',srv.emergency_contacts,name='emergency_contacts'),path('account/records.json',srv.personal_export,name='personal_export'),path('standing/',srv.academic_standing,name='academic_standing'),path('registrar/standing/calculate/',srv.calculate_standing,name='calculate_standing'),path('registrar/enrollment/<int:pk>/grade/',srv.scaled_grade,name='scaled_final_grade'),path('records/enrollment-letter/',srv.issue_enrollment_letter,name='issue_enrollment_letter'),path('records/enrollment-letter/<uuid:identifier>/',srv.enrollment_letter,name='enrollment_letter')]
 urlpatterns += [path('record/',rv.student_record,name='student_record'),path('catalog/',rv.catalog,name='catalog'),path('register/<int:pk>/',rv.register,name='register'),path('admissions/',rv.admissions,name='admissions')]
 
 from academics.service_views import student_services

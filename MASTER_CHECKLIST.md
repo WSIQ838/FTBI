@@ -135,17 +135,17 @@ PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
 - [x] Graduation eligibility checks
 - [x] Attendance records
 - [~] Complete course withdrawal workflow
-- [ ] Independent withdrawal deadlines
-- [ ] Advanced prerequisite and corequisite rules
-- [ ] Custom institutional grading scales
-- [ ] Academic probation tracking
-- [ ] Academic standing calculations
+- [x] Independent withdrawal deadlines (SIS regression tests; institutional policy acceptance separate)
+- [~] Advanced prerequisite and corequisite rules
+- [x] Custom institutional grading scales (SIS regression tests; institutional policy acceptance separate)
+- [x] Academic probation tracking (SIS regression tests; institutional policy acceptance separate)
+- [x] Academic standing calculations (SIS regression tests; institutional policy acceptance separate)
 - [ ] Student document management
-- [ ] Student personal data exports
+- [~] Student personal data exports
 - [ ] Student demographic reporting
-- [ ] Emergency contact management
-- [ ] Enrollment verification letters
-- [ ] Student status history
+- [x] Emergency contact management (SIS regression tests; institutional policy acceptance separate)
+- [x] Enrollment verification letters (SIS regression tests; institutional policy acceptance separate)
+- [x] Student status history (SIS regression tests; institutional policy acceptance separate)
 - [ ] Bulk student imports
 - [ ] Bulk course imports
 
@@ -265,13 +265,13 @@ PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
 - [x] Mocked provider tests
 - [~] Academic integrity safeguards
 - [ ] Live AI provider testing
-- [ ] AI configuration dashboard
-- [ ] Institutional knowledge base
-- [ ] AI document retrieval
-- [ ] AI usage analytics
-- [ ] AI spending controls
-- [ ] AI budgets
-- [ ] AI abuse monitoring
+- [x] AI configuration dashboard (PR #27; CI 45508423935; approved plaintext retrieval and configured-price reservations, live acceptance separate)
+- [x] Institutional knowledge base (PR #27; CI 45508423935; approved plaintext retrieval and configured-price reservations, live acceptance separate)
+- [x] AI document retrieval (PR #27; CI 45508423935; approved plaintext retrieval and configured-price reservations, live acceptance separate)
+- [x] AI usage analytics (PR #27; CI 45508423935; approved plaintext retrieval and configured-price reservations, live acceptance separate)
+- [x] AI spending controls (PR #27; CI 45508423935; approved plaintext retrieval and configured-price reservations, live acceptance separate)
+- [x] AI budgets (PR #27; CI 45508423935; approved plaintext retrieval and configured-price reservations, live acceptance separate)
+- [x] AI abuse monitoring (PR #27; CI 45508423935; approved plaintext retrieval and configured-price reservations, live acceptance separate)
 - [ ] Comprehensive AI privacy review
 - [ ] Institutional AI policy approval
 

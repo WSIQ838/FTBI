@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add independent withdrawal windows and reviewed W-grade processing, grading scales, standing snapshots, emergency contacts, personal exports and private enrollment letters.
+- Add grouped prerequisites, grade thresholds, corequisites and student-status history.
+- Correct obsolete registrar documentation and validate grade release.
+
 - Add institutional AI approval/configuration, role-filtered approved knowledge documents, atomic budget reservations, usage analytics and anomaly shutdown.
 - Preserve no prompt/answer history; retain conservative charges when provider billing is unknown.
 
