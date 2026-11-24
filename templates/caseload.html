@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block content %}<h1>My advising caseload</h1>{% for a in assignments %}<article><a href="{% url 'advise' a.pk %}">{{ a.student.user.get_full_name|default:a.student.user.username }}</a> · {{ a.student.program }}</article>{% empty %}<p>No assigned students.</p>{% endfor %}{% endblock %}

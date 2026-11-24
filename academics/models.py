@@ -98,3 +98,6 @@ from .attachments import SubmissionAttachment
 from .timing import QuizPolicy, QuizSession
 
 from .identity_models import IdentityLink
+
+from .advising import AdvisorAssignment
+from .diplomas import IssuedDiploma

@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block content %}<h1>Diploma issuance</h1>{% for a in applications %}<article>{{ a.student }} · {{ a.student.program }}<form method="post" action="{% url 'issue_diploma' a.pk %}">{% csrf_token %}<button>Issue diploma</button></form></article>{% empty %}<p>No eligible approved graduates awaiting issuance.</p>{% endfor %}{% endblock %}
