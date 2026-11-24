@@ -56,3 +56,6 @@ urlpatterns += [path('account/mfa/setup/',mfa.setup,name='mfa_setup'),path('acco
 
 if settings.FTBI_OIDC_ENABLED:
     urlpatterns += [path('oidc/',include('mozilla_django_oidc.urls'))]
+
+from academics import experience
+urlpatterns += [path('search/',experience.search,name='search'),path('notifications/',experience.notifications,name='notifications')]

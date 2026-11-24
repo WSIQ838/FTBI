@@ -1,0 +1,2 @@
+# Student experience
+Authenticated search covers authorized course titles, codes, lesson titles and assignment titles. The notification center displays unread messages, published announcements and outstanding upcoming work. It is a live query, not a durable per-event notification log. Branding can be set via FTBI_INSTITUTION_NAME and FTBI_INSTITUTION_SHORT_NAME. No external notifications or configurable logos yet.

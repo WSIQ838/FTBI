@@ -79,3 +79,7 @@ if FTBI_OIDC_ENABLED:
         if urlparse(_value).scheme != 'https' or not urlparse(_value).hostname:
             raise RuntimeError(_name+' must use HTTPS')
         globals()[_name] = _value
+
+FTBI_INSTITUTION_NAME = os.environ.get('FTBI_INSTITUTION_NAME','FTBI Academic Portal')
+FTBI_INSTITUTION_SHORT_NAME = os.environ.get('FTBI_INSTITUTION_SHORT_NAME','FTBI')
+TEMPLATES[0]['OPTIONS']['context_processors'].append('ftbi.context.institution')
