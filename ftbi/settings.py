@@ -94,3 +94,8 @@ if FTBI_STRIPE_ENABLED:
     _origin = urlparse(FTBI_PUBLIC_ORIGIN)
     if _origin.scheme != 'https' or not _origin.hostname or _origin.path or _origin.query or _origin.fragment or _origin.username or _origin.password:
         raise RuntimeError('FTBI_PUBLIC_ORIGIN must be an HTTPS origin')
+
+FTBI_AI_ENABLED = os.environ.get('FTBI_AI_ENABLED','0') == '1'
+if FTBI_AI_ENABLED:
+    FTBI_AI_KEY = os.environ['FTBI_AI_KEY']
+    FTBI_AI_MODEL = os.environ['FTBI_AI_MODEL']
