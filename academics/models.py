@@ -122,3 +122,4 @@ from .billing import TuitionSchedule, Invoice, PaymentAllocation, PaymentPlan, I
 from .learning import LearningModule, LessonCompletion, CompletionPolicy, CourseCertificate
 from .notification_models import DurableNotification, NotificationPreference
 from .account_security import AccountSecurity, AccountSession, SecurityIncident, AccountControlEvent
+from .ai_governance import AIConfiguration, KnowledgeDocument, AIUsage

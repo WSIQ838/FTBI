@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add institutional AI approval/configuration, role-filtered approved knowledge documents, atomic budget reservations, usage analytics and anomaly shutdown.
+- Preserve no prompt/answer history; retain conservative charges when provider billing is unknown.
+
 - Add revocable account sessions, audited administrative lock/unlock/revoke actions and failed-login controls.
 - Add durable private notifications, email preferences, retry history and event notices for admissions, enrollment, grades, payments and security.
 - Add security incident administration, response procedures, dependency/static scans and production stack/restore smoke workflows.

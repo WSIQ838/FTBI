@@ -167,7 +167,7 @@ PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
 - [x] Admissions audit logging
 - [~] Basic admissions reporting
 - [ ] Application document uploads
-- [ ] Automated admissions decision notifications
+- [x] Automated admissions decision notifications (PR #26; CI 45507439993; live-service acceptance separate)
 - [ ] Expired activation link recovery
 - [ ] Applicant document verification
 - [ ] Application fee processing
@@ -289,14 +289,14 @@ PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
 - [x] SMTP configuration
 - [x] Password reset emails
 - [x] Applicant activation emails
-- [ ] Admissions decision emails
-- [ ] Enrollment confirmation emails
-- [ ] Waitlist promotion emails
-- [ ] Grade release notifications
-- [ ] Payment confirmation emails
-- [ ] Administrative notification management
-- [ ] Notification preferences
-- [ ] Durable notification history
+- [x] Admissions decision emails (PR #26; CI 45507439993; live-service acceptance separate)
+- [x] Enrollment confirmation emails (PR #26; CI 45507439993; live-service acceptance separate)
+- [x] Waitlist promotion emails (PR #26; CI 45507439993; live-service acceptance separate)
+- [x] Grade release notifications (PR #26; CI 45507439993; live-service acceptance separate)
+- [x] Payment confirmation emails (PR #26; CI 45507439993; live-service acceptance separate)
+- [x] Administrative notification management (PR #26; CI 45507439993; live-service acceptance separate)
+- [x] Notification preferences (PR #26; CI 45507439993; live-service acceptance separate)
+- [x] Durable notification history (PR #26; CI 45507439993; live-service acceptance separate)
 - [ ] SMS integration
 - [ ] Live SMTP validation
 
@@ -355,11 +355,11 @@ PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
 - [x] HTTPS enforcement
 - [x] Private response cache controls
 - [ ] Live SSO testing
-- [ ] Administrative session management
-- [ ] Remote session revocation
-- [ ] Password change security notifications
-- [ ] Account lockout management
-- [ ] Suspicious login detection
+- [x] Administrative session management (PR #26; CI 45507439993; live-service acceptance separate)
+- [x] Remote session revocation (PR #26; CI 45507439993; live-service acceptance separate)
+- [x] Password change security notifications (PR #26; CI 45507439993; live-service acceptance separate)
+- [x] Account lockout management (PR #26; CI 45507439993; live-service acceptance separate)
+- [x] Suspicious login detection (PR #26; CI 45507439993; live-service acceptance separate)
 - [ ] Trusted-device management
 - [ ] WebAuthn and passkeys
 - [ ] Independent MFA security review
@@ -378,20 +378,20 @@ PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
 - [x] Read-only audit administration
 - [~] Comprehensive audit coverage
 - [~] Comprehensive permission testing
-- [ ] Security incident notifications
-- [ ] Incident management workflow
+- [x] Security incident notifications (PR #26; CI 45507439993; live-service acceptance separate)
+- [x] Incident management workflow (PR #26; CI 45507439993; live-service acceptance separate)
 - [ ] Tamper-resistant external audit logging
 - [ ] Data retention controls
 - [ ] Student record deletion and anonymization policies
-- [ ] Automated dependency vulnerability scanning
-- [ ] Static application security testing
+- [x] Automated dependency vulnerability scanning (PR #26; CI 45507439993; live-service acceptance separate)
+- [x] Static application security testing (PR #26; CI 45507439993; live-service acceptance separate)
 - [ ] Dynamic application security testing
 - [ ] Authorized penetration testing
 - [ ] FERPA applicability and privacy review
 - [ ] Payment security compliance review
 - [ ] Third-party provider data agreements
 - [ ] Institutional privacy policy approval
-- [ ] Incident response procedures
+- [x] Incident response procedures (PR #26; CI 45507439993; live-service acceptance separate)
 
 ## 13. Institutional Administration
 
@@ -477,9 +477,9 @@ PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
 - [x] Cache health checks
 - [x] Reverse proxy upload limits
 - [x] Private database networking configuration
-- [ ] Production Docker startup validation
+- [x] Production Docker startup validation (disposable hosted production-mode stack, CI 45507440000; institution staging still outstanding)
 - [ ] Live HTTPS certificate validation
-- [ ] Live Redis integration testing
+- [x] Live Redis integration testing (disposable hosted production-mode stack, CI 45507440000; institution staging still outstanding)
 - [ ] Live ClamAV container testing
 - [ ] Application monitoring
 - [ ] Centralized logging
@@ -510,7 +510,7 @@ PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
 - [ ] Backup failure notifications
 - [ ] Encryption key recovery procedures
 - [ ] Full disaster recovery drill
-- [ ] Restore integrity verification
+- [~] Restore integrity verification (PR #26 CI restores schema; representative data/encrypted drill remains)
 - [ ] Recovery time objectives
 - [ ] Recovery point objectives
 - [ ] Business continuity plan
@@ -582,7 +582,7 @@ PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
 - [ ] Accessibility testing
 - [ ] Cross-browser testing
 - [ ] External integration testing
-- [ ] Production container smoke testing
+- [x] Production container smoke testing (disposable hosted production-mode stack, CI 45507440000; institution staging still outstanding)
 - [ ] Dependency security audit
 - [ ] Authorized penetration testing
 - [ ] Disaster recovery testing
