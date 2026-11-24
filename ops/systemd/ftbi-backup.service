@@ -1,0 +1,12 @@
+[Unit]
+Description=FTBI encrypted PostgreSQL backup
+[Service]
+Type=oneshot
+User=ftbi-backup
+EnvironmentFile=/etc/ftbi/backup.env
+ExecStart=/bin/sh /opt/ftbi/scripts/backup-encrypted.sh
+UMask=0077
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ReadWritePaths=/var/backups/ftbi

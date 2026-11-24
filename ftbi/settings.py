@@ -99,3 +99,6 @@ FTBI_AI_ENABLED = os.environ.get('FTBI_AI_ENABLED','0') == '1'
 if FTBI_AI_ENABLED:
     FTBI_AI_KEY = os.environ['FTBI_AI_KEY']
     FTBI_AI_MODEL = os.environ['FTBI_AI_MODEL']
+
+SMTP_CONFIGURED = bool(os.environ.get('SMTP_HOST'))
+FTBI_EMAIL_REMINDERS = os.environ.get('FTBI_EMAIL_REMINDERS','0') == '1'
