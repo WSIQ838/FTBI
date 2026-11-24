@@ -6,7 +6,7 @@ ROLES={
     "Academic Advisor":["advisorassignment"],
     "Admissions":["application"],
     "IT Audit":["auditevent"],
-    "Finance":["ledgerentry","financialaidaward","paymentrequest"],
+    "Finance":["ledgerentry","financialaidaward","paymentrequest","invoice","paymentallocation","paymentplan","installment","tuitionschedule"],
     "Academic Administration":["department","program","term","course","gradecategory","assignmentweight","attendance","learningoutcome","practicum","announcement","calendarevent","libraryresource"],
     "Institutional Reporting":["studentprofile","enrollment","application"],
 }

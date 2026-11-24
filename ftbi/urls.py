@@ -42,6 +42,8 @@ from academics import transcript_views as tv
 urlpatterns += [path('transcripts/queue/',tv.transcript_queue,name='transcript_queue'),path('transcripts/issue/<int:pk>/',tv.issue,name='issue_transcript'),path('transcripts/<uuid:identifier>/',tv.transcript,name='transcript')]
 
 from academics.payment_views import payment_portal
+from academics import billing_views
+urlpatterns += [path('finance/',billing_views.finance,name='finance'),path('finance/invoices/new/',billing_views.new_invoice,name='new_invoice'),path('invoices/',billing_views.invoices,name='invoices'),path('invoices/<int:pk>/',billing_views.invoice,name='invoice'),path('finance/payments/<int:pk>/verify/',billing_views.verify_payment,name='verify_payment'),path('finance/invoices/<int:pk>/allocate/',billing_views.allocate,name='allocate_payment'),path('finance/invoices/<int:pk>/plan/',billing_views.plan,name='payment_plan'),path('finance/schedules/<int:pk>/bill/',billing_views.run_billing,name='run_billing'),path('payments/<int:pk>/receipt.pdf',billing_views.receipt,name='payment_receipt'),path('finance/reconciliation.csv',billing_views.reconciliation,name='financial_reconciliation')]
 urlpatterns += [path('payments/',payment_portal,name='payment_portal')]
 
 from academics import discussion_views as dv

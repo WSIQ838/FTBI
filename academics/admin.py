@@ -56,8 +56,7 @@ from .payments import PaymentRequest
 class PaymentRequestAdmin(admin.ModelAdmin):
     list_display=("student","amount","status","created")
     def has_change_permission(self,request,obj=None):
-        if obj and obj.reference.startswith("stripe:"): return False
-        return super().has_change_permission(request,obj)
+        return False
     def has_delete_permission(self,request,obj=None): return False
     def has_add_permission(self,request): return False
     def get_readonly_fields(self,request,obj=None):
@@ -92,3 +91,16 @@ class IssuedDiplomaAdmin(admin.ModelAdmin):
 
 from .exam_extensions import ExamAccommodation
 admin.site.register(ExamAccommodation)
+
+from .billing import TuitionSchedule,Invoice,PaymentAllocation,PaymentPlan,Installment
+admin.site.register(TuitionSchedule)
+for model in [Invoice,PaymentAllocation,PaymentPlan,Installment]:
+    admin.site.register(model,AssessmentRecordAdmin)
+
+admin.site.unregister(LedgerEntry)
+@admin.register(LedgerEntry)
+class LedgerAdmin(admin.ModelAdmin):
+    def has_change_permission(self,request,obj=None):
+        if obj and (hasattr(obj,"invoice") or hasattr(obj,"payment_record")): return False
+        return super().has_change_permission(request,obj)
+    def has_delete_permission(self,request,obj=None): return False

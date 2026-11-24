@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add invoices, tuition schedules, idempotent billing, atomic manual-payment verification, payment allocations, installment plans, private PDF receipts and reconciliation CSV.
+- Support partial Stripe checkout and reuse pending sessions. Verify signed webhook replay and amount checks.
+- Add PostgreSQL concurrency tests for last-seat registration and payment webhook replay.
+
 - Add true/false, essay, short-answer, fill-in-the-blank and matching assessments, question weights, manual grading, random question pools and attempt aggregation.
 - Add explicit result-release controls and lock assessment definitions after sessions start.
 - Add PostgreSQL-only simultaneous-submission regression coverage.
