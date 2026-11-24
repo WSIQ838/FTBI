@@ -83,3 +83,5 @@ urlpatterns += [path('health/live/',health.live,name='health_live'),path('health
 
 from academics import admission_review,registration_lifecycle
 urlpatterns += [path('admissions/review/',admission_review.review_queue,name='admission_review'),path('admissions/review/<int:pk>/decide/',admission_review.decide,name='admission_decide'),path('admissions/review/<int:pk>/activate/',admission_review.activate_student,name='activate_student'),path('admissions/<int:pk>/letter/',admission_review.decision_letter,name='decision_letter'),path('enrollment/<int:pk>/drop/',registration_lifecycle.drop,name='drop_course'),path('waitlist/<int:pk>/leave/',registration_lifecycle.leave_waitlist,name='leave_waitlist')]
+
+urlpatterns += [path('apply/activate/<int:pk>/<str:token>/',public_admissions.activate,name='applicant_activate')]
