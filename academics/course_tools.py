@@ -69,11 +69,11 @@ def copy_content(request,pk):
                 if weight and weight.category_id in categories:
                     AssignmentWeight.objects.create(assignment=copied, category=categories[weight.category_id], points=weight.points)
             for original in source.quiz_set.all():
-                copied = Quiz.objects.create(course=target,title=original.title,closes=original.closes+delta,published=False)
-                Question.objects.bulk_create([Question(quiz=copied,prompt=q.prompt,option_a=q.option_a,option_b=q.option_b,option_c=q.option_c,option_d=q.option_d,correct=q.correct) for q in original.questions.all()])
+                copied = Quiz.objects.create(course=target,title=original.title,closes=original.closes+delta,published=False,results_released=original.results_released)
+                Question.objects.bulk_create([Question(quiz=copied,kind=q.kind,points=q.points,answer_key=q.answer_key,prompt=q.prompt,option_a=q.option_a,option_b=q.option_b,option_c=q.option_c,option_d=q.option_d,correct=q.correct) for q in original.questions.all()])
                 policy = QuizPolicy.objects.filter(quiz=original).first()
                 if policy:
-                    QuizPolicy.objects.create(quiz=copied, minutes=policy.minutes, shuffle=policy.shuffle)
+                    QuizPolicy.objects.create(quiz=copied, minutes=policy.minutes, shuffle=policy.shuffle, max_attempts=policy.max_attempts,select_count=policy.select_count,attempt_rule=policy.attempt_rule)
             AuditEvent.objects.create(actor=request.user,action="course_content_copied",target=str(target.pk))
         return redirect("faculty",pk=pk)
     return render(request,"form.html",{"form":form,"heading":"Copy lessons and assignments from my course"})

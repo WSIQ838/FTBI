@@ -14,8 +14,16 @@ for model in [FinalGrade, Attendance, Announcement, CalendarEvent, LedgerEntry, 
     admin.site.register(model)
 
 from .quizzes import Quiz, Question, Attempt
-for model in [Quiz, Question, Attempt]:
-    admin.site.register(model)
+admin.site.register(Quiz)
+
+class AssessmentRecordAdmin(admin.ModelAdmin):
+    """Use the locked, scoped authoring/grading routes for assessment writes."""
+    def has_add_permission(self,request): return False
+    def has_change_permission(self,request,obj=None): return False
+    def has_delete_permission(self,request,obj=None): return False
+
+admin.site.register(Question, AssessmentRecordAdmin)
+admin.site.register(Attempt, AssessmentRecordAdmin)
 
 from .degree import DegreeRequirement, GraduationApplication
 admin.site.register(DegreeRequirement)
@@ -68,7 +76,7 @@ admin.site.register(EvaluationWindow)
 admin.site.register(CourseEvaluation)
 
 from .timing import QuizPolicy
-admin.site.register(QuizPolicy)
+admin.site.register(QuizPolicy, AssessmentRecordAdmin)
 
 from .identity_models import IdentityLink
 admin.site.register(IdentityLink)

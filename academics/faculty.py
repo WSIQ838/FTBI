@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, render, redirect
 from django import forms
 from .models import Course, Lesson, Assignment
 from .quizzes import Quiz, Question
+from django.db import transaction
 
 class CourseForm(forms.ModelForm):
     class Meta:
@@ -22,12 +23,12 @@ class AssignmentForm(forms.ModelForm):
 class QuizForm(forms.ModelForm):
     class Meta:
         model=Quiz
-        fields=["title","closes","published"]
+        fields=["title","closes","published","results_released"]
 
 class QuestionForm(forms.ModelForm):
     class Meta:
         model=Question
-        fields=["prompt","option_a","option_b","option_c","option_d","correct"]
+        fields=["kind","prompt","points","option_a","option_b","option_c","option_d","correct","answer_key"]
 
 @login_required
 def faculty(request,pk):
@@ -55,8 +56,9 @@ def author(request,pk,kind,item=0):
     return render(request,"form.html",{"form":form,"heading":"Edit "+kind})
 
 @login_required
+@transaction.atomic
 def question(request,pk,item=0):
-    quiz=get_object_or_404(Quiz,pk=pk,course__instructor=request.user)
+    quiz=get_object_or_404(Quiz.objects.select_for_update(),pk=pk,course__instructor=request.user)
     if quiz.published:
         from django.http import HttpResponseForbidden
         return HttpResponseForbidden("Unpublish the quiz before editing questions.")

@@ -1,2 +1,5 @@
 # Advanced examinations
 Registrar or authorized academic administrators can set additional time, extended closing dates and up to five extra submitted attempts for individual students. Configure accommodations before the session begins. Expired sessions require staff intervention; no automatic reset of expired sessions. Each attempt is stored separately and results are displayed individually. Faculty can create private reusable bank questions and copy them into unpublished assessments before sessions begin. Question copies are independent of their bank originals. No adaptive exams or proctoring. Existing attempt and session rows become attempt 1. Configure exam policy and accommodations before publication.
+
+
+See [Assessment manual](QUIZZES.md) for question types, manual grading, weights, pools, aggregation and result release. Dedicated tests cover accommodation timing and cross-instructor bank isolation.
