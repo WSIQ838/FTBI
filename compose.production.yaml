@@ -13,6 +13,21 @@ services:
       interval: 5s
       timeout: 5s
       retries: 12
+  cache:
+    image: redis:7-alpine
+    restart: unless-stopped
+    command: ["redis-server","--save","","--appendonly","no","--maxmemory","128mb","--maxmemory-policy","noeviction"]
+    healthcheck:
+      test: ["CMD","redis-cli","ping"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+  scanner:
+    image: clamav/clamav:stable
+    restart: unless-stopped
+    profiles: ["scanner"]
+    volumes:
+      - clamdata:/var/lib/clamav
   web:
     build: .
     restart: unless-stopped
@@ -27,11 +42,39 @@ services:
       POSTGRES_DB: ftbi
       POSTGRES_USER: ftbi
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
+      FTBI_REDIS_URL: redis://cache:6379/0
+      FTBI_CLAMAV_HOST: ${FTBI_CLAMAV_HOST:-}
+      FTBI_INSTITUTION_NAME: ${FTBI_INSTITUTION_NAME:-FTBI Academic Portal}
+      FTBI_INSTITUTION_SHORT_NAME: ${FTBI_INSTITUTION_SHORT_NAME:-FTBI}
     depends_on:
       db:
         condition: service_healthy
-    ports:
-      - "127.0.0.1:8000:8000"
+      cache:
+        condition: service_healthy
+    expose: ["8000"]
     command: ["sh","-c","python manage.py check_release && python manage.py collectstatic --noinput && gunicorn ftbi.wsgi:application --bind 0.0.0.0:8000 --workers 3 --access-logfile -"]
+    healthcheck:
+      test: ["CMD","python","-c","import urllib.request; r=urllib.request.Request('http://127.0.0.1:8000/health/ready/',headers={'X-Forwarded-Proto':'https','Host':'localhost'}); urllib.request.urlopen(r,timeout=5)"]
+      interval: 30s
+      timeout: 8s
+      retries: 5
+  proxy:
+    image: caddy:2-alpine
+    restart: unless-stopped
+    environment:
+      FTBI_DOMAIN: ${FTBI_DOMAIN:?required}
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./ops/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddydata:/data
+      - caddyconfig:/config
+    depends_on:
+      web:
+        condition: service_healthy
 volumes:
   pgdata:
+  clamdata:
+  caddydata:
+  caddyconfig:

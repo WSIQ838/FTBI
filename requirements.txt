@@ -11,3 +11,5 @@ mozilla-django-oidc>=4,<5
 reportlab>=4.2,<5
 
 stripe>=11,<14
+
+redis>=5,<7

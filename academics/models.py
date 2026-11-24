@@ -103,3 +103,5 @@ from .advising import AdvisorAssignment
 from .diplomas import IssuedDiploma
 
 from .exam_extensions import ExamAccommodation,BankQuestion
+
+from .recovery_models import RecoveryCode

@@ -30,10 +30,10 @@ def catalog(request):
 @require_POST
 def register(request, pk):
     with transaction.atomic():
+        window = get_object_or_404(RegistrationWindow.objects.select_for_update(),pk=pk)
         profile = StudentProfile.objects.select_for_update().filter(user=request.user,status="active",registration_hold=False).first()
         if not profile:
             return HttpResponseForbidden("Registration requires an active student account without a hold.")
-        window = get_object_or_404(RegistrationWindow.objects.select_for_update(),pk=pk)
         now = timezone.now()
         if not window.course.published or not window.opens <= now < window.closes:
             return HttpResponseForbidden("Registration is closed.")

@@ -1,6 +1,6 @@
 # FTBI College Management System
-Development preview of a Django college LMS and SIS. Source includes courses, instructor authoring, assignments, multiple-choice assessments, weighted current grades, registration, admissions, student records, degree requirements, graduation applications, attendance, advising records, student ledger, financial aid awards, transfer records, transcript requests, messaging, reporting, library links, calendar and practicum records.
+FTBI is a Django LMS/SIS and college operations platform under active development. Includes course authoring, submissions, assessments, registration, admissions, advising, records, finance, dashboards, optional AI, MFA/SSO, document exports and operational tools.
 
-Documentation: [setup](SETUP.md), [registrar](docs/REGISTRAR.md), [faculty](docs/FACULTY.md), [degree](docs/DEGREE.md), [gradebook](docs/GRADEBOOK.md), [quizzes](docs/QUIZZES.md), [services](docs/SERVICES.md), [operations](docs/OPERATIONS.md), [deployment](docs/DEPLOYMENT.md), [testing](docs/TESTING.md).
+[Setup](SETUP.md) · [Deployment](docs/DEPLOYMENT.md) · [Testing](docs/TESTING.md) · [Release gates](docs/RELEASE_GATES.md)
 
-**Not production-ready.** Tests have not been executed. Versioned migrations, official transcript issuance, complete degree policies, advanced assessments, payments, MFA/SSO, comprehensive audit coverage, AI, backup automation and production hardening remain outstanding. Never use real student records in this preview.
+Automated CI validates committed migrations and application tests on SQLite and PostgreSQL. External integration, deployment, security and institutional acceptance testing remain required. Never use real student records in an unapproved deployment.

@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block content %}<h1>Verify authenticator</h1><form method="post">{% csrf_token %}{{ form.as_p }}<button>Verify</button></form><p><a href="{% url 'mfa_recover' %}">Use a recovery code</a></p>{% endblock %}

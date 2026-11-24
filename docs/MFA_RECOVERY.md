@@ -1,0 +1,2 @@
+# Recovery codes
+Authenticated users with a verified authenticator and current password can rotate eight single-use recovery codes. Codes are displayed only at creation and stored as password hashes. Recovery requires a signed-in password-authenticated session and a confirmed authenticator device. Each successful recovery consumes a code transactionally and creates an audit event. Rotate codes after suspected compromise. Independent security review remains required.
