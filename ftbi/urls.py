@@ -65,3 +65,6 @@ urlpatterns += [path('apply/signup/',public_admissions.applicant_signup,name='ap
 
 from academics import checkout
 urlpatterns += [path('payments/checkout/',checkout.checkout,name='checkout'),path('payments/webhook/',checkout.webhook,name='stripe_webhook')]
+
+from academics import workspaces
+urlpatterns += [path('workspaces/',workspaces.workspaces,name='workspaces'),path('reports/summary.csv',workspaces.institutional_csv,name='institutional_csv')]

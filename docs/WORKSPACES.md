@@ -1,0 +1,2 @@
+# Institutional workspaces
+The workspaces page uses model-level permissions and assigned teaching sections to show faculty, registrar, admissions, finance, academic affairs, leadership and IT audit summaries. Leadership CSV exports only aggregate counts. These are operational dashboards, not accredited reporting submissions or full financial statements. Existing model permissions may allow broad access to institutional data; assign roles with least privilege and review them independently. Advisor caseload assignment is not yet implemented.
