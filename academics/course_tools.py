@@ -22,6 +22,7 @@ def bulk_grade(request,pk):
         return HttpResponseForbidden("Use individual grading for more than 100 submissions.")
     with transaction.atomic():
         if request.method=="POST":
+            Assignment.objects.select_for_update().get(pk=assignment.pk)
             list(scope.select_for_update())
         forms_set=FormSet(request.POST if request.method=="POST" else None,queryset=scope)
         if request.method=="POST" and forms_set.is_valid():
@@ -46,14 +47,33 @@ def copy_content(request,pk):
     if request.method=="POST" and form.is_valid():
         with transaction.atomic():
             target=get_object_or_404(Course.objects.select_for_update(),pk=pk,instructor=request.user)
-            if target.published or target.lessons.exists() or target.assignments.exists():
-                return HttpResponseForbidden("Target must be unpublished with no lessons or assignments.")
+            if target.published or target.lessons.exists() or target.assignments.exists() or target.quiz_set.exists() or target.grade_categories.exists():
+                return HttpResponseForbidden("Target must be unpublished with no lessons, assignments, quizzes or grading categories.")
             source=form.cleaned_data["source"]
             delta=timedelta(days=form.cleaned_data["shift_days"])
             target.syllabus=source.syllabus
             target.save(update_fields=["syllabus"])
             Lesson.objects.bulk_create([Lesson(course=target,title=x.title,body=x.body,position=x.position) for x in source.lessons.all()])
-            Assignment.objects.bulk_create([Assignment(course=target,title=x.title,instructions=x.instructions,due=x.due+delta) for x in source.assignments.all()])
+            from .assessment_policy import AssignmentPolicy, RubricCriterion
+            from .gradebook import GradeCategory, AssignmentWeight
+            from .quizzes import Quiz, Question
+            from .timing import QuizPolicy
+            categories = {c.pk: GradeCategory.objects.create(course=target, name=c.name, weight=c.weight) for c in source.grade_categories.all()}
+            for original in source.assignments.all():
+                copied = Assignment.objects.create(course=target,title=original.title,instructions=original.instructions,due=original.due+delta)
+                policy = AssignmentPolicy.objects.filter(assignment=original).first()
+                if policy:
+                    AssignmentPolicy.objects.create(assignment=copied, max_submissions=policy.max_submissions, allow_graded_resubmission=policy.allow_graded_resubmission, late_hours=policy.late_hours)
+                RubricCriterion.objects.bulk_create([RubricCriterion(assignment=copied,title=c.title,description=c.description,points=c.points) for c in original.rubric.all()])
+                weight = AssignmentWeight.objects.filter(assignment=original).first()
+                if weight and weight.category_id in categories:
+                    AssignmentWeight.objects.create(assignment=copied, category=categories[weight.category_id], points=weight.points)
+            for original in source.quiz_set.all():
+                copied = Quiz.objects.create(course=target,title=original.title,closes=original.closes+delta,published=False)
+                Question.objects.bulk_create([Question(quiz=copied,prompt=q.prompt,option_a=q.option_a,option_b=q.option_b,option_c=q.option_c,option_d=q.option_d,correct=q.correct) for q in original.questions.all()])
+                policy = QuizPolicy.objects.filter(quiz=original).first()
+                if policy:
+                    QuizPolicy.objects.create(quiz=copied, minutes=policy.minutes, shuffle=policy.shuffle)
             AuditEvent.objects.create(actor=request.user,action="course_content_copied",target=str(target.pk))
         return redirect("faculty",pk=pk)
     return render(request,"form.html",{"form":form,"heading":"Copy lessons and assignments from my course"})
