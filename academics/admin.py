@@ -12,3 +12,7 @@ for model in [StudentProfile, RegistrationWindow, Application]:
 from .services import FinalGrade, Attendance, Announcement, CalendarEvent, LedgerEntry, AdvisingNote, Practicum, LearningOutcome, LibraryResource
 for model in [FinalGrade, Attendance, Announcement, CalendarEvent, LedgerEntry, AdvisingNote, Practicum, LearningOutcome, LibraryResource]:
     admin.site.register(model)
+
+from .quizzes import Quiz, Question, Attempt
+for model in [Quiz, Question, Attempt]:
+    admin.site.register(model)

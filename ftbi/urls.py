@@ -17,3 +17,6 @@ urlpatterns += [path('record/',rv.student_record,name='student_record'),path('ca
 
 from academics.service_views import student_services
 urlpatterns += [path('services/',student_services,name='student_services')]
+
+from academics import quiz_views
+urlpatterns += [path('quizzes/',quiz_views.quizzes,name='quizzes'),path('quizzes/<int:pk>/',quiz_views.take_quiz,name='take_quiz')]
