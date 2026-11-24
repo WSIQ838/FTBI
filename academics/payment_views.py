@@ -17,6 +17,9 @@ def payment_portal(request):
     if request.method=="POST" and form.is_valid():
         payment=form.save(commit=False)
         payment.student=student
+        if payment.reference.startswith("stripe:"):
+            form.add_error("reference","Reserved reference.")
+            return render(request,"payments.html",{"form":form,"requests":PaymentRequest.objects.filter(student=student)})
         payment.save()
         return redirect("payment_portal")
-    return render(request,"payments.html",{"form":form,"payment_url":settings.FTBI_PAYMENT_URL,"requests":PaymentRequest.objects.filter(student=student).order_by("-created")})
+    return render(request,"payments.html",{"form":form,"stripe_enabled":settings.FTBI_STRIPE_ENABLED,"payment_url":settings.FTBI_PAYMENT_URL,"requests":PaymentRequest.objects.filter(student=student).order_by("-created")})

@@ -1,0 +1,2 @@
+# Public admissions and transcript PDF
+Public applicant signup is opt-in (FTBI_PUBLIC_ADMISSIONS=1), creates unprivileged accounts, and uses a basic per-IP cache throttle. Staff must verify applicant identity and set a verified recovery email separately. Production requires shared rate limiting and anti-abuse controls. Transcript PDFs use immutable issued snapshots and enforce existing record permissions. PDFs include the record ID and digest but are not digitally signed and are not diplomas.

@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block content %}<section><h1>Create applicant account</h1><p>This account permits an application, not enrollment. Contact admissions to verify your identity and recovery email.</p><form method="post">{% csrf_token %}{{ form.as_p }}<button>Create account</button></form></section>{% endblock %}
