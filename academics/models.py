@@ -78,3 +78,5 @@ from .services import FinalGrade, Attendance, Announcement, CalendarEvent, Ledge
 from .quizzes import Quiz, Question, Attempt
 
 from .degree import DegreeRequirement, GraduationApplication
+
+from .gradebook import GradeCategory, AssignmentWeight

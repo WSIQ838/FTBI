@@ -26,3 +26,6 @@ urlpatterns += [path('faculty/<int:pk>/',faculty.faculty,name='faculty'),path('f
 
 from academics import degree_views
 urlpatterns += [path('degree/',degree_views.degree,name='degree'),path('degree/graduate/',degree_views.graduate,name='graduate')]
+
+from academics.gradebook_views import gradebook
+urlpatterns += [path('courses/<int:pk>/gradebook/',gradebook,name='gradebook')]

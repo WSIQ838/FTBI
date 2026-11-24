@@ -20,3 +20,7 @@ for model in [Quiz, Question, Attempt]:
 from .degree import DegreeRequirement, GraduationApplication
 admin.site.register(DegreeRequirement)
 admin.site.register(GraduationApplication)
+
+from .gradebook import GradeCategory, AssignmentWeight
+admin.site.register(GradeCategory)
+admin.site.register(AssignmentWeight)
