@@ -134,3 +134,15 @@ class KnowledgeDocumentAdmin(admin.ModelAdmin):
     list_display=("title","audience","approved","updated")
     list_filter=("audience","approved")
     search_fields=("title","body")
+
+from .student_records import WithdrawalWindow,WithdrawalRequest,GradingScale,StandingPolicy,AcademicStanding,EmergencyContact,StudentStatusRecord,EnrollmentVerification
+for model in [WithdrawalWindow,GradingScale,StandingPolicy]: admin.site.register(model)
+for model in [WithdrawalRequest,AcademicStanding,StudentStatusRecord,EnrollmentVerification]: admin.site.register(model,AssessmentRecordAdmin)
+admin.site.register(EmergencyContact)
+admin.site.unregister(StudentProfile)
+@admin.register(StudentProfile)
+class StudentProfileAdmin(admin.ModelAdmin):
+    list_display=("student_number","user","program","status","registration_hold")
+    def save_model(self,request,obj,form,change):
+        obj._status_actor=request.user
+        super().save_model(request,obj,form,change)

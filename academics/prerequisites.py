@@ -1,8 +1,12 @@
 from django.db import models
 from .models import Course
 from .registrar import StudentProfile
+from django.core.validators import MinValueValidator,MaxValueValidator
 
 class Prerequisite(models.Model):
+    group=models.CharField(max_length=40,blank=True,help_text="Rules in the same nonempty group are alternatives; all groups must be met.")
+    kind=models.CharField(max_length=12,default="prerequisite",choices=[("prerequisite","Prior completion"),("corequisite","Prior completion or concurrent enrollment")])
+    minimum_points=models.DecimalField(max_digits=3,decimal_places=2,null=True,blank=True,validators=[MinValueValidator(0),MaxValueValidator(4)])
     course=models.ForeignKey(Course,on_delete=models.CASCADE,related_name="prerequisites")
     required_code=models.CharField(max_length=30)
     class Meta:
@@ -19,7 +23,15 @@ class WaitlistEntry(models.Model):
 def prerequisites_met(profile,course):
     from .services import FinalGrade
     from .operations import TransferCredit
-    required=set(course.prerequisites.values_list("required_code",flat=True))
-    passed=set(FinalGrade.objects.filter(student=profile,released=True,credits_earned__gt=0).values_list("course__code",flat=True))
-    passed.update(TransferCredit.objects.filter(student=profile,approved=True,credits__gt=0).values_list("equivalent_code",flat=True))
-    return required.issubset(passed)
+    from .models import Enrollment
+    groups={}
+    for rule in course.prerequisites.all():
+        grades=FinalGrade.objects.filter(student=profile,released=True,credits_earned__gt=0,course__code=rule.required_code)
+        if rule.minimum_points is not None: grades=grades.filter(quality_points__gte=rule.minimum_points)
+        met=grades.exists()
+        if rule.minimum_points is None:
+            met=met or TransferCredit.objects.filter(student=profile,approved=True,credits__gt=0,equivalent_code=rule.required_code).exists()
+        if rule.kind=="corequisite":
+            met=met or Enrollment.objects.filter(student=profile.user,active=True,course__term=course.term,course__code=rule.required_code).exists()
+        groups.setdefault(rule.group or f"rule-{rule.pk}",[]).append(met)
+    return all(any(options) for options in groups.values())

@@ -39,6 +39,9 @@ def register(request, pk):
         if not window.course.published or not window.opens <= now < window.closes:
             return HttpResponseForbidden("Registration is closed.")
         existing = Enrollment.objects.filter(student=request.user,course=window.course).first()
+        from .student_records import WithdrawalRequest
+        if existing and WithdrawalRequest.objects.filter(enrollment=existing,status="approved").exists():
+            return HttpResponseForbidden("This enrollment was withdrawn. Contact the registrar.")
         if existing and existing.active:
             return redirect("student_record")
         if not prerequisites_met(profile,window.course):

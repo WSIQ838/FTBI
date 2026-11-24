@@ -10,6 +10,8 @@ from .account_security import AccountSecurity,SecurityIncident
 from .notification_models import notify
 from .operations import AuditEvent
 from .services import FinalGrade
+from .registrar import StudentProfile
+from .student_records import StudentStatusRecord
 
 
 @receiver(user_login_failed,dispatch_uid="ftbi_failed_login_state")
@@ -65,3 +67,15 @@ def incident_notice(sender,instance,created,**kwargs):
 def grade_released(sender,instance,**kwargs):
     if instance.released:
         notify(instance.student.user,"grades","Final grade available","A released final grade is available in your academic record.",f"final-grade:{instance.pk}:{instance.letter}:{instance.quality_points}:{instance.credits_earned}")
+
+
+@receiver(pre_save,sender=StudentProfile,dispatch_uid="ftbi_student_status_before")
+def student_status_before(sender,instance,**kwargs):
+    instance._previous_status=sender.objects.filter(pk=instance.pk).values_list("status",flat=True).first() if instance.pk else None
+
+
+@receiver(post_save,sender=StudentProfile,dispatch_uid="ftbi_student_status_after")
+def student_status_after(sender,instance,created,**kwargs):
+    previous=getattr(instance,"_previous_status",None)
+    if created or previous!=instance.status:
+        StudentStatusRecord.objects.create(student=instance,previous=previous or "",current=instance.status,actor=getattr(instance,"_status_actor",None))
