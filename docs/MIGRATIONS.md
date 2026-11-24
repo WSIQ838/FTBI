@@ -1,2 +1,2 @@
-# Schema management
-The initial academic migration must be generated and tested against the current model definitions. A one-time GitHub Actions bootstrap on the release-hardening branch generates and tests it, then commits only Python migration files to that branch. Review the resulting commit before merging. The bootstrap workflow should be removed after the initial migration is committed. Do not use --fake-initial on an existing database without independently verifying the complete schema and taking a backup.
+# Versioned schema
+The initial schema is committed in academics/migrations/0001_initial.py. CI checks for model changes without migrations and tests fresh databases on SQLite and PostgreSQL. Apply committed migrations using manage.py migrate. Existing databases created with --run-syncdb require a verified schema comparison and backup before adoption; never blindly fake migrations.
