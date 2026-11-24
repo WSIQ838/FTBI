@@ -45,6 +45,8 @@ class Enrollment(models.Model):
     def __str__(self): return f"{self.student} / {self.course}"
 
 class Lesson(models.Model):
+    module=models.ForeignKey("academics.LearningModule",on_delete=models.PROTECT,null=True,blank=True)
+    video_url=models.URLField(blank=True,max_length=1000)
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="lessons")
     title = models.CharField(max_length=200)
     body = models.TextField()
@@ -52,6 +54,14 @@ class Lesson(models.Model):
     class Meta:
         ordering = ["position","pk"]
     def __str__(self): return self.title
+    def clean(self):
+        from urllib.parse import urlparse
+        if self.module_id and self.module.course_id!=self.course_id:
+            raise ValidationError("The module must belong to this course.")
+        if self.video_url:
+            url=urlparse(self.video_url)
+            if url.scheme!="https" or not url.hostname or url.username or url.password:
+                raise ValidationError("Video URLs must use HTTPS without embedded credentials.")
 
 class Assignment(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE, related_name="assignments")
@@ -109,3 +119,4 @@ from .recovery_models import RecoveryCode
 
 from .assessment_policy import AssignmentPolicy, RubricCriterion, SubmissionRevision
 from .billing import TuitionSchedule, Invoice, PaymentAllocation, PaymentPlan, Installment, AllocationOperation
+from .learning import LearningModule, LessonCompletion, CompletionPolicy, CourseCertificate

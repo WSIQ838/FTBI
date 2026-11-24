@@ -23,7 +23,10 @@ def course(request, pk):
     submissions = Submission.objects.filter(assignment__course=obj)
     if not teaching:
         submissions = submissions.filter(student=request.user)
-    return render(request, "course.html", {"course":obj,"teaching":teaching,"submissions":submissions.select_related("assignment","student")})
+    from .learning import module_open,LessonCompletion
+    completed=set(LessonCompletion.objects.filter(student=request.user,lesson__course=obj).values_list("lesson_id",flat=True))
+    lessons=[(lesson,teaching or module_open(lesson.module,request.user),lesson.pk in completed) for lesson in obj.lessons.select_related("module")]
+    return render(request, "course.html", {"course":obj,"lessons":lessons,"teaching":teaching,"submissions":submissions.select_related("assignment","student")})
 
 @login_required
 @transaction.atomic

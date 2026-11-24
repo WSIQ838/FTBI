@@ -11,9 +11,13 @@ class CourseForm(forms.ModelForm):
         fields=["syllabus","published"]
 
 class LessonForm(forms.ModelForm):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        from .learning import LearningModule
+        self.fields["module"].queryset=LearningModule.objects.filter(course=self.instance.course)
     class Meta:
         model=Lesson
-        fields=["title","body","position"]
+        fields=["title","body","position","module","video_url"]
 
 class AssignmentForm(forms.ModelForm):
     class Meta:
@@ -36,8 +40,9 @@ def faculty(request,pk):
     return render(request,"faculty.html",{"course":course,"quizzes":Quiz.objects.filter(course=course)})
 
 @login_required
+@transaction.atomic
 def author(request,pk,kind,item=0):
-    course=get_object_or_404(Course,pk=pk,instructor=request.user)
+    course=get_object_or_404(Course.objects.select_for_update(),pk=pk,instructor=request.user)
     forms_by_kind={"course":(Course,CourseForm),"lesson":(Lesson,LessonForm),"assignment":(Assignment,AssignmentForm),"quiz":(Quiz,QuizForm)}
     if kind not in forms_by_kind:
         from django.http import Http404
@@ -51,6 +56,12 @@ def author(request,pk,kind,item=0):
         obj=model(course=course)
     form=form_class(request.POST if request.method=="POST" else None,instance=obj)
     if request.method=="POST" and form.is_valid():
+        if kind=="lesson" and item:
+            from .learning import LessonCompletion
+            old=Lesson.objects.get(pk=item)
+            if old.module_id!=form.instance.module_id and LessonCompletion.objects.filter(lesson__course=course).exists():
+                from django.http import HttpResponseForbidden
+                return HttpResponseForbidden("Module membership locks after learning progress begins.")
         form.save()
         return redirect("faculty",pk=pk)
     return render(request,"form.html",{"form":form,"heading":"Edit "+kind})

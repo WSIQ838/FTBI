@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.contrib.auth import get_user_model
 from django.core.cache import cache
 from django.core import mail
-from .public_admissions import token_generator
+import re
 class ApplicantTests(TestCase):
     @override_settings(FTBI_PUBLIC_ADMISSIONS=False)
     def test_disabled(self):
@@ -18,9 +18,10 @@ class ApplicantTests(TestCase):
         self.assertFalse(user.is_staff)
         self.assertFalse(user.is_superuser)
         self.assertFalse(hasattr(user,"student_profile"))
-        token=token_generator.make_token(user)
-        url=reverse("applicant_activate",args=[user.pk,token])
-        self.assertIn(url,mail.outbox[0].body)
+        # Exercise the delivered token; a newly generated token may cross a second boundary.
+        match=re.search(r"https://college.example(/apply/activate/[^ ]+)",mail.outbox[0].body)
+        self.assertIsNotNone(match)
+        url=match.group(1)
         self.assertEqual(self.client.get(url).status_code,200)
         user.refresh_from_db()
         self.assertFalse(user.is_active)

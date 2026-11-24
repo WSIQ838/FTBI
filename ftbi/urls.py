@@ -27,6 +27,8 @@ urlpatterns += [path('quizzes/<int:pk>/policy/',exam_grading.exam_policy,name='e
 urlpatterns += [path('quizzes/',quiz_views.quizzes,name='quizzes'),path('quizzes/<int:pk>/',quiz_views.take_quiz,name='take_quiz')]
 
 from academics import faculty
+from academics import learning_views
+urlpatterns += [path('faculty/<int:pk>/modules/<int:item>/',learning_views.module_editor,name='module_editor'),path('lessons/<int:pk>/complete/',learning_views.complete_lesson,name='complete_lesson'),path('faculty/<int:pk>/completion-policy/',learning_views.completion_policy,name='completion_policy'),path('courses/<int:pk>/certificate/',learning_views.issue_certificate,name='issue_course_certificate'),path('course-certificates/<uuid:identifier>/',learning_views.certificate_pdf,name='course_certificate'),path('courses/<int:pk>/attendance/',learning_views.attendance_analytics,name='attendance_analytics')]
 urlpatterns += [path('faculty/<int:pk>/',faculty.faculty,name='faculty'),path('faculty/<int:pk>/<str:kind>/<int:item>/',faculty.author,name='author'),path('faculty/quiz/<int:pk>/question/<int:item>/',faculty.question,name='question')]
 
 from academics import degree_views
@@ -94,6 +96,8 @@ from ftbi import recovery
 urlpatterns += [path('account/recovery/codes/',recovery.generate,name='recovery_codes'),path('account/recovery/verify/',recovery.recover,name='mfa_recover')]
 
 from academics import course_tools
+from academics import package_views
+urlpatterns += [path('faculty/<int:pk>/export.json',package_views.export_package,name='export_course_package'),path('faculty/<int:pk>/import/',package_views.import_package,name='import_course_package')]
 from academics import policy_views
 urlpatterns += [path('submission-revisions/<int:pk>/attachment/', policy_views.revision_attachment, name='revision_attachment')]
 urlpatterns += [path('assignments/<int:pk>/policy/', policy_views.assignment_policy, name='assignment_policy'), path('assignments/<int:pk>/rubric/', policy_views.rubric, name='rubric'), path('submissions/<int:pk>/history/', policy_views.submission_history, name='submission_history')]
