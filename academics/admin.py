@@ -72,3 +72,12 @@ admin.site.register(QuizPolicy)
 
 from .identity_models import IdentityLink
 admin.site.register(IdentityLink)
+
+from .advising import AdvisorAssignment
+from .diplomas import IssuedDiploma
+admin.site.register(AdvisorAssignment)
+@admin.register(IssuedDiploma)
+class IssuedDiplomaAdmin(admin.ModelAdmin):
+    def has_add_permission(self,request): return False
+    def has_change_permission(self,request,obj=None): return False
+    def has_delete_permission(self,request,obj=None): return False

@@ -71,3 +71,6 @@ urlpatterns += [path('workspaces/',workspaces.workspaces,name='workspaces'),path
 
 from academics import assistant_views
 urlpatterns += [path('assistant/',assistant_views.assistant,name='assistant')]
+
+from academics import advisor_views,diploma_views
+urlpatterns += [path('advising/',advisor_views.caseload,name='caseload'),path('advising/<int:pk>/',advisor_views.advise,name='advise'),path('diplomas/queue/',diploma_views.diploma_queue,name='diploma_queue'),path('diplomas/issue/<int:pk>/',diploma_views.issue_diploma,name='issue_diploma'),path('diplomas/<uuid:identifier>/pdf/',diploma_views.diploma_pdf,name='diploma_pdf')]

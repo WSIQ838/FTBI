@@ -21,7 +21,7 @@ def audit(profile):
 @login_required
 def degree(request):
     profile=get_object_or_404(StudentProfile,user=request.user)
-    return render(request,"degree.html",{"profile":profile,"audit":audit(profile),"application":GraduationApplication.objects.filter(student=profile).first()})
+    return render(request,"degree.html",{"profile":profile,"diploma":profile.graduationapplication.issueddiploma if hasattr(profile,"graduationapplication") and hasattr(profile.graduationapplication,"issueddiploma") else None,"audit":audit(profile),"application":GraduationApplication.objects.filter(student=profile).first()})
 
 @login_required
 @require_POST
