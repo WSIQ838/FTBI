@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add lesson completion, prerequisite modules, HTTPS video links, scoped attendance participation and policy-gated private course certificates.
+- Add validated versioned JSON course packages with atomic import and no student records.
+
 - Add invoices, tuition schedules, idempotent billing, atomic manual-payment verification, payment allocations, installment plans, private PDF receipts and reconciliation CSV.
 - Support partial Stripe checkout and reuse pending sessions. Verify signed webhook replay and amount checks.
 - Add PostgreSQL concurrency tests for last-seat registration and payment webhook replay.

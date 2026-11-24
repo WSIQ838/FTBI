@@ -15,6 +15,8 @@ def search(request):
     result={"query":term}
     if len(term)>=2:
         result.update(courses=courses.filter(Q(title__icontains=term)|Q(code__icontains=term))[:50],lessons=Lesson.objects.filter(course__in=courses,title__icontains=term).select_related("course")[:50],assignments=Assignment.objects.filter(course__in=courses,title__icontains=term).select_related("course")[:50])
+        from .learning import module_open
+        result["lessons"]=[lesson for lesson in result["lessons"] if lesson.course.instructor_id==request.user.pk or module_open(lesson.module,request.user)]
     return render(request,"search.html",result)
 
 @login_required

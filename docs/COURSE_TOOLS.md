@@ -8,6 +8,6 @@ From an assigned course, open **Manage course content**. Bulk grading supports a
 
 **Version history** is available to the owner while actively enrolled in a published course and to its instructor. Previous attachments remain downloadable under the same access controls. History is not editable through the portal.
 
-**Copy course content** requires an empty unpublished target assigned to the same instructor. It copies syllabus, lessons, assignments, rubrics, assignment policies, category weights, questions and quiz timing policies. Assignment and quiz deadlines shift by the requested days. Copied quizzes remain unpublished. Enrollments, submissions, attempts, accommodations and other student records are excluded. Portable import/export remains outstanding.
+**Copy course content** requires an empty unpublished target assigned to the same instructor. It copies syllabus, learning modules, prerequisites, lessons/video links, assignments, rubrics, assignment policies, category weights, questions and quiz timing policies. Assignment and quiz deadlines shift by the requested days. Copied quizzes remain unpublished. Enrollments, submissions, attempts, accommodations and other student records are excluded. Versioned JSON import/export is available for authored learning content; see LEARNING.md for coverage and exclusions.
 
 Students can view submission/grade counts and export visible published calendar events as ICS. Calendar export is a snapshot, not a public feed.

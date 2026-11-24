@@ -233,23 +233,23 @@ PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
 - [x] Processor-managed payment protection
 - [x] Finance dashboard
 - [ ] Live Stripe test-mode validation
-- [ ] Payment reconciliation
+- [~] Payment reconciliation (internal allocation/CSV implemented in PR #24; processor/bank settlement validation outstanding)
 - [ ] Refund processing
 - [ ] Chargeback handling
 - [ ] Payment dispute handling
-- [ ] Overpayment reconciliation
-- [ ] Payment plans
-- [ ] Installment payments
-- [ ] Tuition schedules
-- [ ] Fee schedules
-- [ ] Automated tuition billing
-- [ ] Invoice generation
-- [ ] PDF payment receipts
+- [~] Overpayment reconciliation (internal allocation/CSV implemented in PR #24; processor/bank settlement validation outstanding)
+- [x] Payment plans (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
+- [x] Installment payments (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
+- [x] Tuition schedules (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
+- [x] Fee schedules (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
+- [x] Automated tuition billing (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
+- [x] Invoice generation (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
+- [x] PDF payment receipts (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
 - [ ] Automated financial holds
 - [ ] Advanced scholarship management
-- [ ] Financial reporting exports
+- [x] Financial reporting exports (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
 - [ ] Accounting software integration
-- [ ] Financial audit reconciliation reports
+- [~] Financial audit reconciliation reports (internal allocation/CSV implemented in PR #24; processor/bank settlement validation outstanding)
 
 ## 8. Artificial Intelligence
 
@@ -573,8 +573,8 @@ PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
 - [x] Last verified main branch CI
 - [~] Complete regression coverage
 - [ ] End-to-end browser testing
-- [ ] Concurrent registration testing
-- [ ] Concurrent payment testing
+- [x] Concurrent registration testing (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
+- [x] Concurrent payment testing (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
 - [x] Concurrent examination testing (PR #23; SQLite/PostgreSQL CI 45503670966)
 - [ ] Load testing
 - [ ] Stress testing

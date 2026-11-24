@@ -47,13 +47,20 @@ def copy_content(request,pk):
     if request.method=="POST" and form.is_valid():
         with transaction.atomic():
             target=get_object_or_404(Course.objects.select_for_update(),pk=pk,instructor=request.user)
-            if target.published or target.lessons.exists() or target.assignments.exists() or target.quiz_set.exists() or target.grade_categories.exists():
+            if target.published or target.lessons.exists() or target.assignments.exists() or target.quiz_set.exists() or target.grade_categories.exists() or target.modules.exists() or hasattr(target,"completion_policy"):
                 return HttpResponseForbidden("Target must be unpublished with no lessons, assignments, quizzes or grading categories.")
             source=form.cleaned_data["source"]
             delta=timedelta(days=form.cleaned_data["shift_days"])
             target.syllabus=source.syllabus
             target.save(update_fields=["syllabus"])
-            Lesson.objects.bulk_create([Lesson(course=target,title=x.title,body=x.body,position=x.position) for x in source.lessons.all()])
+            from .learning import LearningModule,CompletionPolicy
+            modules={m.pk:LearningModule.objects.create(course=target,title=m.title,position=m.position) for m in source.modules.all()}
+            for original in source.modules.all():
+                modules[original.pk].prerequisites.set([modules[p.pk] for p in original.prerequisites.all() if p.pk in modules])
+            Lesson.objects.bulk_create([Lesson(course=target,title=x.title,body=x.body,position=x.position,module=modules.get(x.module_id),video_url=x.video_url) for x in source.lessons.all()])
+            completion=CompletionPolicy.objects.filter(course=source).first()
+            if completion:
+                CompletionPolicy.objects.create(course=target,enabled=False,minimum_score=completion.minimum_score)
             from .assessment_policy import AssignmentPolicy, RubricCriterion
             from .gradebook import GradeCategory, AssignmentWeight
             from .quizzes import Quiz, Question
@@ -84,7 +91,8 @@ def progress(request,pk):
     assignments=course.assignments.count()
     submitted=Submission.objects.filter(student=request.user,assignment__course=course).count()
     graded=Submission.objects.filter(student=request.user,assignment__course=course,grade__isnull=False).count()
-    return render(request,"progress.html",{"course":course,"assignments":assignments,"submitted":submitted,"graded":graded})
+    from .learning import LessonCompletion,course_complete
+    return render(request,"progress.html",{"course":course,"assignments":assignments,"submitted":submitted,"graded":graded,"lesson_count":course.lessons.count(),"completed_lessons":LessonCompletion.objects.filter(student=request.user,lesson__course=course).count(),"complete":course_complete(course,request.user)})
 
 def escape_ical(value):
     return str(value).replace("\\","\\\\").replace("\r\n","\\n").replace("\r","\\n").replace("\n","\\n").replace(";","\\;").replace(",","\\,")
