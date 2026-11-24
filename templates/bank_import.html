@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block content %}<h1>Import question into {{ quiz }}</h1><form method="post">{% csrf_token %}<label for="question">Question</label><select name="question" id="question" required>{% for q in questions %}<option value="{{ q.pk }}">{{ q.prompt }}</option>{% endfor %}</select><button>Copy question</button></form>{% endblock %}
