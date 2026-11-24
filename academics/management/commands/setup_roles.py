@@ -3,6 +3,8 @@ from django.contrib.auth.models import Group, Permission
 
 ROLES={
     "Registrar":["studentprofile","registrationwindow","waitlistentry","prerequisite","application","enrollment","finalgrade","transfercredit","transcriptrequest","issuedtranscript","graduationapplication","degreerequirement"],
+    "Admissions":["application"],
+    "IT Audit":["auditevent"],
     "Finance":["ledgerentry","financialaidaward","paymentrequest"],
     "Academic Administration":["department","program","term","course","gradecategory","assignmentweight","attendance","learningoutcome","practicum","announcement","calendarevent","libraryresource"],
     "Institutional Reporting":["studentprofile","enrollment","application"],
@@ -13,7 +15,7 @@ class Command(BaseCommand):
         for name,models in ROLES.items():
             group,_=Group.objects.get_or_create(name=name)
             permissions=Permission.objects.filter(content_type__app_label="academics",content_type__model__in=models)
-            if name=="Institutional Reporting":
+            if name in ("Institutional Reporting","IT Audit"):
                 permissions=permissions.filter(codename__startswith="view_")
             else:
                 permissions=permissions.exclude(codename__startswith="delete_")
