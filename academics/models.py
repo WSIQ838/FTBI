@@ -88,3 +88,5 @@ from .transcripts import IssuedTranscript
 from .payments import PaymentRequest
 
 from .discussions import Discussion, DiscussionReply
+
+from .prerequisites import Prerequisite, WaitlistEntry

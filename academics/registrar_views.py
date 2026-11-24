@@ -6,6 +6,7 @@ from django.views.decorators.http import require_POST
 from django.utils import timezone
 from django import forms
 from .models import Enrollment
+from .prerequisites import WaitlistEntry, prerequisites_met
 from .registrar import StudentProfile, RegistrationWindow, Application
 
 class ApplicationForm(forms.ModelForm):
@@ -17,7 +18,7 @@ class ApplicationForm(forms.ModelForm):
 def student_record(request):
     profile = StudentProfile.objects.filter(user=request.user).select_related("program").first()
     enrollments = Enrollment.objects.filter(student=request.user).select_related("course","course__term")
-    return render(request,"student_record.html",{"profile":profile,"enrollments":enrollments})
+    return render(request,"student_record.html",{"profile":profile,"enrollments":enrollments,"waitlist":WaitlistEntry.objects.filter(student=profile).select_related("course") if profile else []})
 
 @login_required
 def catalog(request):
@@ -39,9 +40,15 @@ def register(request, pk):
         existing = Enrollment.objects.filter(student=request.user,course=window.course).first()
         if existing and existing.active:
             return redirect("student_record")
-        if Enrollment.objects.filter(course=window.course,active=True).count() >= window.capacity:
-            return HttpResponseForbidden("Section is full.")
+        if not prerequisites_met(profile,window.course):
+            return HttpResponseForbidden("Prerequisites are not satisfied.")
+        queue=WaitlistEntry.objects.filter(course=window.course)
+        first=queue.first()
+        if Enrollment.objects.filter(course=window.course,active=True).count() >= window.capacity or (first and first.student_id != profile.pk):
+            WaitlistEntry.objects.get_or_create(course=window.course,student=profile)
+            return redirect("student_record")
         Enrollment.objects.update_or_create(student=request.user,course=window.course,defaults={"active":True})
+        queue.filter(student=profile).delete()
     return redirect("student_record")
 
 @login_required

@@ -1,0 +1,2 @@
+# Registration rules
+Staff configure prerequisite course codes in admin. Self-service registration requires released earned credit or approved equivalent transfer credit for all prerequisites. Eligible students who encounter a full course are added to the waitlist. Earlier eligible waitlist entries must be resolved by staff before later students register; no automatic promotion or notification is implemented. Direct administrative enrollment bypasses these rules and must be supervised.

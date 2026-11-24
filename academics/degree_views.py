@@ -11,6 +11,9 @@ def audit(profile):
     for grade in grades:
         code=grade.course.code
         credits[code]=max(credits.get(code,0),grade.credits_earned)
+    from .operations import TransferCredit
+    for transfer in TransferCredit.objects.filter(student=profile,approved=True,credits__gt=0):
+        credits[transfer.equivalent_code]=max(credits.get(transfer.equivalent_code,0),transfer.credits)
     requirements=[(r,r.course_code in credits) for r in profile.program.requirements.all()]
     total=sum(credits.values())
     return {"requirements":requirements,"total":total,"eligible":bool(requirements) and all(done for _,done in requirements) and total>=profile.program.required_credits}

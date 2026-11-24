@@ -33,7 +33,9 @@ class RegistrarTests(TestCase):
         self.assertEqual(self.client.post(reverse("register",args=[self.window.pk])).status_code,403)
     def test_full_course(self):
         Enrollment.objects.create(student=self.other,course=self.course)
-        self.assertEqual(self.client.post(reverse("register",args=[self.window.pk])).status_code,403)
+        self.assertEqual(self.client.post(reverse("register",args=[self.window.pk])).status_code,302)
+        from .prerequisites import WaitlistEntry
+        self.assertTrue(WaitlistEntry.objects.filter(student=self.profile,course=self.course).exists())
     def test_record_is_private(self):
         self.client.force_login(self.other)
         self.assertNotContains(self.client.get(reverse("student_record")),"TEST001")
