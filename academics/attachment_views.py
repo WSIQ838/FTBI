@@ -1,3 +1,7 @@
+from django.conf import settings
+from .scanning import scan_clean
+from io import BytesIO
+from zipfile import ZipFile, BadZipFile
 from pathlib import PurePath
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404,render,redirect
@@ -11,18 +15,40 @@ from .attachments import SubmissionAttachment
 
 LIMIT=5*1024*1024
 class AttachmentForm(forms.Form):
-    file=forms.FileField(help_text="Plain text UTF-8 (.txt), maximum 5 MB. Other file formats are disabled pending malware scanning.")
+    file=forms.FileField(help_text="Maximum 5 MB. Text files are supported; PDF, images and Office documents require an enabled malware scanner.")
     def clean_file(self):
         file=self.cleaned_data["file"]
-        if file.size>LIMIT or file.size==0 or not file.name.lower().endswith(".txt"):
-            raise forms.ValidationError("Upload a nonempty .txt file up to 5 MB.")
+        ext=PurePath(file.name).suffix.lower()
+        if file.size>LIMIT or file.size==0:
+            raise forms.ValidationError("Upload a nonempty file up to 5 MB.")
         data=file.read(LIMIT+1)
-        if len(data)>LIMIT or b"\0" in data:
-            raise forms.ValidationError("Invalid text file.")
-        try:
-            data.decode("utf-8")
-        except UnicodeDecodeError:
-            raise forms.ValidationError("File must be UTF-8 text.")
+        if len(data)>LIMIT:
+            raise forms.ValidationError("File too large.")
+        if ext==".txt":
+            try:
+                if b"\0" in data:
+                    raise ValueError()
+                data.decode("utf-8")
+            except ValueError:
+                raise forms.ValidationError("File must be UTF-8 text.")
+        else:
+            if not settings.FTBI_CLAMAV_HOST:
+                raise forms.ValidationError("Document uploads are disabled.")
+            signatures={".pdf":b"%PDF-",".png":b"\x89PNG\r\n\x1a\n",".jpg":b"\xff\xd8\xff",".jpeg":b"\xff\xd8\xff"}
+            office={".docx":"word/document.xml",".xlsx":"xl/workbook.xml",".pptx":"ppt/presentation.xml"}
+            valid=ext in signatures and data.startswith(signatures[ext])
+            if ext in office:
+                try:
+                    with ZipFile(BytesIO(data)) as archive:
+                        entries=archive.infolist()
+                        names=set(archive.namelist())
+                        valid=len(entries)<=2000 and sum(e.file_size for e in entries)<=50*1024*1024 and office[ext] in names and "[Content_Types].xml" in names and not any("vbaproject" in n.lower() for n in names)
+                except (BadZipFile,ValueError,OSError):
+                    valid=False
+            if not valid:
+                raise forms.ValidationError("Unsupported or invalid document.")
+        if settings.FTBI_CLAMAV_HOST and not scan_clean(data):
+            raise forms.ValidationError("File rejected or scanning service unavailable.")
         self.payload=data
         return file
 
