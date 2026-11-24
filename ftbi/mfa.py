@@ -21,7 +21,7 @@ class MFAGate:
         self.get_response=get_response
     def __call__(self,request):
         if request.user.is_authenticated:
-            exempt={reverse("mfa_setup"),reverse("mfa_verify"),reverse("logout")}
+            exempt={reverse("mfa_setup"),reverse("mfa_verify"),reverse("logout"),reverse("mfa_recover")}
             if request.path_info not in exempt and not request.user.is_verified():
                 has_device=TOTPDevice.objects.filter(user=request.user,confirmed=True).exists()
                 required=settings.FTBI_REQUIRE_MFA or (settings.FTBI_REQUIRE_STAFF_MFA and request.user.is_staff)
@@ -81,4 +81,4 @@ def verify(request):
                 request.session.cycle_key()
                 return redirect("dashboard")
         form.add_error(None,"Code invalid or temporarily throttled.")
-    return render(request,"form.html",{"form":form,"heading":"Verify authenticator"})
+    return render(request,"mfa_verify.html",{"form":form})
