@@ -59,3 +59,6 @@ if settings.FTBI_OIDC_ENABLED:
 
 from academics import experience
 urlpatterns += [path('search/',experience.search,name='search'),path('notifications/',experience.notifications,name='notifications')]
+
+from academics import public_admissions,pdf_records
+urlpatterns += [path('apply/signup/',public_admissions.applicant_signup,name='applicant_signup'),path('transcripts/<uuid:identifier>/pdf/',pdf_records.transcript_pdf,name='transcript_pdf')]

@@ -83,3 +83,5 @@ if FTBI_OIDC_ENABLED:
 FTBI_INSTITUTION_NAME = os.environ.get('FTBI_INSTITUTION_NAME','FTBI Academic Portal')
 FTBI_INSTITUTION_SHORT_NAME = os.environ.get('FTBI_INSTITUTION_SHORT_NAME','FTBI')
 TEMPLATES[0]['OPTIONS']['context_processors'].append('ftbi.context.institution')
+
+FTBI_PUBLIC_ADMISSIONS = os.environ.get('FTBI_PUBLIC_ADMISSIONS','0') == '1'
