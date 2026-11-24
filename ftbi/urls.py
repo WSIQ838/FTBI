@@ -88,3 +88,6 @@ urlpatterns += [path('apply/activate/<int:pk>/<str:token>/',public_admissions.ac
 
 from ftbi import recovery
 urlpatterns += [path('account/recovery/codes/',recovery.generate,name='recovery_codes'),path('account/recovery/verify/',recovery.recover,name='mfa_recover')]
+
+from academics import course_tools
+urlpatterns += [path('faculty/assignment/<int:pk>/bulk-grade/',course_tools.bulk_grade,name='bulk_grade'),path('faculty/<int:pk>/copy/',course_tools.copy_content,name='copy_content'),path('courses/<int:pk>/progress/',course_tools.progress,name='course_progress'),path('calendar/export.ics',course_tools.calendar_export,name='calendar_export')]

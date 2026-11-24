@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block content %}<h1>Bulk grading: {{ assignment }}</h1><form method="post">{% csrf_token %}{{ forms_set.management_form }}{{ forms_set.non_form_errors }}{% for f in forms_set %}<section><h2>{{ f.instance.student }}</h2><p>{{ f.instance.body|linebreaks }}</p>{{ f.as_p }}</section>{% endfor %}<button>Save grades</button></form>{% endblock %}
