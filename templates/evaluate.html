@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block content %}<section><h1>Evaluate {{ window.course }}</h1><p>Rate from 1 to 5. This evaluation is confidential to authorized institutional staff, not anonymous.</p><form method="post">{% csrf_token %}{{ form.as_p }}<button>Submit evaluation</button></form></section>{% endblock %}

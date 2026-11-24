@@ -38,3 +38,9 @@ urlpatterns += [path('transcripts/queue/',tv.transcript_queue,name='transcript_q
 
 from academics.payment_views import payment_portal
 urlpatterns += [path('payments/',payment_portal,name='payment_portal')]
+
+from academics import discussion_views as dv
+urlpatterns += [path('courses/<int:pk>/discussions/',dv.discussions,name='discussions'),path('discussions/<int:pk>/',dv.discussion,name='discussion'),path('password-reset/',auth_views.PasswordResetView.as_view(),name='password_reset'),path('password-reset/done/',auth_views.PasswordResetDoneView.as_view(),name='password_reset_done'),path('reset/<uidb64>/<token>/',auth_views.PasswordResetConfirmView.as_view(),name='password_reset_confirm'),path('reset/done/',auth_views.PasswordResetCompleteView.as_view(),name='password_reset_complete')]
+
+from academics import evaluation_views as ev
+urlpatterns += [path('evaluations/',ev.evaluations,name='evaluations'),path('evaluations/<int:pk>/',ev.evaluate,name='evaluate')]
