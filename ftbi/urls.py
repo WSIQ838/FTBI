@@ -20,3 +20,6 @@ urlpatterns += [path('services/',student_services,name='student_services')]
 
 from academics import quiz_views
 urlpatterns += [path('quizzes/',quiz_views.quizzes,name='quizzes'),path('quizzes/<int:pk>/',quiz_views.take_quiz,name='take_quiz')]
+
+from academics import faculty
+urlpatterns += [path('faculty/<int:pk>/',faculty.faculty,name='faculty'),path('faculty/<int:pk>/<str:kind>/<int:item>/',faculty.author,name='author'),path('faculty/quiz/<int:pk>/question/<int:item>/',faculty.question,name='question')]
