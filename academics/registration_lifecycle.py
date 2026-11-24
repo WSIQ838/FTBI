@@ -8,6 +8,7 @@ from .models import Enrollment
 from .registrar import RegistrationWindow,StudentProfile
 from .prerequisites import WaitlistEntry,prerequisites_met
 from .operations import AuditEvent
+from .notification_models import notify
 
 def promote_locked(window):
     now=timezone.now()
@@ -22,7 +23,8 @@ def promote_locked(window):
             # Preserve queue order until registrar resolves an ineligible head.
             break
         Enrollment.objects.update_or_create(student=profile.user,course=window.course,defaults={"active":True})
-        AuditEvent.objects.create(actor=profile.user,action="waitlist_promoted",target=str(window.course_id))
+        event=AuditEvent.objects.create(actor=profile.user,action="waitlist_promoted",target=str(window.course_id))
+        notify(profile.user,"enrollment","Waitlist promotion",f"You have been enrolled in {window.course.code} from its waitlist.",f"waitlist-promoted:{event.pk}")
         entry.delete()
 
 @login_required

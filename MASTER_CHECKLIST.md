@@ -67,15 +67,15 @@ PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
 - [x] Basic course content duplication
 - [x] Basic learning progress tracking
 - [x] Calendar export
-- [~] Complete course content import and export
+- [~] Complete course content import and export (PR #25 adds validated FTBI JSON; announcements/calendar/external media excluded)
 - [x] Assignment rubrics (PR #22; SQLite/PostgreSQL CI 45502910804)
 - [x] Assignment resubmission policies (PR #22; SQLite/PostgreSQL CI 45502910804)
 - [x] Assignment submission version history (PR #22; SQLite/PostgreSQL CI 45502910804)
-- [ ] Lesson completion tracking
-- [ ] Learning module prerequisites
-- [ ] Course completion certificates
-- [ ] Attendance participation analytics
-- [ ] Video lesson management
+- [x] Lesson completion tracking (PR #25; SQLite/PostgreSQL CI 45506868966)
+- [x] Learning module prerequisites (PR #25; SQLite/PostgreSQL CI 45506868966)
+- [x] Course completion certificates (PR #25; SQLite/PostgreSQL CI 45506868966)
+- [x] Attendance participation analytics (PR #25; SQLite/PostgreSQL CI 45506868966)
+- [x] Video lesson management (PR #25; SQLite/PostgreSQL CI 45506868966)
 - [ ] Plagiarism detection integration
 - [ ] SCORM and xAPI integration
 - [ ] LTI integration
@@ -216,7 +216,7 @@ PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
 - [ ] Credential reissuance
 - [ ] Custom diploma templates
 - [ ] Third-party transcript delivery
-- [ ] Course completion certificates
+- [x] Course completion certificates (PR #25; SQLite/PostgreSQL CI 45506868966)
 
 ## 7. Finance and Billing
 

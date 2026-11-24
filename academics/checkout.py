@@ -13,6 +13,7 @@ from .registrar import StudentProfile
 from .services import LedgerEntry
 from .payments import PaymentRequest
 from .operations import AuditEvent
+from .notification_models import notify
 import stripe
 from django import forms
 from datetime import timedelta
@@ -105,4 +106,5 @@ def webhook(request):
         item.status="verified"
         item.save(update_fields=["status","ledger"])
         AuditEvent.objects.create(action="stripe_payment_verified",target=str(item.pk))
+        notify(item.student.user,"payment","Payment confirmed","An online payment has been credited to your account. View the private receipt in Payments.",f"payment-confirmed:{item.pk}")
     return HttpResponse(status=200)

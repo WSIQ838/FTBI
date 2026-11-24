@@ -104,3 +104,24 @@ class LedgerAdmin(admin.ModelAdmin):
         if obj and (hasattr(obj,"invoice") or hasattr(obj,"payment_record")): return False
         return super().has_change_permission(request,obj)
     def has_delete_permission(self,request,obj=None): return False
+
+from .account_security import AccountSecurity,AccountSession,SecurityIncident,AccountControlEvent
+from .notification_models import DurableNotification
+for model in [AccountSecurity,AccountSession,AccountControlEvent]:
+    admin.site.register(model,AssessmentRecordAdmin)
+@admin.register(DurableNotification)
+class NotificationAdmin(AssessmentRecordAdmin):
+    list_display=("user","category","created","email_status","email_attempts")
+    list_filter=("email_status","category")
+    actions=["retry_failed"]
+    def has_retry_permission(self,request): return request.user.has_perm("academics.change_durablenotification")
+    @admin.action(description="Retry failed email delivery",permissions=["retry"])
+    def retry_failed(self,request,queryset):
+        from django.utils import timezone
+        count=queryset.filter(email_status="failed").update(email_status="pending",email_attempts=0,next_attempt=timezone.now())
+        AuditEvent.objects.create(actor=request.user,action="notification_retry_requested",target=str(count))
+@admin.register(SecurityIncident)
+class SecurityIncidentAdmin(admin.ModelAdmin):
+    list_display=("title","severity","status","owner","updated")
+    list_filter=("severity","status")
+    def has_delete_permission(self,request,obj=None): return False

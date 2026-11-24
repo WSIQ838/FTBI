@@ -1,0 +1,26 @@
+name: Security analysis
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '23 7 * * 1'
+permissions:
+  contents: read
+jobs:
+  scan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pip-audit bandit
+      - run: pip-audit -r requirements.txt --format json --output dependency-audit.json
+      - run: bandit -r academics ftbi scripts -ll -ii -f json -o static-analysis.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: security-analysis
+          path: |
+            dependency-audit.json
+            static-analysis.json
