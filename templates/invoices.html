@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block content %}<h1>My invoices</h1><p><a href="{% url 'payment_portal' %}">Payments</a></p>{% for invoice in invoices %}<p><a href="{% url 'invoice' invoice.pk %}">{{ invoice.description }}</a>: {{ invoice.amount }} — due {{ invoice.due }}</p>{% empty %}<p>No invoices.</p>{% endfor %}{% endblock %}

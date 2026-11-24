@@ -108,3 +108,4 @@ from .exam_extensions import ExamAccommodation,BankQuestion
 from .recovery_models import RecoveryCode
 
 from .assessment_policy import AssignmentPolicy, RubricCriterion, SubmissionRevision
+from .billing import TuitionSchedule, Invoice, PaymentAllocation, PaymentPlan, Installment, AllocationOperation

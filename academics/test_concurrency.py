@@ -8,6 +8,7 @@ from django.db import close_old_connections
 from django.utils import timezone
 from .models import Department,Term,Course,Enrollment
 from .quizzes import Quiz,Question,Attempt
+from django.test import override_settings
 
 
 @skipUnlessDBFeature("has_select_for_update")
@@ -35,3 +36,50 @@ class ExaminationConcurrencyTests(TransactionTestCase):
             codes=list(executor.map(submit,clients))
         self.assertEqual(sorted(codes),[302,403])
         self.assertEqual(Attempt.objects.filter(quiz=quiz).count(),1)
+
+
+@skipUnlessDBFeature("has_select_for_update")
+class AccountConcurrencyTests(TransactionTestCase):
+    def setUp(self):
+        from .models import Program
+        from .registrar import StudentProfile,RegistrationWindow
+        self.teacher=get_user_model().objects.create_user("teacher")
+        self.students=[get_user_model().objects.create_user(f"student{i}") for i in range(2)]
+        d=Department.objects.create(name="Concurrent")
+        p=Program.objects.create(name="Program",department=d)
+        self.profiles=[StudentProfile.objects.create(user=s,program=p,student_number=str(s.pk),admitted_on=timezone.localdate()) for s in self.students]
+        t=Term.objects.create(name="Fall",starts=timezone.localdate(),ends=timezone.localdate())
+        self.course=Course.objects.create(code="C",title="Concurrency",department=d,term=t,instructor=self.teacher,published=True)
+        self.window=RegistrationWindow.objects.create(course=self.course,opens=timezone.now()-timedelta(days=1),closes=timezone.now()+timedelta(days=1),capacity=1)
+
+    def simultaneous(self,action):
+        barrier=Barrier(2)
+        def run(index):
+            close_old_connections()
+            try:
+                barrier.wait(timeout=10)
+                return action(index)
+            finally: close_old_connections()
+        with ThreadPoolExecutor(max_workers=2) as executor:
+            return list(executor.map(run,range(2)))
+
+    def test_registration_cannot_overfill_last_seat(self):
+        from .prerequisites import WaitlistEntry
+        clients=[Client(),Client()]
+        for client,student in zip(clients,self.students): client.force_login(student)
+        self.assertEqual(self.simultaneous(lambda i: clients[i].post(f"/register/{self.window.pk}/").status_code),[302,302])
+        self.assertEqual(Enrollment.objects.filter(course=self.course,active=True).count(),1)
+        self.assertEqual(WaitlistEntry.objects.filter(course=self.course).count(),1)
+
+    @override_settings(FTBI_STRIPE_ENABLED=True,STRIPE_WEBHOOK_SECRET="concurrent-test-secret")
+    def test_simultaneous_signed_webhooks_credit_once(self):
+        import json,time,hmac,hashlib
+        from .payments import PaymentRequest
+        from .services import LedgerEntry
+        payment=PaymentRequest.objects.create(student=self.profiles[0],amount=25,reference="stripe:cs_concurrent")
+        body=json.dumps({"type":"checkout.session.completed","data":{"object":{"id":"cs_concurrent","payment_status":"paid","metadata":{"ftbi_payment_id":str(payment.pk)},"currency":"usd","amount_total":2500}}}).encode()
+        stamp=str(int(time.time())); signature=hmac.new(b"concurrent-test-secret",stamp.encode()+b"."+body,hashlib.sha256).hexdigest()
+        clients=[Client(),Client()]
+        self.assertEqual(self.simultaneous(lambda i: clients[i].post('/payments/webhook/',body,content_type='application/json',HTTP_STRIPE_SIGNATURE=f't={stamp},v1={signature}').status_code),[200,200])
+        self.assertEqual(LedgerEntry.objects.filter(student=self.profiles[0]).count(),1)
+        self.assertEqual(LedgerEntry.objects.get().amount,-25)

@@ -95,18 +95,18 @@ PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
 - [x] Question bank imports
 - [x] Retake regression testing
 - [x] Advanced examination branch validation and merge
-- [~] Dedicated accommodation tests
-- [~] Dedicated question bank authorization tests
-- [ ] True/false questions
-- [ ] Essay questions
-- [ ] Short-answer questions
-- [ ] Matching questions
-- [ ] Fill-in-the-blank questions
-- [ ] Manual examination grading
-- [ ] Question-level scoring weights
-- [ ] Random question selection from pools
-- [ ] Highest/latest/average attempt grading policies
-- [ ] Examination result release controls
+- [x] Dedicated accommodation tests (PR #23; CI 45503670966)
+- [x] Dedicated question bank authorization tests (PR #23; CI 45503670966)
+- [x] True/false questions (PR #23; SQLite/PostgreSQL CI 45503670966)
+- [x] Essay questions (PR #23; SQLite/PostgreSQL CI 45503670966)
+- [x] Short-answer questions (PR #23; SQLite/PostgreSQL CI 45503670966)
+- [x] Matching questions (PR #23; SQLite/PostgreSQL CI 45503670966)
+- [x] Fill-in-the-blank questions (PR #23; SQLite/PostgreSQL CI 45503670966)
+- [x] Manual examination grading (PR #23; SQLite/PostgreSQL CI 45503670966)
+- [x] Question-level scoring weights (PR #23; SQLite/PostgreSQL CI 45503670966)
+- [x] Random question selection from pools (PR #23; SQLite/PostgreSQL CI 45503670966)
+- [x] Highest/latest/average attempt grading policies (PR #23; SQLite/PostgreSQL CI 45503670966)
+- [x] Examination result release controls (PR #23; SQLite/PostgreSQL CI 45503670966)
 - [ ] Examination proctoring integration
 
 ## 3. Student Information System
@@ -575,7 +575,7 @@ PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
 - [ ] End-to-end browser testing
 - [ ] Concurrent registration testing
 - [ ] Concurrent payment testing
-- [ ] Concurrent examination testing
+- [x] Concurrent examination testing (PR #23; SQLite/PostgreSQL CI 45503670966)
 - [ ] Load testing
 - [ ] Stress testing
 - [ ] Mobile testing
