@@ -45,3 +45,13 @@ MIDDLEWARE.insert(1, 'whitenoise.middleware.WhiteNoiseMiddleware')
 if os.environ.get('DJANGO_TRUST_PROXY') == '1':
     SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 SECURE_HSTS_SECONDS = 31536000 if not DEBUG else 0
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' if os.environ.get('SMTP_HOST') else 'django.core.mail.backends.locmem.EmailBackend'
+EMAIL_HOST = os.environ.get('SMTP_HOST','localhost')
+EMAIL_PORT = int(os.environ.get('SMTP_PORT','587'))
+EMAIL_HOST_USER = os.environ.get('SMTP_USER','')
+EMAIL_HOST_PASSWORD = os.environ.get('SMTP_PASSWORD','')
+EMAIL_USE_TLS = True
+EMAIL_TIMEOUT = 15
+DEFAULT_FROM_EMAIL = os.environ.get('SMTP_FROM','noreply@example.invalid')
+PASSWORD_RESET_TIMEOUT = 3600

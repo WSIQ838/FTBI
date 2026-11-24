@@ -45,3 +45,7 @@ class IssuedTranscriptAdmin(admin.ModelAdmin):
 
 from .payments import PaymentRequest
 admin.site.register(PaymentRequest)
+
+from .discussions import Discussion, DiscussionReply
+admin.site.register(Discussion)
+admin.site.register(DiscussionReply)

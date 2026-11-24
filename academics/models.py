@@ -86,3 +86,5 @@ from .operations import FinancialAidAward, TransferCredit, TranscriptRequest, Me
 from .transcripts import IssuedTranscript
 
 from .payments import PaymentRequest
+
+from .discussions import Discussion, DiscussionReply
