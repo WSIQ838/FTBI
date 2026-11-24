@@ -68,3 +68,6 @@ urlpatterns += [path('payments/checkout/',checkout.checkout,name='checkout'),pat
 
 from academics import workspaces
 urlpatterns += [path('workspaces/',workspaces.workspaces,name='workspaces'),path('reports/summary.csv',workspaces.institutional_csv,name='institutional_csv')]
+
+from academics import assistant_views
+urlpatterns += [path('assistant/',assistant_views.assistant,name='assistant')]
