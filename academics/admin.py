@@ -44,7 +44,16 @@ class IssuedTranscriptAdmin(admin.ModelAdmin):
     def has_delete_permission(self,request,obj=None): return False
 
 from .payments import PaymentRequest
-admin.site.register(PaymentRequest)
+@admin.register(PaymentRequest)
+class PaymentRequestAdmin(admin.ModelAdmin):
+    list_display=("student","amount","status","created")
+    def has_change_permission(self,request,obj=None):
+        if obj and obj.reference.startswith("stripe:"): return False
+        return super().has_change_permission(request,obj)
+    def has_delete_permission(self,request,obj=None): return False
+    def has_add_permission(self,request): return False
+    def get_readonly_fields(self,request,obj=None):
+        return ("student","amount","reference","created")
 
 from .discussions import Discussion, DiscussionReply
 admin.site.register(Discussion)
