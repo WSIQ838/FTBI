@@ -8,3 +8,7 @@ admin.site.site_header = "FTBI Administration"
 from .registrar import StudentProfile, RegistrationWindow, Application
 for model in [StudentProfile, RegistrationWindow, Application]:
     admin.site.register(model)
+
+from .services import FinalGrade, Attendance, Announcement, CalendarEvent, LedgerEntry, AdvisingNote, Practicum, LearningOutcome, LibraryResource
+for model in [FinalGrade, Attendance, Announcement, CalendarEvent, LedgerEntry, AdvisingNote, Practicum, LearningOutcome, LibraryResource]:
+    admin.site.register(model)

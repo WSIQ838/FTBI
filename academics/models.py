@@ -72,3 +72,5 @@ class Submission(models.Model):
     def __str__(self): return f"{self.assignment} / {self.student}"
 
 from .registrar import StudentProfile, RegistrationWindow, Application
+
+from .services import FinalGrade, Attendance, Announcement, CalendarEvent, LedgerEntry, AdvisingNote, Practicum, LearningOutcome, LibraryResource
