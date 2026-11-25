@@ -45,6 +45,7 @@ Inherited [x] entries are prior implementation claims, not production acceptance
 [ ] = Outstanding.
 
 PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
+PR #31 merged as 139b12a; 100 PostgreSQL regression cases and browser/security/scanner/recovery checks passed (45552444271 / 45552444078 / 45552444232 / 45552444099 / 45552444158).
 PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite, security and stack checks also successful (45509766065 / 45509766121 / 45509765909).
 
 ## 1. Learning Management System
@@ -147,8 +148,8 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Emergency contact management (SIS regression tests; institutional policy acceptance separate)
 - [x] Enrollment verification letters (SIS regression tests; institutional policy acceptance separate)
 - [x] Student status history (SIS regression tests; institutional policy acceptance separate)
-- [ ] Bulk student imports
-- [ ] Bulk course imports
+- [x] Bulk student imports (institution/import regression tests and five local browser configurations; institutional acceptance separate)
+- [x] Bulk course imports (institution/import regression tests and five local browser configurations; institutional acceptance separate)
 
 ## 4. Admissions
 
@@ -417,17 +418,17 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Institution name configuration
 - [x] Institution short-name configuration
 - [x] Initial college setup wizard
-- [ ] Institutional settings dashboard
-- [ ] Custom branding
-- [ ] Logo uploads
-- [ ] Custom color themes
+- [x] Institutional settings dashboard (institution/import regression tests and five local browser configurations; institutional acceptance separate)
+- [x] Custom branding (institution/import regression tests and five local browser configurations; institutional acceptance separate)
+- [x] Logo uploads (institution/import regression tests and five local browser configurations; institutional acceptance separate)
+- [x] Custom color themes (institution/import regression tests and five local browser configurations; institutional acceptance separate)
 - [ ] Custom report builder
 - [ ] Accreditation reporting
 - [ ] Advanced institutional analytics
 - [ ] Dedicated president dashboard
 - [ ] Dedicated dean dashboard
-- [ ] Bulk student imports
-- [ ] Bulk course imports
+- [x] Bulk student imports (institution/import regression tests and five local browser configurations; institutional acceptance separate)
+- [x] Bulk course imports (institution/import regression tests and five local browser configurations; institutional acceptance separate)
 - [ ] Administrative approval workflows
 - [ ] Institutional policy configuration
 - [ ] Multi-campus management
@@ -448,10 +449,10 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [ ] WCAG accessibility assessment
 - [ ] Screen reader testing
 - [~] Cross-browser testing (five configurations and sampled learning workflow automated; broader and manual acceptance outstanding)
-- [ ] Customizable dashboards
-- [ ] Advanced search filters
+- [x] Customizable dashboards (institution/import regression tests and five local browser configurations; institutional acceptance separate)
+- [x] Advanced search filters (institution/import regression tests and five local browser configurations; institutional acceptance separate)
 - [ ] Localization
-- [ ] User timezone preferences
+- [x] User timezone preferences (institution/import regression tests and five local browser configurations; institutional acceptance separate)
 - [ ] Final design and usability review
 
 ## 15. Infrastructure and Deployment

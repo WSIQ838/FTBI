@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
 
 ROLES={
+    "Institution Administration":["institutionsettings"],
     "Accommodation Administration":["studentaccommodation"],
     "AI Administration":["aiconfiguration","aiusage","knowledgedocument"],
     "Security Administration":["accountsecurity","accountsession","securityincident","durablenotification","accountcontrolevent"],

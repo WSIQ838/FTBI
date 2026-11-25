@@ -117,3 +117,5 @@ if FTBI_ADMISSIONS_ORIGIN:
     _admission_origin = urlparse(FTBI_ADMISSIONS_ORIGIN)
     if _admission_origin.scheme != 'https' or not _admission_origin.hostname or _admission_origin.path or _admission_origin.query or _admission_origin.fragment or _admission_origin.username or _admission_origin.password:
         raise RuntimeError('FTBI_ADMISSIONS_ORIGIN must be an HTTPS origin')
+
+MIDDLEWARE.insert(MIDDLEWARE.index('django.contrib.auth.middleware.AuthenticationMiddleware')+1,'ftbi.preferences.PortalTimezoneMiddleware')

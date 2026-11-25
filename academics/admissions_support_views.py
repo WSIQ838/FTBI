@@ -60,7 +60,7 @@ def schedule_interview(request,pk):
     application=get_object_or_404(reviewable(request.user),pk=pk,status="pending")
     class InterviewForm(forms.Form):
         interviewer=forms.ModelChoiceField(queryset=get_user_model().objects.filter(is_staff=True,is_active=True))
-        starts=forms.DateTimeField(help_text="Date and time in the displayed institutional timezone.")
+        starts=forms.DateTimeField(help_text="Date and time in your selected timezone, shown in the portal footer.")
         ends=forms.DateTimeField()
         location=forms.CharField(max_length=300)
     form=InterviewForm(request.POST if request.method=="POST" else None)

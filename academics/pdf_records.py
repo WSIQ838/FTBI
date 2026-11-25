@@ -19,7 +19,7 @@ def transcript_pdf(request,identifier):
     styles=getSampleStyleSheet()
     def p(value,style="BodyText"):
         return Paragraph(escape(str(value)),styles[style])
-    story=[p(settings.FTBI_INSTITUTION_NAME,"Title"),p("Academic transcript","Heading1"),p(snapshot["name"]),p("Student number: "+str(snapshot["student_number"])),p("Program: "+str(snapshot["program"])),p("Issued: "+str(record.issued_at.date())),Spacer(1,16)]
+    story=[p(snapshot.get("institution",settings.FTBI_INSTITUTION_NAME),"Title"),p("Academic transcript","Heading1"),p(snapshot["name"]),p("Student number: "+str(snapshot["student_number"])),p("Program: "+str(snapshot["program"])),p("Issued: "+str(record.issued_at.date())),Spacer(1,16)]
     rows=[[p(x) for x in ["Course","Title","Term","Grade","Credits"]]]
     for course in snapshot["courses"]:
         rows.append([p(course[k]) for k in ["code","title","term","grade","credits"]])

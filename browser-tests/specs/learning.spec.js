@@ -24,6 +24,18 @@ test('keyboard sign-in, student submission, faculty grading and private access',
   await accessible(page, testInfo, 'sign-in-accessibility');
   await login(page, 'demo-' + testInfo.project.name);
   await accessible(page, testInfo, 'dashboard-accessibility');
+  await page.getByRole('link', { name: 'Portal preferences', exact: true }).click();
+  await page.getByLabel('Timezone:').selectOption('America/Los_Angeles');
+  await page.getByLabel('Show courses:').uncheck();
+  await accessible(page, testInfo, 'preferences-accessibility');
+  await page.getByRole('button', { name: 'Save', exact: true }).click();
+  await page.getByRole('link', { name: 'Dashboard', exact: true }).click();
+  await expect(page.getByRole('heading', { name: 'My courses', exact: true })).toHaveCount(0);
+  await expect(page.getByText(/Times shown in America\/Los_Angeles/)).toBeVisible();
+  await page.getByRole('link', { name: 'Portal preferences', exact: true }).click();
+  await page.getByLabel('Show courses:').check();
+  await page.getByRole('button', { name: 'Save', exact: true }).click();
+  await page.getByRole('link', { name: 'Dashboard', exact: true }).click();
   await page.getByRole('link', { name: /DEMO101/ }).click();
   const courseURL = page.url();
   await accessible(page, testInfo, 'course-accessibility');
