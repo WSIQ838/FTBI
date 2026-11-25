@@ -45,6 +45,7 @@ Inherited [x] entries are prior implementation claims, not production acceptance
 [ ] = Outstanding.
 
 PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
+PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite, security and stack checks also successful (45509766065 / 45509766121 / 45509765909).
 
 ## 1. Learning Management System
 
@@ -446,7 +447,7 @@ PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
 - [ ] Comprehensive mobile testing
 - [ ] WCAG accessibility assessment
 - [ ] Screen reader testing
-- [ ] Cross-browser testing
+- [~] Cross-browser testing (five configurations and sampled learning workflow automated; broader and manual acceptance outstanding)
 - [ ] Customizable dashboards
 - [ ] Advanced search filters
 - [ ] Localization
@@ -572,22 +573,22 @@ PR #22 merged as 5edd992; 42 regression tests passed on SQLite and PostgreSQL.
 - [x] Calendar privacy tests
 - [x] Last verified main branch CI
 - [~] Complete regression coverage
-- [ ] End-to-end browser testing
+- [~] End-to-end browser testing (five configurations and sampled learning workflow automated; broader and manual acceptance outstanding)
 - [x] Concurrent registration testing (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
 - [x] Concurrent payment testing (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
 - [x] Concurrent examination testing (PR #23; SQLite/PostgreSQL CI 45503670966)
 - [ ] Load testing
 - [ ] Stress testing
-- [ ] Mobile testing
-- [ ] Accessibility testing
-- [ ] Cross-browser testing
+- [~] Mobile testing (five configurations and sampled learning workflow automated; broader and manual acceptance outstanding)
+- [~] Accessibility testing (five configurations and sampled learning workflow automated; broader and manual acceptance outstanding)
+- [~] Cross-browser testing (five configurations and sampled learning workflow automated; broader and manual acceptance outstanding)
 - [ ] External integration testing
 - [x] Production container smoke testing (disposable hosted production-mode stack, CI 45507440000; institution staging still outstanding)
 - [ ] Dependency security audit
 - [ ] Authorized penetration testing
 - [ ] Disaster recovery testing
 - [ ] User acceptance testing
-- [ ] Demonstration data generation
+- [x] Demonstration data generation (guarded synthetic seed; academics.test_demo)
 
 ## 19. Final Release and Delivery
 

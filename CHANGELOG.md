@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add five browser configurations, sampled automated accessibility checks and guarded synthetic demonstration data.
+- Fix keyboard skip-navigation interference from login autofocus and WebKit skip-link focus.
+- Add real ClamAV clean/EICAR/outage checks and an encrypted PostgreSQL recovery drill with exact application-data comparison.
+
 - Add independent withdrawal windows and reviewed W-grade processing, grading scales, standing snapshots, emergency contacts, personal exports and private enrollment letters.
 - Add grouped prerequisites, grade thresholds, corequisites and student-status history.
 - Correct obsolete registrar documentation and validate grade release.
