@@ -31,7 +31,7 @@ def support_home(request):
 @permission_required("academics.view_advisorassignment",raise_exception=True)
 def create_slot(request):
     class SlotForm(forms.Form):
-        starts=forms.DateTimeField(help_text="Institutional timezone shown in the portal.")
+        starts=forms.DateTimeField(help_text="Your selected timezone is shown in the portal footer.")
         ends=forms.DateTimeField()
         location=forms.CharField(max_length=300)
     form=SlotForm(request.POST if request.method=="POST" else None)

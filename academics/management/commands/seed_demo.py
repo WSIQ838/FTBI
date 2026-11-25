@@ -20,6 +20,8 @@ class Command(BaseCommand):
         if User.objects.exists() or Department.objects.exists():
             raise CommandError("Demo generation requires an empty database; existing records will not be changed.")
         now=timezone.now()
+        from academics.institution import InstitutionSettings
+        InstitutionSettings.objects.create(name="FTBI Demonstration College",short_name="FTBI Demo")
         department=Department.objects.create(name="Demonstration Studies")
         program=Program.objects.create(department=department,name="Synthetic learning program",required_credits=3)
         term=Term.objects.create(name="Demonstration term",starts=now.date(),ends=(now+timedelta(days=90)).date())

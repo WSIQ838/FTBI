@@ -15,3 +15,7 @@ From your academic record, manage emergency contacts, download portal-visible re
 ## Student support
 
 Use Student support to book an appointment with an assigned advisor, open a support case, read shared notes and success plans, and view accommodation records. Contact the registrar if no advisor is assigned. Submitted notes are retained; do not include medical evidence or payment-card details.
+
+## Portal preferences
+
+Choose Portal preferences to set your timezone, show or hide dashboard sections and sort your courses. The footer shows the timezone used for displayed dates and entered appointment times. Search can filter your visible courses by term, department and content type.

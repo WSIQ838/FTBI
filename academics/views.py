@@ -14,7 +14,9 @@ def visible_courses(user):
 
 @login_required
 def dashboard(request):
-    return render(request, "dashboard.html", {"courses":visible_courses(request.user)})
+    preference=getattr(request,"portal_preference",None)
+    order={"code":"code","title":"title","term":"-term__starts"}.get(getattr(preference,"course_order","code"),"code")
+    return render(request, "dashboard.html", {"courses":visible_courses(request.user).order_by(order,"pk")})
 
 @login_required
 def course(request, pk):

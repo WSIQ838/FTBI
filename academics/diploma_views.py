@@ -1,3 +1,4 @@
+from .institution import institution_name
 from io import BytesIO
 from html import escape
 from django.conf import settings
@@ -32,7 +33,7 @@ def issue_diploma(request,pk):
         student=application.student
         if application.status!="approved" or student.status!="graduated" or not audit(student)["eligible"]:
             return HttpResponseForbidden("Graduation and eligibility must be confirmed.")
-        record,created=IssuedDiploma.objects.get_or_create(application=application,defaults={"issued_by":request.user,"recipient":student.user.get_full_name() or student.user.username,"program":student.program.name,"institution":settings.FTBI_INSTITUTION_NAME[:200]})
+        record,created=IssuedDiploma.objects.get_or_create(application=application,defaults={"issued_by":request.user,"recipient":student.user.get_full_name() or student.user.username,"program":student.program.name,"institution":institution_name()[:200]})
         if created:
             AuditEvent.objects.create(actor=request.user,action="diploma_issued",target=str(record.identifier))
     return redirect("diploma_pdf",identifier=record.identifier)

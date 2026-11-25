@@ -1,3 +1,4 @@
+from .institution import institution_name
 from django.contrib.auth.decorators import login_required,permission_required
 from django.db import transaction
 from django.http import HttpResponseForbidden
@@ -19,7 +20,7 @@ def issue(request,pk):
             return HttpResponseForbidden("Request cannot be issued.")
         student=item.student
         grades=FinalGrade.objects.filter(student=student,released=True).select_related("course","course__term").order_by("course__term__starts","course__code")
-        snapshot={"name":student.user.get_full_name() or student.user.username,"student_number":student.student_number,"program":str(student.program),"courses":[{"code":g.course.code,"title":g.course.title,"term":str(g.course.term),"grade":g.letter,"credits":g.credits_earned} for g in grades]}
+        snapshot={"institution":institution_name(),"name":student.user.get_full_name() or student.user.username,"student_number":student.student_number,"program":str(student.program),"courses":[{"code":g.course.code,"title":g.course.title,"term":str(g.course.term),"grade":g.letter,"credits":g.credits_earned} for g in grades]}
         record=IssuedTranscript.objects.create(request=item,issued_by=request.user,snapshot=snapshot)
         item.status="issued"
         item.save(update_fields=["status"])

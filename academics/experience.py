@@ -7,14 +7,28 @@ from .models import Assignment, Submission, Lesson
 from .operations import Message
 from .services import Announcement
 from .quizzes import Quiz,Attempt
+from django import forms
+from .models import Term,Department
 
 @login_required
 def search(request):
-    term=request.GET.get("q","").strip()[:150]
     courses=visible_courses(request.user)
-    result={"query":term}
-    if len(term)>=2:
-        result.update(courses=courses.filter(Q(title__icontains=term)|Q(code__icontains=term))[:50],lessons=Lesson.objects.filter(course__in=courses,title__icontains=term).select_related("course")[:50],assignments=Assignment.objects.filter(course__in=courses,title__icontains=term).select_related("course")[:50])
+    class SearchForm(forms.Form):
+        q=forms.CharField(max_length=150,required=False,label="Search text")
+        term=forms.ModelChoiceField(queryset=Term.objects.filter(course__in=courses).distinct(),required=False)
+        department=forms.ModelChoiceField(queryset=Department.objects.filter(course__in=courses).distinct(),required=False)
+        kind=forms.ChoiceField(choices=[("all","All content"),("courses","Courses"),("lessons","Lessons"),("assignments","Assignments")],required=False)
+        due_before=forms.DateField(required=False,label="Assignments due on or before",widget=forms.DateInput(attrs={"type":"date"}))
+    form=SearchForm(request.GET if request.GET else None)
+    result={"form":form,"searched":False}
+    if form.is_bound and form.is_valid():
+        data=form.cleaned_data; term=data["q"].strip(); kind=data["kind"] or "all"
+        if data["term"]: courses=courses.filter(term=data["term"])
+        if data["department"]: courses=courses.filter(department=data["department"])
+        lessons=Lesson.objects.filter(course__in=courses,title__icontains=term).select_related("course","module")
+        assignments=Assignment.objects.filter(course__in=courses,title__icontains=term).select_related("course")
+        if data["due_before"]: assignments=assignments.filter(due__date__lte=data["due_before"])
+        result.update(searched=True,courses=courses.filter(Q(title__icontains=term)|Q(code__icontains=term))[:50] if kind in {"all","courses"} else [],lessons=lessons[:50] if kind in {"all","lessons"} else [],assignments=assignments[:50] if kind in {"all","assignments"} else [])
         from .learning import module_open
         result["lessons"]=[lesson for lesson in result["lessons"] if lesson.course.instructor_id==request.user.pk or module_open(lesson.module,request.user)]
     return render(request,"search.html",result)

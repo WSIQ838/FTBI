@@ -19,3 +19,7 @@ Standing policies are disabled by default. After institutional approval, configu
 Students manage up to three emergency contacts, download their portal-visible records as JSON, view standing history and issue a private enrollment-verification PDF. The export expressly excludes attachments, internal notes and audit logs; it is not a complete reviewed records request. Enrollment letters preserve the active-enrollment snapshot at issuance and are not digitally signed. Student status changes made through model saves record previous/current status; existing historical transitions cannot be reconstructed, and bulk database updates bypass signals.
 
 Regression coverage: academics.test_student_records exercises withdrawal approval/denial boundaries, no released-grade overwrite, custom grading, immutable standing history, prerequisite alternatives/corequisites and private exports/letters. Production institutional policy acceptance remains outstanding.
+
+## Bulk student records
+
+Import students prepares a private CSV preview for existing active user accounts. Review every row before committing; the complete batch is revalidated and saved atomically. Existing records are not overwritten. See INSTITUTION.md for limits, columns and stale-preview behavior.

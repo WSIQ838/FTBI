@@ -1,3 +1,4 @@
+from .institution import institution_name
 from io import BytesIO
 from decimal import Decimal
 from django import forms
@@ -156,7 +157,7 @@ def issue_enrollment_letter(request):
     student=get_object_or_404(StudentProfile,user=request.user)
     rows=list(Enrollment.objects.filter(student=request.user,active=True).values("course__code","course__title","course__term__name"))
     if not rows: return HttpResponseForbidden("No active enrollments to verify.")
-    record=EnrollmentVerification.objects.create(student=student,snapshot={"institution":settings.FTBI_INSTITUTION_NAME,"name":request.user.get_full_name() or request.user.username,"student_number":student.student_number,"enrollments":rows})
+    record=EnrollmentVerification.objects.create(student=student,snapshot={"institution":institution_name(),"name":request.user.get_full_name() or request.user.username,"student_number":student.student_number,"enrollments":rows})
     AuditEvent.objects.create(actor=request.user,action="enrollment_letter_issued",target=str(record.identifier))
     return redirect("enrollment_letter",identifier=record.identifier)
 
