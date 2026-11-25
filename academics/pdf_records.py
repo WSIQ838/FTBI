@@ -1,3 +1,5 @@
+from .credentials import CredentialArtifact
+from .credential_views import serve_credential
 from io import BytesIO
 from html import escape
 from django.conf import settings
@@ -15,6 +17,8 @@ def transcript_pdf(request,identifier):
     if not (request.user.has_perm("academics.view_issuedtranscript") and request.user.has_perm("academics.view_studentprofile")):
         records=records.filter(request__student__user=request.user)
     record=get_object_or_404(records,identifier=identifier)
+    artifact=CredentialArtifact.objects.filter(identifier=record.identifier).first()
+    if artifact: return serve_credential(request,artifact)
     snapshot=record.snapshot
     styles=getSampleStyleSheet()
     def p(value,style="BodyText"):

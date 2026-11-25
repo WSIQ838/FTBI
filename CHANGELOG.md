@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Finalize immutable transcript/diploma PDF artifacts with optional required digital signing and fail-closed issuance.
+- Add private credential downloads, privacy-limited public verification/file comparison, revocation and replay-safe replacement.
+- Add approved text templates and cryptographic signature/tamper tests with ephemeral certificates; institutional signing acceptance remains outstanding.
+
 - Add private preview-and-commit bulk student/course imports with atomic rollback and replay protection.
 - Add institutional branding settings, contrast-validated colors and scanned/re-encoded logo uploads.
 - Add per-user timezone and dashboard preferences and scoped search filters. New official record snapshots capture the configured institution name.

@@ -211,12 +211,12 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Immutable diploma snapshots
 - [x] Unique diploma identifiers
 - [x] Credential issuance audit logs
-- [ ] Digitally signed transcripts
-- [ ] Digitally signed diplomas
-- [ ] Credential authenticity verification portal
-- [ ] Credential revocation
-- [ ] Credential reissuance
-- [ ] Custom diploma templates
+- [~] Digitally signed transcripts (actual PDF signature/tamper tests; institutional certificate/key-custody acceptance outstanding)
+- [~] Digitally signed diplomas (actual PDF signature/tamper tests; institutional certificate/key-custody acceptance outstanding)
+- [x] Credential authenticity verification portal (credential lifecycle integration tests; see docs/CREDENTIALS.md for limits)
+- [x] Credential revocation (credential lifecycle integration tests; see docs/CREDENTIALS.md for limits)
+- [x] Credential reissuance (credential lifecycle integration tests; see docs/CREDENTIALS.md for limits)
+- [x] Custom diploma templates (credential lifecycle integration tests; see docs/CREDENTIALS.md for limits)
 - [ ] Third-party transcript delivery
 - [x] Course completion certificates (PR #25; SQLite/PostgreSQL CI 45506868966)
 

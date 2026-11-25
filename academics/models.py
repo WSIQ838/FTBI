@@ -128,3 +128,4 @@ from .admissions_support import ApplicantActivation,ApplicationReviewer,Applicat
 from .documents import PrivateDocument,DocumentVersion,DocumentVerification,StorageQuota
 from .student_support import AdvisorSlot,AdvisorBooking,SupportCase,SupportNote,SuccessPlan,StudentIntervention,AtRiskAlert,StudentAccommodation
 from .institution import InstitutionSettings,PortalPreference,ImportBatch
+from .credentials import CredentialTemplate,CredentialArtifact,CredentialRevocation,CredentialReplacement

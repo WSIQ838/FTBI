@@ -19,3 +19,7 @@ Use Student support to book an appointment with an assigned advisor, open a supp
 ## Portal preferences
 
 Choose Portal preferences to set your timezone, show or hide dashboard sections and sort your courses. The footer shows the timezone used for displayed dates and entered appointment times. Search can filter your visible courses by term, department and content type.
+
+## Academic credentials
+
+Academic credentials lists your finalized transcripts and diplomas. Download the PDF and share its ID and verification code only with your intended recipient. The public verification portal checks current status and can compare a supplied PDF; it does not expose your name or grades. Contact the registrar about revoked documents or corrections. A registry match and a trusted digital signature are different checks. See CREDENTIALS.md.

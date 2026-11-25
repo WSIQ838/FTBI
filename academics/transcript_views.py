@@ -1,7 +1,9 @@
+from .credential_service import seal_record,CredentialSigningError
+from .credentials import CredentialArtifact
 from .institution import institution_name
 from django.contrib.auth.decorators import login_required,permission_required
 from django.db import transaction
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden,HttpResponse
 from django.shortcuts import get_object_or_404,render,redirect
 from django.views.decorators.http import require_POST
 from .operations import TranscriptRequest,AuditEvent
@@ -22,6 +24,10 @@ def issue(request,pk):
         grades=FinalGrade.objects.filter(student=student,released=True).select_related("course","course__term").order_by("course__term__starts","course__code")
         snapshot={"institution":institution_name(),"name":student.user.get_full_name() or student.user.username,"student_number":student.student_number,"program":str(student.program),"courses":[{"code":g.course.code,"title":g.course.title,"term":str(g.course.term),"grade":g.letter,"credits":g.credits_earned} for g in grades]}
         record=IssuedTranscript.objects.create(request=item,issued_by=request.user,snapshot=snapshot)
+        try: seal_record("transcript",record,request.user)
+        except CredentialSigningError:
+            transaction.set_rollback(True)
+            return HttpResponse("Credential signing is unavailable. No transcript was issued.",status=503)
         item.status="issued"
         item.save(update_fields=["status"])
         AuditEvent.objects.create(actor=request.user,action="transcript_issued",target=str(record.identifier))
@@ -33,7 +39,7 @@ def transcript(request,identifier):
     if not (request.user.has_perm("academics.view_issuedtranscript") and request.user.has_perm("academics.view_studentprofile")):
         records=records.filter(request__student__user=request.user)
     record=get_object_or_404(records,identifier=identifier)
-    response=render(request,"transcript.html",{"record":record})
+    response=render(request,"transcript.html",{"record":record,"artifact":CredentialArtifact.objects.filter(identifier=record.identifier).first()})
     response["Cache-Control"]="no-store, private"
     return response
 

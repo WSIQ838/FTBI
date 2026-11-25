@@ -23,3 +23,7 @@ Regression coverage: academics.test_student_records exercises withdrawal approva
 ## Bulk student records
 
 Import students prepares a private CSV preview for existing active user accounts. Review every row before committing; the complete batch is revalidated and saved atomically. Existing records are not overwritten. See INSTITUTION.md for limits, columns and stale-preview behavior.
+
+## Credential registry
+
+Use Academic credentials to finalize historical issued records, revoke an artifact with a reason and issue a replacement of a revoked snapshot. New transcript and diploma issuance finalizes automatically. Required signing failures leave issuance uncommitted. See CREDENTIALS.md for template approval, exact-byte preservation, permissions and certificate acceptance limits.
