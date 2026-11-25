@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block content %}<h1>Upload document</h1><p>Previous versions are retained. New versions require a new verification.</p><form method="post" enctype="multipart/form-data">{% csrf_token %}{{ form.as_p }}<button>Upload</button></form>{% endblock %}

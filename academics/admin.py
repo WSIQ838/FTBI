@@ -146,3 +146,15 @@ class StudentProfileAdmin(admin.ModelAdmin):
     def save_model(self,request,obj,form,change):
         obj._status_actor=request.user
         super().save_model(request,obj,form,change)
+
+from .documents import PrivateDocument,StorageQuota
+admin.site.register(StorageQuota)
+@admin.register(PrivateDocument)
+class InstitutionalDocumentAdmin(admin.ModelAdmin):
+    list_display=("title","published","owner")
+    fields=("title","owner","kind","published")
+    readonly_fields=("title","owner","kind")
+    def get_queryset(self,request): return super().get_queryset(request).filter(kind="institution")
+    def has_add_permission(self,request): return False
+    def has_delete_permission(self,request,obj=None): return False
+    def has_change_permission(self,request,obj=None): return request.user.has_perms(["academics.change_privatedocument","academics.change_libraryresource"])
