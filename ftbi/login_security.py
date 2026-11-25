@@ -1,9 +1,17 @@
 from django.contrib.auth.views import LoginView
+from django.contrib.auth.forms import AuthenticationForm
 from django.core.cache import cache
 from django.http import HttpResponse
 import hashlib
 
+class PortalAuthenticationForm(AuthenticationForm):
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        # Let keyboard users encounter the skip link before the sign-in fields.
+        self.fields["username"].widget.attrs.pop("autofocus",None)
+
 class LimitedLoginView(LoginView):
+    authentication_form=PortalAuthenticationForm
     def post(self,request,*args,**kwargs):
         from django.contrib.auth import get_user_model
         from django.utils import timezone

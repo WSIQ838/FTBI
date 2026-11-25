@@ -13,14 +13,18 @@ jobs:
       POSTGRES_PASSWORD: ci-only-disposable-db-password
       DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
       FTBI_DOMAIN: localhost
+      FTBI_CLAMAV_HOST: scanner
     steps:
       - uses: actions/checkout@v4
       - run: docker compose -f compose.production.yaml build web
       - run: docker compose -f compose.production.yaml up -d --wait db cache
+      - run: docker compose -f compose.production.yaml --profile scanner up -d scanner
       - run: docker compose -f compose.production.yaml run --rm web python manage.py migrate --noinput
       - run: docker compose -f compose.production.yaml up -d --wait --wait-timeout 180 web
       - name: Verify production database, Redis and HTTP readiness
         run: docker compose -f compose.production.yaml exec -T web python scripts/stack_probe.py
+      - name: Verify real antivirus and fail-closed behavior
+        run: docker compose -f compose.production.yaml exec -T web python scripts/scanner_probe.py
       - name: Exercise PostgreSQL dump and disposable restore
         run: |
           docker compose -f compose.production.yaml exec -T db pg_dump -U ftbi -Fc ftbi > /tmp/ftbi-ci.dump
