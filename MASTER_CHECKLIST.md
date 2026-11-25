@@ -190,12 +190,12 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Approved practicum hours
 - [x] Academic calendar
 - [x] ICS calendar exports
-- [ ] Advisor appointment scheduling
-- [ ] Student intervention tracking
-- [ ] Academic success plans
-- [ ] At-risk student alerts
-- [ ] Student support case management
-- [ ] Student accommodation management
+- [x] Advisor appointment scheduling (student-support regression tests; institutional acceptance separate)
+- [x] Student intervention tracking (student-support regression tests; institutional acceptance separate)
+- [x] Academic success plans (student-support regression tests; institutional acceptance separate)
+- [~] At-risk student alerts (deduplicated standing review alerts; scheduled generation and broader signals outstanding)
+- [x] Student support case management (student-support regression tests; institutional acceptance separate)
+- [~] Student accommodation management (dated approval/revocation and scoped visibility; exam configuration separate)
 
 ## 6. Transcripts, Diplomas and Credentials
 

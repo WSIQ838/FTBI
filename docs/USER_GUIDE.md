@@ -11,3 +11,7 @@ Development preview only. Verify migrations, run all tests, review institutional
 ## Personal academic records
 
 From your academic record, manage emergency contacts, download portal-visible records, view academic standing and request an enrollment-verification letter. The letter records active enrollments at issuance. Course withdrawal requires an open withdrawal window and registrar review; submitting a request does not immediately withdraw you. View the resulting decision in your academic record and notifications.
+
+## Student support
+
+Use Student support to book an appointment with an assigned advisor, open a support case, read shared notes and success plans, and view accommodation records. Contact the registrar if no advisor is assigned. Submitted notes are retained; do not include medical evidence or payment-card details.

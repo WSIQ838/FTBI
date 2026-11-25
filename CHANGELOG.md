@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add assigned-advisor appointments, support cases, shared/private notes, success-plan snapshots, intervention tracking and standing alerts.
+- Add dated functional accommodation drafting, approval, revocation and scoped instructor/student visibility.
+- Fix PostgreSQL activation recovery by locking the account without nullable joins.
+
 - Add admissions reviewer assignments, private notes, conflict-checked interviews, document verification and conversion export.
 - Add marker-bound activation recovery with token rotation and no reactivation of disabled student accounts.
 - Add private student/admissions/institutional document libraries, multiple coursework files, retained versions and shared upload quotas.

@@ -83,6 +83,17 @@ class AccountConcurrencyTests(TransactionTestCase):
         self.assertEqual(sorted(self.simultaneous(upload)),[200,302])
         self.assertEqual(DocumentVersion.objects.count(),1)
 
+    def test_advisor_appointment_cannot_be_double_booked(self):
+        from .advising import AdvisorAssignment
+        from .student_support import AdvisorSlot,AdvisorBooking
+        for profile in self.profiles: AdvisorAssignment.objects.create(student=profile,advisor=self.teacher)
+        slot=AdvisorSlot.objects.create(advisor=self.teacher,starts=timezone.now()+timedelta(days=1),ends=timezone.now()+timedelta(days=1,hours=1),location="Synthetic")
+        clients=[Client(),Client()]
+        for client,student in zip(clients,self.students): client.force_login(student)
+        codes=self.simultaneous(lambda i:clients[i].post(f'/support/slots/{slot.pk}/book/').status_code)
+        self.assertEqual(sorted(codes),[302,403])
+        self.assertEqual(AdvisorBooking.objects.filter(status="booked").count(),1)
+
     @override_settings(FTBI_STRIPE_ENABLED=True,STRIPE_WEBHOOK_SECRET="concurrent-test-secret")
     def test_simultaneous_signed_webhooks_credit_once(self):
         import json,time,hmac,hashlib
