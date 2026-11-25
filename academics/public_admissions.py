@@ -101,7 +101,8 @@ def resend_activation(request):
         except ValueError: count=4
         if count>3: return HttpResponse("Too many recovery requests. Try later.",status=429)
         with transaction.atomic():
-            user=get_user_model().objects.select_for_update().filter(username=form.cleaned_data["username"],email__iexact=form.cleaned_data["email"],is_active=False,is_staff=False,is_superuser=False,student_profile__isnull=True,groups__isnull=True).first()
+            user=get_user_model().objects.select_for_update().filter(username=form.cleaned_data["username"],email__iexact=form.cleaned_data["email"],is_active=False,is_staff=False,is_superuser=False).first()
+            if user and (hasattr(user,"student_profile") or user.groups.exists()): user=None
             marker=ApplicantActivation.objects.filter(user=user,consumed=False).first() if user else None
             if marker:
                 marker.nonce=uuid.uuid4(); marker.save()
