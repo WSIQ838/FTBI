@@ -236,9 +236,9 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Finance dashboard
 - [ ] Live Stripe test-mode validation
 - [~] Payment reconciliation (internal allocation/CSV implemented in PR #24; processor/bank settlement validation outstanding)
-- [ ] Refund processing
-- [ ] Chargeback handling
-- [ ] Payment dispute handling
+- [~] Refund processing (confirmed manual-payment adjustments and dispute outcomes; provider initiation/reconciliation outstanding)
+- [~] Chargeback handling (confirmed manual-payment adjustments and dispute outcomes; provider initiation/reconciliation outstanding)
+- [~] Payment dispute handling (confirmed manual-payment adjustments and dispute outcomes; provider initiation/reconciliation outstanding)
 - [~] Overpayment reconciliation (internal allocation/CSV implemented in PR #24; processor/bank settlement validation outstanding)
 - [x] Payment plans (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
 - [x] Installment payments (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
@@ -247,7 +247,7 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Automated tuition billing (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
 - [x] Invoice generation (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
 - [x] PDF payment receipts (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
-- [ ] Automated financial holds
+- [~] Automated financial holds (approved-policy checks at registration/promotion, finance action and batch command; institutional scheduling/policy acceptance outstanding)
 - [ ] Advanced scholarship management
 - [x] Financial reporting exports (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
 - [ ] Accounting software integration

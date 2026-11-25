@@ -94,6 +94,22 @@ class AccountConcurrencyTests(TransactionTestCase):
         self.assertEqual(sorted(codes),[302,403])
         self.assertEqual(AdvisorBooking.objects.filter(status="booked").count(),1)
 
+    def test_refunds_cannot_reverse_more_than_original_payment(self):
+        import uuid
+        from django.core.exceptions import ValidationError
+        from .payments import PaymentRequest
+        from .billing import verify_manual_payment
+        from .finance_adjustments import record_adjustment,PaymentAdjustment,net_payment
+        payment=verify_manual_payment(PaymentRequest.objects.create(student=self.profiles[0],amount=100,reference="Synthetic confirmed payment"),self.teacher)
+        def refund(index):
+            try:
+                record_adjustment(payment,"refund",60,f"synthetic-refund-{index}","Confirmed external refund",self.teacher,uuid.uuid4())
+                return "recorded"
+            except ValidationError: return "blocked"
+        self.assertEqual(sorted(self.simultaneous(refund)),["blocked","recorded"])
+        self.assertEqual(PaymentAdjustment.objects.count(),1)
+        self.assertEqual(net_payment(payment),40)
+
     @override_settings(FTBI_STRIPE_ENABLED=True,STRIPE_WEBHOOK_SECRET="concurrent-test-secret")
     def test_simultaneous_signed_webhooks_credit_once(self):
         import json,time,hmac,hashlib

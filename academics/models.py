@@ -129,3 +129,5 @@ from .documents import PrivateDocument,DocumentVersion,DocumentVerification,Stor
 from .student_support import AdvisorSlot,AdvisorBooking,SupportCase,SupportNote,SuccessPlan,StudentIntervention,AtRiskAlert,StudentAccommodation
 from .institution import InstitutionSettings,PortalPreference,ImportBatch
 from .credentials import CredentialTemplate,CredentialArtifact,CredentialRevocation,CredentialReplacement
+
+from .finance_adjustments import PaymentAdjustment,AllocationReduction,PaymentDispute,FinancialHoldPolicy,FinancialHold

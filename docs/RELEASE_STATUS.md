@@ -11,7 +11,7 @@ Baseline confirmed: PR #21 merged into `55918912938420613bacaf5203a2e0aade0c381d
 | Gate | Missing evidence or dependency | Required acceptance |
 | --- | --- | --- |
 | Scope completion | Many unchecked implementation items | Implement and verify each item, or obtain explicit scope changes |
-| Stripe | No test account credentials or test webhook endpoint supplied | Test charge, replay, mismatch, refund, dispute and reconciliation evidence |
+| Stripe | No test account credentials or test webhook endpoint supplied; refund/dispute provider integration still unfinished | Test charge, replay, mismatch, refund, dispute and reconciliation evidence |
 | Credential signing | No institutional certificate, protected secret mount or key-custody/trust acceptance supplied | Ephemeral-certificate PDF signature and tamper tests pass; institutional trust, rotation and recipient validation remain. HSM, trusted timestamps and long-term validation evidence are not implemented |
 | SMTP | No approved outbound service or test recipients supplied | Deliver activation, reset and operational notifications; validate failure handling |
 | OIDC | No institutional identity-provider test tenant supplied | Provisioned login, wrong issuer/audience, revoked user and logout tests |

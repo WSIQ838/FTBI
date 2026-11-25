@@ -130,9 +130,10 @@ def receipt(request,pk):
     payment=get_object_or_404(PaymentRequest.objects.select_related("student__user"),pk=pk,status="verified")
     if payment.student.user_id!=request.user.pk and not (request.user.is_staff and request.user.has_perm("academics.view_paymentrequest")):
         raise Http404()
+    from .finance_adjustments import net_payment
     buffer=BytesIO(); pdf=canvas.Canvas(buffer)
     pdf.setTitle("Payment receipt")
-    for y,text in [(790,"FTBI payment receipt"),(760,f"Receipt: {payment.pk}"),(735,f"Student: {payment.student.student_number}"),(710,f"Amount: USD {payment.amount:.2f}"),(685,f"Received: {payment.created.date()}"),(660,"Status: verified")]:
+    for y,text in [(790,"FTBI payment receipt"),(760,f"Receipt: {payment.pk}"),(735,f"Student: {payment.student.student_number}"),(710,f"Amount: USD {payment.amount:.2f}"),(685,f"Received: {payment.created.date()}"),(660,"Status: original payment verified"),(635,f"Net after recorded adjustments: USD {net_payment(payment):.2f}"),(610,"Review payment history for refunds and withheld funds.")]:
         pdf.drawString(50,y,text)
     pdf.save()
     response=HttpResponse(buffer.getvalue(),content_type="application/pdf")
@@ -149,14 +150,19 @@ def reconciliation(request):
     response["Content-Disposition"]='attachment; filename="financial-reconciliation.csv"'
     response["Cache-Control"]="private, no-store"
     writer=csv.writer(response)
-    writer.writerow(["student_number","released_ledger_balance","invoiced","verified_payments","allocated","unallocated_payment","account_credit"])
+    writer.writerow(["student_number","released_ledger_balance","invoiced","verified_payments","allocated","unallocated_payment","account_credit","refunds_and_withheld","restored_funds","net_payment"])
     def total(qs): return qs.aggregate(total=Sum("amount"))["total"] or Decimal(0)
     for student in StudentProfile.objects.order_by("pk").iterator():
         balance=total(LedgerEntry.objects.filter(student=student,released=True))
         verified=PaymentRequest.objects.filter(student=student,status="verified")
         from .billing import PaymentAllocation
-        paid=total(verified); allocated=total(PaymentAllocation.objects.filter(payment__in=verified))
+        from .finance_adjustments import PaymentAdjustment,AllocationReduction
+        paid=total(verified)
+        adjusted=total(PaymentAdjustment.objects.filter(payment__in=verified).exclude(kind="recovery"))
+        restored=total(PaymentAdjustment.objects.filter(payment__in=verified,kind="recovery"))
+        net=paid-adjusted+restored
+        allocated=total(PaymentAllocation.objects.filter(payment__in=verified))-total(AllocationReduction.objects.filter(allocation__payment__in=verified))
         number=student.student_number
         if number.lstrip().startswith(("=","+","-","@")): number="'"+number
-        writer.writerow([number,balance,total(Invoice.objects.filter(student=student)),paid,allocated,paid-allocated,max(-balance,Decimal(0))])
+        writer.writerow([number]+[f"{amount:.2f}" for amount in [balance,total(Invoice.objects.filter(student=student)),paid,allocated,net-allocated,max(-balance,Decimal(0)),adjusted,restored,net]])
     return response

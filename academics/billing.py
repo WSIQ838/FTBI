@@ -38,7 +38,8 @@ class Invoice(models.Model):
 
     @property
     def paid(self):
-        return self.allocations.aggregate(total=Sum("amount"))["total"] or Decimal(0)
+        from .finance_adjustments import AllocationReduction,total
+        return total(self.allocations.all())-total(AllocationReduction.objects.filter(allocation__invoice=self))
 
     @property
     def balance(self):
@@ -124,8 +125,10 @@ def allocate_payment(payment,invoice,amount,actor,token):
         return prior.allocation
     if payment.student_id!=invoice.student_id or payment.status!="verified":
         raise ValidationError("Use a verified payment from this student.")
-    used=payment.allocations.aggregate(total=Sum("amount"))["total"] or Decimal(0)
-    if not amount.is_finite() or amount<=0 or amount>invoice.balance or amount>payment.amount-used or amount!=amount.quantize(Decimal("0.01")):
+    from .finance_adjustments import net_payment,allocated_payment
+    if payment.disputes.filter(status="open").exists(): raise ValidationError("Resolve the open payment dispute before allocation.")
+    used=allocated_payment(payment)
+    if not amount.is_finite() or amount<=0 or amount>invoice.balance or amount>net_payment(payment)-used or amount!=amount.quantize(Decimal("0.01")):
         raise ValidationError("Allocation exceeds the invoice balance or available payment.")
     entry=PaymentAllocation.objects.filter(payment=payment,invoice=invoice).first()
     if entry:

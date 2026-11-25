@@ -121,3 +121,6 @@ urlpatterns += [path('institution/settings/',iv.institution_settings,name='insti
 
 from academics import credential_views as cv
 urlpatterns += [path('credentials/',cv.credential_list,name='credential_list'),path('credentials/finalize/',cv.finalize_legacy,name='finalize_legacy_credential'),path('credentials/<uuid:identifier>/pdf/',cv.credential_pdf,name='credential_pdf'),path('credentials/<uuid:identifier>/revoke/',cv.revoke_credential,name='revoke_credential'),path('credentials/<uuid:identifier>/reissue/',cv.reissue_credential,name='reissue_credential'),path('verify-credential/',cv.verify_credential,name='verify_credential')]
+
+from academics import finance_adjustment_views as fav
+urlpatterns += [path('payments/history/',fav.history,name='payment_history'),path('finance/payments/<int:pk>/<str:kind>/',fav.adjust,name='payment_adjustment'),path('finance/disputes/<int:pk>/resolve/',fav.resolve,name='resolve_payment_dispute'),path('finance/holds/evaluate/',fav.refresh_holds,name='refresh_financial_holds')]
