@@ -126,3 +126,4 @@ from .ai_governance import AIConfiguration, KnowledgeDocument, AIUsage
 from .student_records import WithdrawalWindow,WithdrawalRequest,GradingScale,StandingPolicy,AcademicStanding,EmergencyContact,StudentStatusRecord,EnrollmentVerification
 from .admissions_support import ApplicantActivation,ApplicationReviewer,ApplicationNote,AdmissionInterview
 from .documents import PrivateDocument,DocumentVersion,DocumentVerification,StorageQuota
+from .student_support import AdvisorSlot,AdvisorBooking,SupportCase,SupportNote,SuccessPlan,StudentIntervention,AtRiskAlert,StudentAccommodation
