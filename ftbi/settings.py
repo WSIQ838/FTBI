@@ -119,3 +119,7 @@ if FTBI_ADMISSIONS_ORIGIN:
         raise RuntimeError('FTBI_ADMISSIONS_ORIGIN must be an HTTPS origin')
 
 MIDDLEWARE.insert(MIDDLEWARE.index('django.contrib.auth.middleware.AuthenticationMiddleware')+1,'ftbi.preferences.PortalTimezoneMiddleware')
+
+FTBI_CREDENTIAL_SIGNING_REQUIRED = os.environ.get('FTBI_CREDENTIAL_SIGNING_REQUIRED','0') == '1'
+FTBI_SIGNING_P12_PATH = os.environ.get('FTBI_SIGNING_P12_PATH','')
+FTBI_SIGNING_P12_PASSWORD = os.environ.get('FTBI_SIGNING_P12_PASSWORD','')

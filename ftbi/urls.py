@@ -118,3 +118,6 @@ urlpatterns += [path('support/',sv.support_home,name='support_home'),path('suppo
 
 from academics import institution_views as iv
 urlpatterns += [path('institution/settings/',iv.institution_settings,name='institution_settings'),path('institution/logo/upload/',iv.upload_logo,name='upload_institution_logo'),path('institution/logo.png',iv.institution_logo,name='institution_logo'),path('account/preferences/',iv.preferences,name='preferences'),path('imports/<str:kind>/preview/',iv.import_preview,name='import_preview'),path('imports/batch/<int:pk>/',iv.import_detail,name='import_detail'),path('imports/batch/<int:pk>/commit/',iv.import_commit,name='import_commit')]
+
+from academics import credential_views as cv
+urlpatterns += [path('credentials/',cv.credential_list,name='credential_list'),path('credentials/finalize/',cv.finalize_legacy,name='finalize_legacy_credential'),path('credentials/<uuid:identifier>/pdf/',cv.credential_pdf,name='credential_pdf'),path('credentials/<uuid:identifier>/revoke/',cv.revoke_credential,name='revoke_credential'),path('credentials/<uuid:identifier>/reissue/',cv.reissue_credential,name='reissue_credential'),path('verify-credential/',cv.verify_credential,name='verify_credential')]

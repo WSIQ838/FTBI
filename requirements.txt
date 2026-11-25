@@ -13,3 +13,5 @@ reportlab>=4.2,<5
 stripe>=11,<14
 
 redis>=5,<7
+
+pyHanko>=0.38.2,<0.39
