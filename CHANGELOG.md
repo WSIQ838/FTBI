@@ -2,6 +2,11 @@
 
 ## Unreleased
 
+- Add admissions reviewer assignments, private notes, conflict-checked interviews, document verification and conversion export.
+- Add marker-bound activation recovery with token rotation and no reactivation of disabled student accounts.
+- Add private student/admissions/institutional document libraries, multiple coursework files, retained versions and shared upload quotas.
+- Pin encrypted recovery CI to Ubuntu 24.04 after the latest runner lacked the PostgreSQL 16 package.
+
 - Add five browser configurations, sampled automated accessibility checks and guarded synthetic demonstration data.
 - Fix keyboard skip-navigation interference from login autofocus and WebKit skip-link focus.
 - Add real ClamAV clean/EICAR/outage checks and an encrypted PostgreSQL recovery drill with exact application-data comparison.

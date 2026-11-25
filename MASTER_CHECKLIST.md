@@ -141,7 +141,7 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Custom institutional grading scales (SIS regression tests; institutional policy acceptance separate)
 - [x] Academic probation tracking (SIS regression tests; institutional policy acceptance separate)
 - [x] Academic standing calculations (SIS regression tests; institutional policy acceptance separate)
-- [ ] Student document management
+- [x] Student document management (admissions/document regression tests; live services and institutional acceptance separate)
 - [~] Student personal data exports
 - [ ] Student demographic reporting
 - [x] Emergency contact management (SIS regression tests; institutional policy acceptance separate)
@@ -167,15 +167,15 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Accepted applicant conversion to student
 - [x] Admissions audit logging
 - [~] Basic admissions reporting
-- [ ] Application document uploads
+- [x] Application document uploads (admissions/document regression tests; live services and institutional acceptance separate)
 - [x] Automated admissions decision notifications (PR #26; CI 45507439993; live-service acceptance separate)
-- [ ] Expired activation link recovery
-- [ ] Applicant document verification
+- [x] Expired activation link recovery (admissions/document regression tests; live services and institutional acceptance separate)
+- [x] Applicant document verification (admissions/document regression tests; live services and institutional acceptance separate)
 - [ ] Application fee processing
-- [ ] Admissions interview scheduling
-- [ ] Application review notes
-- [ ] Reviewer assignments
-- [ ] Admissions enrollment conversion reporting
+- [x] Admissions interview scheduling (admissions/document regression tests; live services and institutional acceptance separate)
+- [x] Application review notes (admissions/document regression tests; live services and institutional acceptance separate)
+- [x] Reviewer assignments (admissions/document regression tests; live services and institutional acceptance separate)
+- [x] Admissions enrollment conversion reporting (admissions/document regression tests; live services and institutional acceptance separate)
 
 ## 5. Academic Advising and Student Services
 
@@ -319,15 +319,15 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Fail-closed scanner handling
 - [x] Private download authorization
 - [x] Mocked malware scanning tests
-- [ ] Live antivirus testing
-- [ ] Multiple attachments per submission
-- [ ] Student document repository
-- [ ] Admissions document repository
-- [ ] Institutional document library
-- [ ] Storage quotas
+- [x] Live antivirus testing (PR #29, disposable hosted ClamAV; CI 45551038958; institutional deployment separate)
+- [x] Multiple attachments per submission (admissions/document regression tests; live services and institutional acceptance separate)
+- [x] Student document repository (admissions/document regression tests; live services and institutional acceptance separate)
+- [x] Admissions document repository (admissions/document regression tests; live services and institutional acceptance separate)
+- [x] Institutional document library (admissions/document regression tests; live services and institutional acceptance separate)
+- [x] Storage quotas (admissions/document regression tests; live services and institutional acceptance separate)
 - [ ] File retention policies
 - [ ] Object storage integration
-- [ ] Document version history
+- [x] Document version history (admissions/document regression tests; live services and institutional acceptance separate)
 
 ## 11. Identity and Account Security
 
@@ -481,7 +481,7 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Production Docker startup validation (disposable hosted production-mode stack, CI 45507440000; institution staging still outstanding)
 - [ ] Live HTTPS certificate validation
 - [x] Live Redis integration testing (disposable hosted production-mode stack, CI 45507440000; institution staging still outstanding)
-- [ ] Live ClamAV container testing
+- [x] Live ClamAV container testing (PR #29, disposable hosted ClamAV; CI 45551038958; institutional deployment separate)
 - [ ] Application monitoring
 - [ ] Centralized logging
 - [ ] System resource monitoring
@@ -511,7 +511,7 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [ ] Backup failure notifications
 - [ ] Encryption key recovery procedures
 - [ ] Full disaster recovery drill
-- [~] Restore integrity verification (PR #26 CI restores schema; representative data/encrypted drill remains)
+- [~] Restore integrity verification (PR #29 CI 45551038947 restores encrypted synthetic data and compares all application rows; production scale and offsite/key recovery remain)
 - [ ] Recovery time objectives
 - [ ] Recovery point objectives
 - [ ] Business continuity plan
@@ -586,7 +586,7 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Production container smoke testing (disposable hosted production-mode stack, CI 45507440000; institution staging still outstanding)
 - [ ] Dependency security audit
 - [ ] Authorized penetration testing
-- [ ] Disaster recovery testing
+- [~] Disaster recovery testing (encrypted synthetic PostgreSQL drill passed; production/offsite/key custody remains)
 - [ ] User acceptance testing
 - [x] Demonstration data generation (guarded synthetic seed; academics.test_demo)
 

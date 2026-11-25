@@ -10,6 +10,7 @@ from django.views.decorators.http import require_POST
 from .registrar import Application,StudentProfile
 from .operations import AuditEvent
 from .notification_models import notify
+from .admissions_support import reviewable
 
 class DecisionForm(forms.Form):
     decision=forms.ChoiceField(choices=[("accepted","Accept"),("rejected","Reject")])
@@ -17,7 +18,7 @@ class DecisionForm(forms.Form):
 @login_required
 @permission_required("academics.change_application",raise_exception=True)
 def review_queue(request):
-    return render(request,"admission_review.html",{"applications":Application.objects.select_related("applicant","program").order_by("-submitted_at")[:200],"form":DecisionForm()})
+    return render(request,"admission_review.html",{"applications":reviewable(request.user).select_related("applicant","program").order_by("-submitted_at")[:200],"form":DecisionForm()})
 
 @login_required
 @permission_required("academics.change_application",raise_exception=True)
@@ -28,6 +29,7 @@ def decide(request,pk):
         return HttpResponseForbidden("Invalid decision.")
     with transaction.atomic():
         item=get_object_or_404(Application.objects.select_for_update(),pk=pk)
+        if not reviewable(request.user).filter(pk=pk).exists(): return HttpResponseForbidden()
         if item.status!="pending":
             return HttpResponseForbidden("Decision already recorded.")
         item.status=form.cleaned_data["decision"]
@@ -43,6 +45,7 @@ def decide(request,pk):
 def activate_student(request,pk):
     with transaction.atomic():
         item=get_object_or_404(Application.objects.select_for_update(),pk=pk,status="accepted")
+        if not reviewable(request.user).filter(pk=pk).exists(): return HttpResponseForbidden()
         user=get_user_model().objects.select_for_update().get(pk=item.applicant_id)
         if not user.is_active or user.is_staff or user.is_superuser:
             return HttpResponseForbidden("Applicant account requires review.")

@@ -71,6 +71,18 @@ class AccountConcurrencyTests(TransactionTestCase):
         self.assertEqual(Enrollment.objects.filter(course=self.course,active=True).count(),1)
         self.assertEqual(WaitlistEntry.objects.filter(course=self.course).count(),1)
 
+    def test_document_uploads_cannot_exceed_shared_quota(self):
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        from .documents import StorageQuota,DocumentVersion
+        student=self.students[0]
+        StorageQuota.objects.create(user=student,limit_bytes=7)
+        clients=[Client(),Client()]
+        for client in clients: client.force_login(student)
+        def upload(index):
+            return clients[index].post('/documents/upload/student/0/',{"title":"Synthetic","file":SimpleUploadedFile("test.txt",b"12345")}).status_code
+        self.assertEqual(sorted(self.simultaneous(upload)),[200,302])
+        self.assertEqual(DocumentVersion.objects.count(),1)
+
     @override_settings(FTBI_STRIPE_ENABLED=True,STRIPE_WEBHOOK_SECRET="concurrent-test-secret")
     def test_simultaneous_signed_webhooks_credit_once(self):
         import json,time,hmac,hashlib

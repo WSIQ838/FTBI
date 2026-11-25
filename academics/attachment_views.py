@@ -67,6 +67,13 @@ def upload_attachment(request,pk):
                 return HttpResponseForbidden("Submission closed.")
             file=form.cleaned_data["file"]
             name=PurePath(file.name).name[:200]
+            from django.contrib.auth import get_user_model
+            from .documents import StorageQuota,storage_used
+            get_user_model().objects.select_for_update().get(pk=request.user.pk)
+            quota=getattr(StorageQuota.objects.filter(user=request.user).first(),"limit_bytes",104857600)
+            previous=SubmissionAttachment.objects.filter(submission=locked).first()
+            if storage_used(request.user)-(previous.size if previous else 0)+len(form.payload)>quota:
+                return HttpResponseForbidden("Storage quota exceeded. Contact records support.")
             SubmissionAttachment.objects.update_or_create(submission=locked,defaults={"original_name":name,"data":form.payload,"size":len(form.payload)})
         return redirect("course",pk=submission.assignment.course_id)
     return render(request,"attachment.html",{"form":form,"submission":submission})

@@ -1,2 +1,11 @@
-# Assignment attachments
-A student can attach a single UTF-8 text file to an existing ungraded submission before its deadline. Files are limited to 5 MB, stored in the database, and downloaded only by the enrolled owner or assigned instructor. Downloads are forced attachments. PDF, Office documents, images and archives are intentionally disabled until private object storage, upload limits, malware scanning and retention are validated. Configure a reverse-proxy request body limit and storage quotas before deployment.
+# Private files and document versions
+
+Students can attach the original single coursework file or add multiple files through the course submission's Add another file link. All uploads require an active enrollment and an open, ungraded submission. Each additional document has immutable numbered versions; uploading a new version preserves earlier bytes and their digest. The instructor and currently enrolled owner can download coursework. The original attachment route remains compatible with existing submissions.
+
+The Documents workspace also supports student records and an authenticated institutional library. Applicants upload application documents from their application details. Student records are visible to their owner and authorized registrar records staff; application files follow reviewer assignments. Institutional documents are drafts until authorized library administrators publish them in Administration. Their published versions are available to signed-in users.
+
+Each upload is limited to 5 MB. UTF-8 text is supported by default. PDF, JPEG, PNG and OOXML formats require configured ClamAV, format screening and a clean scan; scanner failure rejects the upload. Downloads are forced attachments with private cache controls and audit records. Live CI tests use clean data and the harmless EICAR signature; this does not prove arbitrary files safe.
+
+A user's default quota is 100 MiB, adjustable through StorageQuota administration. It includes all document versions, original coursework attachments and archived legacy attachment bytes. Quota checks lock the owner's account to prevent parallel upload bypass. Old versions are retained and count toward usage; there is no self-service deletion or retention purge yet. Storage remains in PostgreSQL; object storage integration and institution-approved retention policies remain outstanding.
+
+Authorized reviewers can verify or reject a specific student/admissions document version once, with an explanatory note visible to the owner. New versions remain unverified until separately reviewed. Verification is a staff decision, not automatic authenticity certification. The portal does not offer a complete reviewed personal-records disclosure export yet.
