@@ -9,6 +9,8 @@ from .models import Department,Term,Course,Lesson,Assignment
 from .learning import LearningModule,CompletionPolicy
 from .assessment_policy import RubricCriterion,AssignmentPolicy
 from .quizzes import Quiz,Question
+from .services import Announcement,CalendarEvent
+from .discussions import Discussion,DiscussionReply
 
 
 class CoursePackageTests(TestCase):
@@ -63,3 +65,54 @@ class CoursePackageTests(TestCase):
         self.client.force_login(self.other)
         self.assertEqual(self.client.get(reverse("export_course_package",args=[self.source.pk])).status_code,404)
         self.assertEqual(self.upload(self.package).status_code,404)
+
+
+    def test_v2_communication_content_is_draft_shifted_and_excludes_student_replies(self):
+        Announcement.objects.create(course=self.source,title="Course announcement",body="Authored notice",published=True)
+        Announcement.objects.create(course=None,title="Institution-only notice",body="Not part of this course",published=True)
+        starts=timezone.now()+timedelta(days=2)
+        CalendarEvent.objects.create(course=self.source,title="Course meeting",starts=starts,ends=starts+timedelta(hours=1),published=True)
+        topic=Discussion.objects.create(course=self.source,author=self.teacher,title="Instructor prompt",prompt="Discuss the reading")
+        DiscussionReply.objects.create(discussion=topic,author=self.other,body="PRIVATE STUDENT REPLY")
+        Discussion.objects.create(course=self.source,author=self.other,title="PRIVATE STUDENT TOPIC",prompt="Private")
+        package=self.client.get(reverse("export_course_package",args=[self.source.pk])).json()
+        self.assertEqual(package["version"],2)
+        self.assertNotIn("PRIVATE",json.dumps(package));self.assertNotIn("Institution-only",json.dumps(package))
+        response=self.client.post(reverse("import_course_package",args=[self.target.pk]),{"file":SimpleUploadedFile("course.json",json.dumps(package).encode()),"shift_days":7})
+        self.assertEqual(response.status_code,302)
+        self.assertFalse(Announcement.objects.get(course=self.target).published)
+        event=CalendarEvent.objects.get(course=self.target)
+        self.assertFalse(event.published);self.assertAlmostEqual((event.starts-starts).total_seconds(),7*86400,delta=0.001)
+        copied=self.target.discussions.get()
+        self.assertTrue(copied.closed);self.assertEqual(copied.author,self.teacher);self.assertFalse(copied.replies.exists())
+        self.assertEqual(self.client.post(reverse("copy_content",args=[self.target.pk]),{"source":self.source.pk,"shift_days":0}).status_code,403)
+
+    def test_v1_remains_supported_and_timezone_less_dates_are_rejected(self):
+        self.package["version"]=1
+        for key in ["announcements","calendar_events","discussion_prompts"]: self.package.pop(key)
+        original=self.package["assignments"][0]["due"]
+        self.package["assignments"][0]["due"]="2026-11-25T12:00:00"
+        self.assertContains(self.upload(self.package),"Nothing was imported")
+        self.assertFalse(self.target.lessons.exists())
+        self.package["assignments"][0]["due"]=original
+        self.assertEqual(self.upload(self.package).status_code,302)
+
+    def test_late_calendar_failure_rolls_back_all_package_content(self):
+        self.package["announcements"]=[{"title":"Draft","body":"Notice"}]
+        self.package["calendar_events"]=[{"title":"Invalid interval","starts":"2026-11-25T12:00:00Z","ends":"2026-11-25T11:00:00Z"}]
+        self.assertContains(self.upload(self.package),"Nothing was imported")
+        self.assertFalse(Announcement.objects.filter(course=self.target).exists())
+        self.assertFalse(self.target.quiz_set.exists());self.assertFalse(self.target.modules.exists())
+
+    def test_existing_course_communication_blocks_import_and_copy(self):
+        Announcement.objects.create(course=self.target,title="Retain existing",body="Do not overwrite")
+        self.assertContains(self.upload(self.package),"Nothing was imported")
+        self.assertFalse(self.target.lessons.exists())
+        self.assertEqual(self.client.post(reverse("copy_content",args=[self.target.pk]),{"source":self.source.pk,"shift_days":0}).status_code,403)
+        self.assertEqual(Announcement.objects.get(course=self.target).title,"Retain existing")
+
+    def test_shift_overflow_returns_validation_error_and_rolls_back(self):
+        self.package["assignments"][0]["due"]="9999-12-31T12:00:00Z"
+        response=self.client.post(reverse("import_course_package",args=[self.target.pk]),{"file":SimpleUploadedFile("course.json",json.dumps(self.package).encode()),"shift_days":1})
+        self.assertContains(response,"Nothing was imported")
+        self.assertFalse(self.target.modules.exists());self.assertFalse(self.target.lessons.exists())

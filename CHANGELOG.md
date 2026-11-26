@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Extend course JSON to version 2 with draft announcements/calendar events and closed instructor discussion prompts; retain version 1 import support.
+- Share import/copy validation, shift offset-aware dates and reject nonempty communication targets without partial writes.
+- Fix Gunicorn root logger configuration after production-stack CI exposed an inherited missing handler; add installed-default configuration regression coverage.
+
 - Add private operational metrics, staff health workspace and transition-only failure/recovery notices.
 - Scrub production application and access logs of arbitrary request/exception data.
 - Add managed encrypted-backup manifests, failure status and restore-gated retention; avoid same-second backup overwrites.
