@@ -8,9 +8,13 @@ mkdir -p "$BACKUP_DIR"
 stamp=$(date -u +%Y%m%dT%H%M%SZ)
 tmp=$(mktemp "$BACKUP_DIR/.ftbi.XXXXXX")
 plain=$(mktemp "$BACKUP_DIR/.plain.XXXXXX")
-trap 'rm -f "$tmp" "$plain"' EXIT HUP INT TERM
+final=""
+trap 'rm -f "$tmp" "$plain"; if [ -n "$final" ]; then rm -f "$final"; fi' EXIT HUP INT TERM
 pg_dump --format=custom --no-owner --no-acl --file="$plain"
 pg_restore --list "$plain" >/dev/null
 age -r "$BACKUP_AGE_RECIPIENT" -o "$tmp" "$plain"
 test -s "$tmp"
-mv "$tmp" "$BACKUP_DIR/ftbi-$stamp.dump.age"
+final=$(mktemp "$BACKUP_DIR/ftbi-$stamp-XXXXXX.dump.age")
+mv "$tmp" "$final"
+printf '%s\n' "$final"
+final=""

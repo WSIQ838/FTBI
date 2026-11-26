@@ -123,3 +123,13 @@ MIDDLEWARE.insert(MIDDLEWARE.index('django.contrib.auth.middleware.Authenticatio
 FTBI_CREDENTIAL_SIGNING_REQUIRED = os.environ.get('FTBI_CREDENTIAL_SIGNING_REQUIRED','0') == '1'
 FTBI_SIGNING_P12_PATH = os.environ.get('FTBI_SIGNING_P12_PATH','')
 FTBI_SIGNING_P12_PASSWORD = os.environ.get('FTBI_SIGNING_P12_PASSWORD','')
+
+FTBI_MONITOR_TOKEN = os.environ.get('FTBI_MONITOR_TOKEN','')
+if FTBI_MONITOR_TOKEN and len(FTBI_MONITOR_TOKEN)<32: raise RuntimeError('Monitoring token must contain at least 32 characters')
+FTBI_BACKUP_DIR = os.environ.get('FTBI_BACKUP_DIR','')
+FTBI_BACKUP_MAX_AGE_HOURS = int(os.environ.get('FTBI_BACKUP_MAX_AGE_HOURS','26'))
+FTBI_MIN_DISK_FREE_MB = int(os.environ.get('FTBI_MIN_DISK_FREE_MB','1024'))
+FTBI_NOTIFICATION_MAX_WAIT_MINUTES = int(os.environ.get('FTBI_NOTIFICATION_MAX_WAIT_MINUTES','60'))
+if min(FTBI_BACKUP_MAX_AGE_HOURS,FTBI_MIN_DISK_FREE_MB,FTBI_NOTIFICATION_MAX_WAIT_MINUTES)<1: raise RuntimeError('Operational thresholds must be positive')
+if os.environ.get('FTBI_JSON_LOGGING','0' if DEBUG else '1')=='1':
+    LOGGING={'version':1,'disable_existing_loggers':False,'formatters':{'safe_json':{'()':'ftbi.observability.SafeJSONFormatter'}},'handlers':{'console':{'class':'logging.StreamHandler','formatter':'safe_json'}},'root':{'handlers':['console'],'level':'INFO'},'loggers':{'django':{'handlers':['console'],'level':'INFO','propagate':False}}}

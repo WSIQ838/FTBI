@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add private operational metrics, staff health workspace and transition-only failure/recovery notices.
+- Scrub production application and access logs of arbitrary request/exception data.
+- Add managed encrypted-backup manifests, failure status and restore-gated retention; avoid same-second backup overwrites.
+
 - Add immutable institutional policy versions, independent approval, effective dates, withdrawal and per-version acknowledgments.
 - Add disabled-by-default voluntary demographic collection tied to reviewed question choices and explicit consent.
 - Add restricted aggregate counts, whole-question small-cell suppression and student withdrawal of current answers.

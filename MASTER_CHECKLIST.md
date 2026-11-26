@@ -483,11 +483,11 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [ ] Live HTTPS certificate validation
 - [x] Live Redis integration testing (disposable hosted production-mode stack, CI 45507440000; institution staging still outstanding)
 - [x] Live ClamAV container testing (PR #29, disposable hosted ClamAV; CI 45551038958; institutional deployment separate)
-- [ ] Application monitoring
-- [ ] Centralized logging
-- [ ] System resource monitoring
+- [~] Application monitoring (private dependency/queue/backup checks and workspace; institutional deployment outstanding)
+- [~] Centralized logging (scrubbed structured application/server streams; external collector and retention outstanding)
+- [~] System resource monitoring (disk, worker uptime and available OS load; infrastructure CPU/memory/capacity monitoring outstanding)
 - [ ] Uptime alerts
-- [ ] Failure alerts
+- [~] Failure alerts (transition-only durable staff alerts and nonzero checks; external outage delivery outstanding)
 - [ ] Database performance optimization
 - [ ] Connection pool tuning
 - [ ] Production secrets management review
@@ -508,8 +508,8 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [~] Backup and recovery documentation
 - [ ] Production backup scheduler deployment
 - [ ] Offsite encrypted backups
-- [ ] Backup retention automation
-- [ ] Backup failure notifications
+- [~] Backup retention automation (managed manifests, dry-run default, restore/age/count gates; approved retention and scheduler deployment outstanding)
+- [~] Backup failure notifications (managed status and monitor transition alerts; external scheduler/SMTP acceptance outstanding)
 - [ ] Encryption key recovery procedures
 - [ ] Full disaster recovery drill
 - [~] Restore integrity verification (PR #29 CI 45551038947 restores encrypted synthetic data and compares all application rows; production scale and offsite/key recovery remain)

@@ -133,3 +133,7 @@ urlpatterns += [path('reports/builder/',rbv.builder,name='report_builder'),path(
 
 from academics import governance_views as gv
 urlpatterns += [path('policies/',gv.policies,name='policies'),path('policies/revision/<int:pk>/',gv.policy_detail,name='policy_detail'),path('policies/<int:pk>/propose/',gv.propose,name='propose_policy_revision'),path('policies/revision/<int:pk>/review/',gv.review,name='review_policy_revision'),path('policies/revision/<int:pk>/withdraw/',gv.withdraw,name='withdraw_policy_revision'),path('policies/revision/<int:pk>/acknowledge/',gv.acknowledge,name='acknowledge_policy'),path('account/demographics/',gv.demographics,name='demographics'),path('account/demographics/withdraw/',gv.withdraw_answers,name='withdraw_demographics'),path('reports/demographics/',gv.demographic_report,name='demographic_report')]
+
+from ftbi import observability
+from academics import monitoring_views
+urlpatterns += [path("health/metrics/",observability.metrics,name="operation_metrics"),path("operations/",monitoring_views.operations,name="operations")]

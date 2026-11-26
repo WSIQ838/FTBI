@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
 
 ROLES={
+    "Operations":["operationalert"],
     "Reporting Access Administration":["deanassignment"],
     "Scholarship Administration":["scholarshipfund","scholarshipapplication","scholarshipaward","scholarshipevent"],
     "Institution Administration":["institutionsettings","campus"],
@@ -23,7 +24,7 @@ class Command(BaseCommand):
         for name,models in ROLES.items():
             group,_=Group.objects.get_or_create(name=name)
             permissions=Permission.objects.filter(content_type__app_label="academics",content_type__model__in=models)
-            if name in ("Institutional Reporting","IT Audit","Academic Advisor"):
+            if name in ("Institutional Reporting","IT Audit","Academic Advisor","Operations"):
                 permissions=permissions.filter(codename__startswith="view_")
             else:
                 permissions=permissions.exclude(codename__startswith="delete_")
