@@ -1,2 +1,7 @@
-# Registration rules
-Staff configure prerequisite course codes in admin. Self-service registration requires released earned credit or approved equivalent transfer credit for all prerequisites. Eligible students who encounter a full course are added to the waitlist. Earlier eligible waitlist entries must be resolved by staff before later students register; no automatic promotion or notification is implemented. Direct administrative enrollment bypasses these rules and must be supervised.
+# Registration and waitlist rules
+
+The current registrar workflow is documented in [REGISTRAR.md](REGISTRAR.md). Prior-completion rules require released earned credit; approved equivalent transfer credit can satisfy a rule without a minimum-points requirement. Rules in a named group are alternatives, while every group must pass. Corequisites also accept active same-term enrollment. Mutual corequisites still lack a simultaneous registration cart.
+
+Eligible students encountering full capacity join the ordered waitlist. Add/drop, leaving the waitlist and approved withdrawal can trigger promotion while the course is published and registration remains open. Promotion rechecks active account/student status, manual and financial holds, previous approved withdrawal and prerequisites. An ineligible first entry stops promotion instead of silently skipping it. Successful promotion records an audit event and queues a private notice. This is event-driven promotion, not a continuously running scheduler.
+
+Direct administrative enrollment edits bypass these checks and must be restricted. Institutional prerequisite, withdrawal, hold and queue-resolution policies remain subject to acceptance.

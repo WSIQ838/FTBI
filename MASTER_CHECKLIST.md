@@ -538,11 +538,11 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [~] Testing documentation
 - [~] Release acceptance checklist
 - [ ] Complete API documentation
-- [ ] Troubleshooting guide
-- [ ] Update and upgrade procedures
-- [ ] Incident response manual
+- [~] Troubleshooting guide (workflow/error triage documented; institutional support and acceptance outstanding)
+- [~] Update and upgrade procedures (review/rehearsal/recovery procedure; production rehearsal and acceptance outstanding)
+- [~] Incident response manual (draft operating procedure; contacts, evidence storage and institutional acceptance outstanding)
 - [ ] User training materials
-- [ ] Documentation accuracy review
+- [~] Documentation accuracy review (registration, integration and security evidence corrected against implementation; comprehensive role/manual review outstanding)
 - [ ] Remove obsolete documentation
 - [ ] Final release notes
 
@@ -585,7 +585,7 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [~] Cross-browser testing (five configurations and sampled learning workflow automated; broader and manual acceptance outstanding)
 - [ ] External integration testing
 - [x] Production container smoke testing (disposable hosted production-mode stack, CI 45507440000; institution staging still outstanding)
-- [ ] Dependency security audit
+- [~] Dependency security audit (Python advisory scan on each CI head; container/JavaScript and independent review outstanding)
 - [ ] Authorized penetration testing
 - [~] Disaster recovery testing (encrypted synthetic PostgreSQL drill passed; production/offsite/key custody remains)
 - [ ] User acceptance testing
