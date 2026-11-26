@@ -124,3 +124,6 @@ urlpatterns += [path('credentials/',cv.credential_list,name='credential_list'),p
 
 from academics import finance_adjustment_views as fav
 urlpatterns += [path('payments/history/',fav.history,name='payment_history'),path('finance/payments/<int:pk>/<str:kind>/',fav.adjust,name='payment_adjustment'),path('finance/disputes/<int:pk>/resolve/',fav.resolve,name='resolve_payment_dispute'),path('finance/holds/evaluate/',fav.refresh_holds,name='refresh_financial_holds')]
+
+from academics import scholarship_views as shv
+urlpatterns += [path('scholarships/',shv.home,name='scholarships'),path('scholarships/fund/<int:pk>/apply/',shv.apply,name='apply_scholarship'),path('scholarships/application/<int:pk>/',shv.detail,name='scholarship_application'),path('scholarships/application/<int:pk>/decide/',shv.decide,name='decide_scholarship'),path('scholarships/award/<int:pk>/<str:action>/',shv.award_action,name='scholarship_award_action')]

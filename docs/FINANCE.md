@@ -39,3 +39,7 @@ Evaluation runs during new registration and waitlist promotion, and through the 
 academics.test_finance_adjustments covers partial refunds, allocation release, duplicate requests, over-refund protection, manual/processor separation, won/lost disputes, privacy, hold approval/defaults, installments, grace periods and registration enforcement. A PostgreSQL concurrency test verifies simultaneous refunds cannot exceed the original payment. These tests use synthetic external evidence; no real refund, dispute or bank operation has been performed.
 
 Provider integration references reviewed: [Stripe refund creation](https://docs.stripe.com/api/refunds/create), [refund lifecycle](https://docs.stripe.com/refunds), [dispute API](https://docs.stripe.com/disputes/api). The manual posting workflow does not claim to implement those live operations.
+
+## Scholarship account credits
+
+Scholarship Administration can review budget-controlled awards and post or reverse institutional account credits. These credits appear in released account balances and financial-hold calculations. See SCHOLARSHIPS.md; approval alone reserves funds without posting a credit.

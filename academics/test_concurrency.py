@@ -94,6 +94,20 @@ class AccountConcurrencyTests(TransactionTestCase):
         self.assertEqual(sorted(codes),[302,403])
         self.assertEqual(AdvisorBooking.objects.filter(status="booked").count(),1)
 
+    def test_scholarship_awards_cannot_overcommit_shared_budget(self):
+        from django.core.exceptions import ValidationError
+        from .scholarships import ScholarshipFund,ScholarshipAward,submit_application,decide_application
+        fund=ScholarshipFund.objects.create(code="BUDGET",name="Synthetic",term=self.course.term,description="Concurrent review",budget=100,maximum_award=80,opens=timezone.now()-timedelta(days=1),closes=timezone.now()+timedelta(days=1),published=True,approval_reference="Synthetic")
+        applications=[submit_application(profile,fund,80,"Synthetic request") for profile in self.profiles]
+        def approve(index):
+            try:
+                decide_application(applications[index],"approved","Reviewed",self.teacher,80)
+                return "approved"
+            except ValidationError: return "blocked"
+        self.assertEqual(sorted(self.simultaneous(approve)),["approved","blocked"])
+        self.assertEqual(ScholarshipAward.objects.count(),1)
+        self.assertEqual(fund.committed,80)
+
     def test_refunds_cannot_reverse_more_than_original_payment(self):
         import uuid
         from django.core.exceptions import ValidationError

@@ -131,3 +131,5 @@ from .institution import InstitutionSettings,PortalPreference,ImportBatch
 from .credentials import CredentialTemplate,CredentialArtifact,CredentialRevocation,CredentialReplacement
 
 from .finance_adjustments import PaymentAdjustment,AllocationReduction,PaymentDispute,FinancialHoldPolicy,FinancialHold
+
+from .scholarships import ScholarshipFund,ScholarshipApplication,ScholarshipAward,ScholarshipEvent

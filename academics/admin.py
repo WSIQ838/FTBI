@@ -101,7 +101,7 @@ admin.site.unregister(LedgerEntry)
 @admin.register(LedgerEntry)
 class LedgerAdmin(admin.ModelAdmin):
     def has_change_permission(self,request,obj=None):
-        if obj and (hasattr(obj,"invoice") or hasattr(obj,"payment_record") or hasattr(obj,"payment_adjustment")): return False
+        if obj and (hasattr(obj,"invoice") or hasattr(obj,"payment_record") or hasattr(obj,"payment_adjustment") or hasattr(obj,"scholarship_credit") or hasattr(obj,"scholarship_reversal")): return False
         return super().has_change_permission(request,obj)
     def has_delete_permission(self,request,obj=None): return False
 
@@ -167,3 +167,14 @@ for model in [CredentialArtifact,CredentialRevocation,CredentialReplacement]:
 from .finance_adjustments import PaymentAdjustment,AllocationReduction,PaymentDispute,FinancialHoldPolicy,FinancialHold
 admin.site.register(FinancialHoldPolicy)
 for model in [PaymentAdjustment,AllocationReduction,PaymentDispute,FinancialHold]: admin.site.register(model,AssessmentRecordAdmin)
+
+from .scholarships import ScholarshipFund,ScholarshipApplication,ScholarshipAward,ScholarshipEvent
+admin.site.register(ScholarshipFund)
+for model in [ScholarshipApplication,ScholarshipAward,ScholarshipEvent]: admin.site.register(model,AssessmentRecordAdmin)
+admin.site.unregister(FinancialAidAward)
+@admin.register(FinancialAidAward)
+class FinancialAidAdmin(admin.ModelAdmin):
+    def has_change_permission(self,request,obj=None):
+        if obj and hasattr(obj,"scholarship_award"): return False
+        return super().has_change_permission(request,obj)
+    def has_delete_permission(self,request,obj=None): return False
