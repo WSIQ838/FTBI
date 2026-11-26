@@ -37,3 +37,14 @@ class Command(BaseCommand):
             self.stdout.write(name)
         group=Group.objects.get(name="Institutional Reporting")
         group.permissions.add(*Permission.objects.filter(content_type__app_label="academics",codename__in=report_permissions))
+
+        governance_roles={
+            "Policy Authors":["view_institutionpolicy","add_institutionpolicy","change_institutionpolicy","view_policyrevision","add_policyrevision","view_policyreview"],
+            "Policy Reviewers":["view_institutionpolicy","view_policyrevision","view_policyreview","approve_institution_policy"],
+            "Demographic Administration":["view_demographiccollection","add_demographiccollection","change_demographiccollection"],
+            "Demographic Reporting":["view_demographic_aggregates"],
+        }
+        for name,codes in governance_roles.items():
+            group,_=Group.objects.get_or_create(name=name)
+            group.permissions.set(Permission.objects.filter(content_type__app_label="academics",codename__in=codes))
+            self.stdout.write(name)

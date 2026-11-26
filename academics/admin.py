@@ -183,3 +183,8 @@ from .institutional_reporting import Campus,DeanAssignment,InstitutionalReport,R
 admin.site.register(Campus)
 admin.site.register(DeanAssignment)
 for model in [InstitutionalReport,ReportSnapshot,ReportReview]: admin.site.register(model,AssessmentRecordAdmin)
+
+from .governance import InstitutionPolicy,PolicyRevision,PolicyReview,PolicyWithdrawal,PolicyAcknowledgment,DemographicCollection
+admin.site.register(InstitutionPolicy)
+admin.site.register(DemographicCollection)
+for model in [PolicyRevision,PolicyReview,PolicyWithdrawal,PolicyAcknowledgment]: admin.site.register(model,AssessmentRecordAdmin)

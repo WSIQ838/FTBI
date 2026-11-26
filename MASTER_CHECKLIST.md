@@ -144,7 +144,7 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Academic standing calculations (SIS regression tests; institutional policy acceptance separate)
 - [x] Student document management (admissions/document regression tests; live services and institutional acceptance separate)
 - [~] Student personal data exports
-- [ ] Student demographic reporting
+- [~] Student demographic reporting (voluntary policy-gated choices and restricted aggregates; institutional privacy/retention acceptance outstanding)
 - [x] Emergency contact management (SIS regression tests; institutional policy acceptance separate)
 - [x] Enrollment verification letters (SIS regression tests; institutional policy acceptance separate)
 - [x] Student status history (SIS regression tests; institutional policy acceptance separate)
@@ -429,8 +429,8 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Dedicated dean dashboard (bounded aggregate reporting with current role scope; see docs/INSTITUTIONAL_REPORTING.md)
 - [x] Bulk student imports (institution/import regression tests and five local browser configurations; institutional acceptance separate)
 - [x] Bulk course imports (institution/import regression tests and five local browser configurations; institutional acceptance separate)
-- [~] Administrative approval workflows (independent report snapshot approval; institution-wide governance workflows outstanding)
-- [ ] Institutional policy configuration
+- [~] Administrative approval workflows (independent report/policy approval and version history; broader transactional approval workflows outstanding)
+- [~] Institutional policy configuration (reviewed effective policy versions and demographic configuration; other feature controls remain separate)
 - [~] Multi-campus management (campus classifications, admissions conversion and aggregate filtering; separate calendars/budgets/transfers outstanding)
 - [ ] Institutional document templates
 

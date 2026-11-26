@@ -136,3 +136,5 @@ from .finance_adjustments import PaymentAdjustment,AllocationReduction,PaymentDi
 from .scholarships import ScholarshipFund,ScholarshipApplication,ScholarshipAward,ScholarshipEvent
 
 from .institutional_reporting import Campus,DeanAssignment,InstitutionalReport,ReportSnapshot,ReportReview
+
+from .governance import InstitutionPolicy,PolicyRevision,PolicyReview,PolicyWithdrawal,PolicyAcknowledgment,DemographicCollection,DemographicResponse

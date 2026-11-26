@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add immutable institutional policy versions, independent approval, effective dates, withdrawal and per-version acknowledgments.
+- Add disabled-by-default voluntary demographic collection tied to reviewed question choices and explicit consent.
+- Add restricted aggregate counts, whole-question small-cell suppression and student withdrawal of current answers.
+
 - Add campus classifications and carry applicant campus into student conversion.
 - Add scoped dean/president dashboards and bounded private aggregate reports.
 - Capture immutable reporting evidence with independent review, digest validation and approved snapshot exports.

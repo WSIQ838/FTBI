@@ -94,6 +94,13 @@ class AccountConcurrencyTests(TransactionTestCase):
         self.assertEqual(sorted(codes),[302,403])
         self.assertEqual(AdvisorBooking.objects.filter(status="booked").count(),1)
 
+    def test_simultaneous_policy_proposals_get_distinct_versions(self):
+        from .governance import InstitutionPolicy,PolicyRevision,propose_revision
+        policy=InstitutionPolicy.objects.create(code="synthetic-policy",title="Synthetic",kind="academic")
+        versions=self.simultaneous(lambda index:propose_revision(policy,self.teacher,f"Synthetic proposal {index}",{},timezone.localdate()).version)
+        self.assertEqual(sorted(versions),[1,2])
+        self.assertEqual(PolicyRevision.objects.count(),2)
+
     def test_scholarship_awards_cannot_overcommit_shared_budget(self):
         from django.core.exceptions import ValidationError
         from .scholarships import ScholarshipFund,ScholarshipAward,submit_application,decide_application
