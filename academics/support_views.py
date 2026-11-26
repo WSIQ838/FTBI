@@ -185,10 +185,11 @@ def accommodations(request):
 @login_required
 @permission_required("academics.add_studentaccommodation",raise_exception=True)
 def draft_accommodation(request):
-    Form=forms.modelform_factory(StudentAccommodation,fields=["student","course","instructions","starts","ends","approval_reference"])
+    Form=forms.modelform_factory(StudentAccommodation,fields=["student","course","instructions","starts","ends","approval_reference","exam_extra_minutes","exam_extra_attempts"])
     form=Form(request.POST if request.method=="POST" else None)
     if request.method=="POST" and form.is_valid():
         item=form.save(commit=False)
+        item.exam_extra_minutes=item.exam_extra_minutes or 0; item.exam_extra_attempts=item.exam_extra_attempts or 0
         if item.starts>item.ends: form.add_error(None,"End date precedes start date.")
         elif not Enrollment.objects.filter(student=item.student.user,course=item.course,active=True).exists(): form.add_error(None,"An active course enrollment is required.")
         else:

@@ -3,3 +3,5 @@ Registrar or authorized academic administrators can set additional time, extende
 
 
 See [Assessment manual](QUIZZES.md) for question types, manual grading, weights, pools, aggregation and result release. Dedicated tests cover accommodation timing and cross-instructor bank isolation.
+
+Approved current course-level accommodations also supply extra time and attempts. The largest applicable course or per-quiz adjustment applies, rather than adding multiple adjustments. Eligibility uses institutional dates; expired, future, draft and revoked records do not grant new adjustments. Existing sessions retain their captured deadline and attempt slot, subject to the quiz closing date. See [Student support](STUDENT_SUPPORT.md) for approval, privacy and bounds.

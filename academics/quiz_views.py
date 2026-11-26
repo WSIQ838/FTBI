@@ -23,11 +23,18 @@ def take_quiz(request,pk):
     accommodation=ExamAccommodation.objects.filter(quiz=quiz,student=request.user).first()
     close=max(quiz.closes,accommodation.extended_close) if accommodation and accommodation.extended_close else quiz.closes
     policy=QuizPolicy.objects.filter(quiz=quiz).first()
-    allowed=(policy.max_attempts if policy else 1)+(min(5,accommodation.extra_attempts) if accommodation else 0)
     now=timezone.now()
+    from .student_support import StudentAccommodation
+    # Eligibility dates use the institution timezone, never a user-selected timezone.
+    day=timezone.localdate(now,timezone.get_default_timezone())
+    approvals=list(StudentAccommodation.objects.select_for_update().filter(student__user=request.user,course=quiz.course,status="approved",starts__lte=day,ends__gte=day))
+    extra_minutes=min(720,max([accommodation.extra_minutes if accommodation else 0]+[a.exam_extra_minutes for a in approvals]))
+    extra_attempts=min(5,max([accommodation.extra_attempts if accommodation else 0]+[a.exam_extra_attempts for a in approvals]))
+    allowed=(policy.max_attempts if policy else 1)+extra_attempts
     attempts=Attempt.objects.filter(quiz=quiz,student=request.user)
     number=attempts.count()+1
-    if number>allowed or now>=close:
+    existing=QuizSession.objects.filter(quiz=quiz,student=request.user,number=number).first()
+    if (number>allowed and existing is None) or now>=close:
         return HttpResponseForbidden("Quiz closed or attempt limit reached.")
     ids=list(quiz.questions.order_by("pk").values_list("pk",flat=True))
     if not ids:
@@ -38,9 +45,9 @@ def take_quiz(request,pk):
         if policy.select_count > len(ids):
             return HttpResponseForbidden("Question pool is too small. Contact your instructor.")
         ids=SystemRandom().sample(ids,policy.select_count)
-    duration=max(1,policy.minutes)+(min(720,accommodation.extra_minutes) if accommodation else 0) if policy else None
+    duration=max(1,policy.minutes)+extra_minutes if policy else None
     expiry=min(close,now+timedelta(minutes=duration)) if duration else close
-    session,_=QuizSession.objects.get_or_create(quiz=quiz,student=request.user,number=number,defaults={"started":now,"expires":expiry,"question_ids":ids})
+    session,_=QuizSession.objects.get_or_create(quiz=quiz,student=request.user,number=number,defaults={"started":now,"expires":expiry,"question_ids":ids,"adjustment_snapshot":{"approval_ids":[a.pk for a in approvals],"exam_accommodation_id":accommodation.pk if accommodation else None,"extra_minutes":extra_minutes if policy else 0,"extra_attempts":extra_attempts}})
     if timezone.now()>=session.expires:
         return HttpResponseForbidden("Assessment time expired; contact your instructor.")
     lookup={q.pk:q for q in quiz.questions.all()}

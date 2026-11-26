@@ -18,5 +18,6 @@ class QuizSession(models.Model):
     started=models.DateTimeField()
     expires=models.DateTimeField()
     question_ids=models.JSONField(default=list)
+    adjustment_snapshot=models.JSONField(default=dict,blank=True)
     class Meta:
         constraints=[models.UniqueConstraint(fields=["quiz","student","number"],name="unique_numbered_session")]
