@@ -69,7 +69,7 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Basic course content duplication
 - [x] Basic learning progress tracking
 - [x] Calendar export
-- [~] Complete course content import and export (PR #25 adds validated FTBI JSON; announcements/calendar/external media excluded)
+- [~] Complete course content import and export (FTBI JSON v2 adds announcements/calendar/instructor prompts and shifted dates; external media binaries and standards packages excluded)
 - [x] Assignment rubrics (PR #22; SQLite/PostgreSQL CI 45502910804)
 - [x] Assignment resubmission policies (PR #22; SQLite/PostgreSQL CI 45502910804)
 - [x] Assignment submission version history (PR #22; SQLite/PostgreSQL CI 45502910804)

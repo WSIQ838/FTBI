@@ -1,7 +1,8 @@
 from datetime import timedelta
 from django import forms
 from django.contrib.auth.decorators import login_required
-from django.db import transaction
+from django.db import transaction,IntegrityError
+from django.core.exceptions import ValidationError
 from django.forms import modelformset_factory
 from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse,HttpResponseForbidden
@@ -45,45 +46,18 @@ def copy_content(request,pk):
     target=get_object_or_404(Course,pk=pk,instructor=request.user)
     form=CopyForm(request.POST if request.method=="POST" else None,user=request.user,target=target)
     if request.method=="POST" and form.is_valid():
-        with transaction.atomic():
-            target=get_object_or_404(Course.objects.select_for_update(),pk=pk,instructor=request.user)
-            if target.published or target.lessons.exists() or target.assignments.exists() or target.quiz_set.exists() or target.grade_categories.exists() or target.modules.exists() or hasattr(target,"completion_policy"):
-                return HttpResponseForbidden("Target must be unpublished with no lessons, assignments, quizzes or grading categories.")
-            source=form.cleaned_data["source"]
-            delta=timedelta(days=form.cleaned_data["shift_days"])
-            target.syllabus=source.syllabus
-            target.save(update_fields=["syllabus"])
-            from .learning import LearningModule,CompletionPolicy
-            modules={m.pk:LearningModule.objects.create(course=target,title=m.title,position=m.position) for m in source.modules.all()}
-            for original in source.modules.all():
-                modules[original.pk].prerequisites.set([modules[p.pk] for p in original.prerequisites.all() if p.pk in modules])
-            Lesson.objects.bulk_create([Lesson(course=target,title=x.title,body=x.body,position=x.position,module=modules.get(x.module_id),video_url=x.video_url) for x in source.lessons.all()])
-            completion=CompletionPolicy.objects.filter(course=source).first()
-            if completion:
-                CompletionPolicy.objects.create(course=target,enabled=False,minimum_score=completion.minimum_score)
-            from .assessment_policy import AssignmentPolicy, RubricCriterion
-            from .gradebook import GradeCategory, AssignmentWeight
-            from .quizzes import Quiz, Question
-            from .timing import QuizPolicy
-            categories = {c.pk: GradeCategory.objects.create(course=target, name=c.name, weight=c.weight) for c in source.grade_categories.all()}
-            for original in source.assignments.all():
-                copied = Assignment.objects.create(course=target,title=original.title,instructions=original.instructions,due=original.due+delta)
-                policy = AssignmentPolicy.objects.filter(assignment=original).first()
-                if policy:
-                    AssignmentPolicy.objects.create(assignment=copied, max_submissions=policy.max_submissions, allow_graded_resubmission=policy.allow_graded_resubmission, late_hours=policy.late_hours)
-                RubricCriterion.objects.bulk_create([RubricCriterion(assignment=copied,title=c.title,description=c.description,points=c.points) for c in original.rubric.all()])
-                weight = AssignmentWeight.objects.filter(assignment=original).first()
-                if weight and weight.category_id in categories:
-                    AssignmentWeight.objects.create(assignment=copied, category=categories[weight.category_id], points=weight.points)
-            for original in source.quiz_set.all():
-                copied = Quiz.objects.create(course=target,title=original.title,closes=original.closes+delta,published=False,results_released=original.results_released)
-                Question.objects.bulk_create([Question(quiz=copied,kind=q.kind,points=q.points,answer_key=q.answer_key,prompt=q.prompt,option_a=q.option_a,option_b=q.option_b,option_c=q.option_c,option_d=q.option_d,correct=q.correct) for q in original.questions.all()])
-                policy = QuizPolicy.objects.filter(quiz=original).first()
-                if policy:
-                    QuizPolicy.objects.create(quiz=copied, minutes=policy.minutes, shuffle=policy.shuffle, max_attempts=policy.max_attempts,select_count=policy.select_count,attempt_rule=policy.attempt_rule)
-            AuditEvent.objects.create(actor=request.user,action="course_content_copied",target=str(target.pk))
-        return redirect("faculty",pk=pk)
-    return render(request,"form.html",{"form":form,"heading":"Copy lessons and assignments from my course"})
+        from .course_package import empty_target,export_course,import_course
+        try:
+            with transaction.atomic():
+                target=get_object_or_404(Course.objects.select_for_update(),pk=pk,instructor=request.user)
+                if not empty_target(target): return HttpResponseForbidden("Target must be empty and unpublished, including course announcements, calendar events and discussions.")
+                import_course(target,export_course(form.cleaned_data["source"]),request.user,shift_days=form.cleaned_data["shift_days"])
+                AuditEvent.objects.create(actor=request.user,action="course_content_copied",target=str(target.pk))
+            return redirect("faculty",pk=pk)
+        except (ValidationError,ValueError,TypeError,KeyError,IntegrityError,RecursionError):
+            form.add_error(None,"Course content did not pass package validation. Nothing was copied.")
+    return render(request,"form.html",{"form":form,"heading":"Copy authored content from my course"})
+
 
 @login_required
 def progress(request,pk):
