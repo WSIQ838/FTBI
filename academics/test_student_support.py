@@ -218,3 +218,44 @@ class SupportTests(TestCase):
         session=QuizSession.objects.get(quiz=quiz,student=self.student)
         self.assertEqual(session.expires,quiz.closes)
         self.assertEqual(session.adjustment_snapshot["extra_minutes"],0)
+
+    def test_scheduled_risk_check_is_repeat_safe_and_uses_latest_standing(self):
+        from django.core.management import call_command
+        from io import StringIO
+        import json
+        from .notification_models import DurableNotification
+        AcademicStanding.objects.create(student=self.profile,term=self.term,gpa=1,status="probation",policy_snapshot={},calculated_by=self.manager)
+        first=StringIO();call_command("check_academic_risk",stdout=first)
+        self.assertEqual(json.loads(first.getvalue())["alerts_created"],1)
+        again=StringIO();call_command("check_academic_risk",stdout=again)
+        self.assertEqual(json.loads(again.getvalue())["alerts_created"],0)
+        self.assertEqual(DurableNotification.objects.filter(deduplication_key__startswith="risk-alert:").count(),1)
+        self.assertNotIn(self.profile.student_number,first.getvalue())
+        AcademicStanding.objects.create(student=self.profile,term=self.term,gpa=3,status="good",policy_snapshot={},calculated_by=self.manager)
+        call_command("check_academic_risk",stdout=StringIO())
+        self.assertEqual(AtRiskAlert.objects.count(),1)
+
+    def test_scheduled_risk_check_excludes_revoked_roles_and_inactive_assignments(self):
+        from .risk_checks import check_assignment
+        AcademicStanding.objects.create(student=self.profile,term=self.term,gpa=1,status="probation",policy_snapshot={},calculated_by=self.manager)
+        self.assignment.active=False;self.assignment.save()
+        self.assertFalse(check_assignment(self.assignment.pk))
+        self.assignment.active=True;self.assignment.save()
+        self.advisor.user_permissions.clear()
+        self.assertFalse(check_assignment(self.assignment.pk))
+        self.advisor.user_permissions.add(Permission.objects.get(content_type__app_label="academics",codename="view_advisorassignment"))
+        self.advisor.is_active=False;self.advisor.save()
+        self.assertFalse(check_assignment(self.assignment.pk))
+        self.advisor.is_active=True;self.advisor.save()
+        self.profile.status="withdrawn";self.profile.save()
+        self.assertFalse(check_assignment(self.assignment.pk))
+        self.assertFalse(AtRiskAlert.objects.exists())
+
+    def test_risk_delivery_failure_rolls_back_alert_for_retry(self):
+        from unittest.mock import patch
+        from .risk_checks import check_assignment
+        AcademicStanding.objects.create(student=self.profile,term=self.term,gpa=1,status="probation",policy_snapshot={},calculated_by=self.manager)
+        with patch("academics.risk_checks.notify",side_effect=RuntimeError("synthetic queue failure")):
+            with self.assertRaises(RuntimeError): check_assignment(self.assignment.pk)
+        self.assertFalse(AtRiskAlert.objects.exists())
+        self.assertTrue(check_assignment(self.assignment.pk))

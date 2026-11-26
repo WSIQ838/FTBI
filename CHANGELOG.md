@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Share portal and scheduled academic-risk checks with current assignment/role eligibility, atomic notification queuing and repeat-safe counts-only summaries.
+
 - Apply current approved course accommodations to new exam sessions with bounded, non-stacking extra time/attempts and private decision snapshots.
 - Preserve granted active sessions after revocation while enforcing closing dates and blocking unapproved new attempts.
 
