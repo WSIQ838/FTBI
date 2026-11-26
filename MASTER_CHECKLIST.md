@@ -537,11 +537,11 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [~] Migration documentation
 - [~] Testing documentation
 - [~] Release acceptance checklist
-- [ ] Complete API documentation
+- [~] Complete API documentation (current JSON/health/payment and exchange interfaces documented; comprehensive contracts and acceptance outstanding)
 - [~] Troubleshooting guide (workflow/error triage documented; institutional support and acceptance outstanding)
 - [~] Update and upgrade procedures (review/rehearsal/recovery procedure; production rehearsal and acceptance outstanding)
 - [~] Incident response manual (draft operating procedure; contacts, evidence storage and institutional acceptance outstanding)
-- [ ] User training materials
+- [~] User training materials (synthetic role-based workbook; institutional delivery and acceptance outstanding)
 - [~] Documentation accuracy review (registration, integration and security evidence corrected against implementation; comprehensive role/manual review outstanding)
 - [ ] Remove obsolete documentation
 - [ ] Final release notes
