@@ -31,3 +31,7 @@ Payments links to private adjustment history and the last reviewed financial reg
 ## Scholarships
 
 Use Scholarships to review open funds, apply, request renewal of an earlier posted award, and read decisions and history. Eligibility does not guarantee funding. Approved awards affect your account only after the scholarship office posts the credit.
+
+## Leadership and reports
+
+Authorized users have President dashboard, Dean dashboard or Report builder links. Reports contain internal aggregates. Capture a fixed report with an evidence reference when independent review is needed. See INSTITUTIONAL_REPORTING.md for scope, metric definitions and export limits. Applicants may select an active campus; existing campus assignments are maintained by authorized staff.

@@ -127,3 +127,6 @@ urlpatterns += [path('payments/history/',fav.history,name='payment_history'),pat
 
 from academics import scholarship_views as shv
 urlpatterns += [path('scholarships/',shv.home,name='scholarships'),path('scholarships/fund/<int:pk>/apply/',shv.apply,name='apply_scholarship'),path('scholarships/application/<int:pk>/',shv.detail,name='scholarship_application'),path('scholarships/application/<int:pk>/decide/',shv.decide,name='decide_scholarship'),path('scholarships/award/<int:pk>/<str:action>/',shv.award_action,name='scholarship_award_action')]
+
+from academics import report_builder_views as rbv
+urlpatterns += [path('reports/builder/',rbv.builder,name='report_builder'),path('reports/builder/new/',rbv.create_report,name='create_institutional_report'),path('reports/builder/<int:pk>/',rbv.run_report,name='run_institutional_report'),path('reports/builder/<int:pk>/capture/',rbv.capture,name='capture_report_snapshot'),path('reports/snapshots/<int:pk>/',rbv.snapshot_detail,name='report_snapshot'),path('reports/snapshots/<int:pk>/review/',rbv.review,name='review_report_snapshot'),path('reports/review/',rbv.review_queue,name='report_review_queue'),path('leadership/<str:role>/',rbv.leadership,name='leadership_dashboard')]

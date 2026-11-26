@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add campus classifications and carry applicant campus into student conversion.
+- Add scoped dean/president dashboards and bounded private aggregate reports.
+- Capture immutable reporting evidence with independent review, digest validation and approved snapshot exports.
+
 - Add scholarship funds, private applications, reviewed eligibility snapshots and renewals.
 - Reserve award budgets atomically and post/cancel/reverse institutional account credits without overwriting financial history.
 

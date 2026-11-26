@@ -51,7 +51,7 @@ def activate_student(request,pk):
             return HttpResponseForbidden("Applicant account requires review.")
         if StudentProfile.objects.filter(user=user).exists():
             return HttpResponseForbidden("Student profile already exists.")
-        profile=StudentProfile.objects.create(user=user,program=item.program,student_number="S"+secrets.token_hex(10).upper(),admitted_on=timezone.localdate())
+        profile=StudentProfile.objects.create(user=user,program=item.program,campus=item.campus,student_number="S"+secrets.token_hex(10).upper(),admitted_on=timezone.localdate())
         AuditEvent.objects.create(actor=request.user,action="student_activated",target=str(profile.pk))
     return redirect("admission_review")
 

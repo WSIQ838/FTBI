@@ -13,7 +13,10 @@ from .notification_models import notify
 class ApplicationForm(forms.ModelForm):
     class Meta:
         model = Application
-        fields = ["program","statement"]
+        fields = ["program","campus","statement"]
+    def __init__(self,*args,**kwargs):
+        super().__init__(*args,**kwargs)
+        self.fields["campus"].queryset=self.fields["campus"].queryset.filter(active=True)
 
 @login_required
 def student_record(request):
@@ -67,7 +70,7 @@ def admissions(request):
     if request.method=="POST" and form.is_valid():
         try:
             with transaction.atomic():
-                Application.objects.create(applicant=request.user,program=form.cleaned_data["program"],statement=form.cleaned_data["statement"])
+                Application.objects.create(applicant=request.user,program=form.cleaned_data["program"],campus=form.cleaned_data["campus"],statement=form.cleaned_data["statement"])
             return redirect("admissions")
         except IntegrityError:
             form.add_error("program","An application already exists for this program.")

@@ -23,6 +23,7 @@ class Term(models.Model):
     def __str__(self): return self.name
 
 class Course(models.Model):
+    campus=models.ForeignKey("academics.Campus",on_delete=models.PROTECT,null=True,blank=True)
     code = models.CharField(max_length=30)
     title = models.CharField(max_length=200)
     department = models.ForeignKey(Department, on_delete=models.PROTECT)
@@ -133,3 +134,5 @@ from .credentials import CredentialTemplate,CredentialArtifact,CredentialRevocat
 from .finance_adjustments import PaymentAdjustment,AllocationReduction,PaymentDispute,FinancialHoldPolicy,FinancialHold
 
 from .scholarships import ScholarshipFund,ScholarshipApplication,ScholarshipAward,ScholarshipEvent
+
+from .institutional_reporting import Campus,DeanAssignment,InstitutionalReport,ReportSnapshot,ReportReview
