@@ -27,3 +27,7 @@ Academic credentials lists your finalized transcripts and diplomas. Download the
 ## Payment adjustments
 
 Payments links to private adjustment history and the last reviewed financial registration hold status. Refunds and disputed funds can change invoice balances. Contact finance to review evidence or challenge a hold. A payment reference alone does not confirm money moved.
+
+## Scholarships
+
+Use Scholarships to review open funds, apply, request renewal of an earlier posted award, and read decisions and history. Eligibility does not guarantee funding. Approved awards affect your account only after the scholarship office posts the credit.

@@ -248,7 +248,7 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Invoice generation (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
 - [x] PDF payment receipts (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
 - [~] Automated financial holds (approved-policy checks at registration/promotion, finance action and batch command; institutional scheduling/policy acceptance outstanding)
-- [ ] Advanced scholarship management
+- [~] Advanced scholarship management (budget-controlled applications, eligibility, renewals and account postings; external aid, appeals and institutional acceptance outstanding)
 - [x] Financial reporting exports (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
 - [ ] Accounting software integration
 - [~] Financial audit reconciliation reports (internal allocation/CSV implemented in PR #24; processor/bank settlement validation outstanding)

@@ -2,6 +2,7 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
 
 ROLES={
+    "Scholarship Administration":["scholarshipfund","scholarshipapplication","scholarshipaward","scholarshipevent"],
     "Institution Administration":["institutionsettings"],
     "Accommodation Administration":["studentaccommodation"],
     "AI Administration":["aiconfiguration","aiusage","knowledgedocument"],
