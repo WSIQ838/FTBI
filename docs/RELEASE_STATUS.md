@@ -6,6 +6,14 @@ The complete supplied scope is preserved in `MASTER_CHECKLIST.md`. Its inherited
 
 Baseline confirmed: PR #21 merged into `55918912938420613bacaf5203a2e0aade0c381d`; main workflow run `45501305662` succeeded. Only 37 test methods existed at that point. Passing them is not comprehensive coverage of the full checklist.
 
+## Latest confirmed verification
+
+On November 25, 2026 (America/Los_Angeles), PR #38 merged after all ten push/PR checks passed for `aad236ec4a6bc860ea46c9234ee3e728ad379ab6`. The production smoke initially failed on Gunicorn logging initialization; the corrected configuration and an installed-default regression test passed before merge. PR check runs: validation 45764337627, browsers/accessibility 45764337572, security 45764337551, encrypted recovery 45764337615, production stack 45764337683.
+
+PR #39 then merged after all ten checks passed for `02d283f28dbbf1260e179089c8e33713222457bb`. PR check runs: validation 45765007718, browsers/accessibility 45765007363, security 45765007423, encrypted recovery 45765007348, production stack 45765007418. This covers course package v2 and import/copy rollback; external media and interoperability standards remain incomplete.
+
+These checks use synthetic data and disposable infrastructure. They do not establish institutional deployment, external-provider acceptance, complete checklist coverage or independent security/privacy approval.
+
 ## External gates
 
 | Gate | Missing evidence or dependency | Required acceptance |

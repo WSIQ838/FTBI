@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Apply current approved course accommodations to new exam sessions with bounded, non-stacking extra time/attempts and private decision snapshots.
+- Preserve granted active sessions after revocation while enforcing closing dates and blocking unapproved new attempts.
+
 - Extend course JSON to version 2 with draft announcements/calendar events and closed instructor discussion prompts; retain version 1 import support.
 - Share import/copy validation, shift offset-aware dates and reject nonempty communication targets without partial writes.
 - Fix Gunicorn root logger configuration after production-stack CI exposed an inherited missing handler; add installed-default configuration regression coverage.

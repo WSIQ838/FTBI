@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.core.validators import MaxValueValidator
 from django.db import models
 from django.db.models import Q
 from .registrar import StudentProfile
@@ -63,6 +64,8 @@ class AtRiskAlert(models.Model):
         constraints=[models.UniqueConstraint(fields=["standing","advisor"],name="unique_standing_advisor_alert")]
 
 class StudentAccommodation(models.Model):
+    exam_extra_minutes=models.PositiveIntegerField(default=0,blank=True,validators=[MaxValueValidator(720)])
+    exam_extra_attempts=models.PositiveSmallIntegerField(default=0,blank=True,validators=[MaxValueValidator(5)])
     student=models.ForeignKey(StudentProfile,on_delete=models.PROTECT)
     course=models.ForeignKey(Course,on_delete=models.PROTECT)
     instructions=models.TextField(max_length=4000,help_text="Approved functional adjustments only; do not include diagnoses or medical evidence.")

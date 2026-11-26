@@ -128,3 +128,93 @@ class SupportTests(TestCase):
         self.assertEqual(self.client.post(reverse("create_advisee_case",args=[self.assignment.pk]),payload).status_code,302)
         self.client.force_login(self.unassigned)
         self.assertEqual(self.client.post(reverse("create_advisee_case",args=[self.assignment.pk]),payload).status_code,404)
+
+    def exam_fixture(self,**adjustments):
+        from .quizzes import Quiz,Question
+        from .timing import QuizPolicy
+        quiz=Quiz.objects.create(course=self.course,title="Adjusted exam",closes=timezone.now()+timedelta(days=1),published=True)
+        QuizPolicy.objects.create(quiz=quiz,minutes=20)
+        question=Question.objects.create(quiz=quiz,prompt="True?",kind="boolean",answer_key=[True])
+        record=StudentAccommodation.objects.create(student=self.profile,course=self.course,instructions="Functional adjustment",starts=timezone.localdate()-timedelta(days=1),ends=timezone.localdate()+timedelta(days=1),approval_reference="SYNTHETIC",created_by=self.manager,**adjustments)
+        self.client.force_login(self.student)
+        return quiz,question,record
+
+    def test_reviewed_exam_adjustments_apply_without_stacking_and_snapshot(self):
+        from .timing import QuizSession
+        from .exam_extensions import ExamAccommodation
+        quiz,question,record=self.exam_fixture(status="approved",exam_extra_minutes=30,exam_extra_attempts=2)
+        ExamAccommodation.objects.create(quiz=quiz,student=self.student,extra_minutes=10,extra_attempts=1)
+        self.assertEqual(self.client.get(reverse("take_quiz",args=[quiz.pk])).status_code,200)
+        session=QuizSession.objects.get(quiz=quiz)
+        self.assertEqual(session.expires-session.started,timedelta(minutes=50))
+        self.assertEqual(session.adjustment_snapshot["approval_ids"],[record.pk])
+        self.assertEqual(session.adjustment_snapshot["extra_attempts"],2)
+        self.assertNotIn("Functional",str(session.adjustment_snapshot))
+        record.status="revoked";record.save()
+        self.assertEqual(self.client.get(reverse("take_quiz",args=[quiz.pk])).status_code,200)
+        session.refresh_from_db()
+        self.assertEqual(session.expires-session.started,timedelta(minutes=50))
+
+    def test_draft_expired_future_revoked_and_other_course_adjustments_do_not_apply(self):
+        from .timing import QuizSession
+        quiz,question,record=self.exam_fixture(status="draft",exam_extra_minutes=30)
+        url=reverse("take_quiz",args=[quiz.pk])
+        for status,starts,ends in [("draft",-1,1),("revoked",-1,1),("approved",-3,-1),("approved",1,3)]:
+            record.status=status;record.starts=timezone.localdate()+timedelta(days=starts);record.ends=timezone.localdate()+timedelta(days=ends);record.save()
+            self.assertEqual(self.client.get(url).status_code,200)
+            session=QuizSession.objects.get(quiz=quiz)
+            self.assertEqual(session.expires-session.started,timedelta(minutes=20))
+            self.assertEqual(session.adjustment_snapshot["approval_ids"],[])
+            session.delete()
+        record.status="approved";record.starts=timezone.localdate();record.ends=timezone.localdate()
+        record.course=Course.objects.create(code="B",title="Other course",department=self.course.department,term=self.term,instructor=self.advisor)
+        record.save()
+        self.client.get(url)
+        self.assertEqual(QuizSession.objects.get(quiz=quiz).adjustment_snapshot["approval_ids"],[])
+
+    def test_revocation_preserves_started_extra_attempt_but_blocks_new_attempts(self):
+        from .quizzes import Attempt
+        quiz,question,record=self.exam_fixture(status="approved",exam_extra_attempts=2)
+        Attempt.objects.create(quiz=quiz,student=self.student,number=1,score=1,total=1)
+        url=reverse("take_quiz",args=[quiz.pk])
+        self.assertEqual(self.client.get(url).status_code,200)
+        record.status="revoked";record.save()
+        self.assertEqual(self.client.post(url,{"attempt_number":2,f"q{question.pk}":"true"}).status_code,302)
+        self.assertEqual(self.client.get(url).status_code,403)
+
+    def test_approved_time_is_capped_by_closing_date(self):
+        from .timing import QuizSession
+        quiz,question,record=self.exam_fixture(status="approved",exam_extra_minutes=720)
+        quiz.closes=timezone.now()+timedelta(minutes=25);quiz.save()
+        self.client.get(reverse("take_quiz",args=[quiz.pk]))
+        self.assertEqual(QuizSession.objects.get(quiz=quiz).expires,quiz.closes)
+
+    def test_accommodation_form_validates_exam_bounds_and_students_cannot_draft(self):
+        url=reverse("draft_accommodation")
+        self.client.force_login(self.student)
+        self.assertEqual(self.client.get(url).status_code,403)
+        self.client.force_login(self.manager)
+        payload={"student":self.profile.pk,"course":self.course.pk,"instructions":"Extra time","starts":timezone.localdate(),"ends":timezone.localdate(),"approval_reference":"SYNTHETIC","exam_extra_minutes":721,"exam_extra_attempts":6}
+        response=self.client.post(url,payload)
+        self.assertEqual(response.status_code,200)
+        self.assertFalse(StudentAccommodation.objects.exists())
+        payload.update(exam_extra_minutes=30,exam_extra_attempts=1)
+        self.assertEqual(self.client.post(url,payload).status_code,302)
+        record=StudentAccommodation.objects.get()
+        self.assertEqual((record.status,record.exam_extra_minutes,record.exam_extra_attempts),("draft",30,1))
+
+    def test_other_student_does_not_inherit_adjustments_and_untimed_quiz_stays_untimed(self):
+        from .timing import QuizSession,QuizPolicy
+        quiz,question,record=self.exam_fixture(status="approved",exam_extra_minutes=30)
+        Enrollment.objects.create(course=self.course,student=self.other)
+        self.client.force_login(self.other)
+        self.client.get(reverse("take_quiz",args=[quiz.pk]))
+        session=QuizSession.objects.get(quiz=quiz,student=self.other)
+        self.assertEqual(session.expires-session.started,timedelta(minutes=20))
+        self.assertEqual(session.adjustment_snapshot["approval_ids"],[])
+        QuizPolicy.objects.filter(quiz=quiz).delete()
+        self.client.force_login(self.student)
+        self.client.get(reverse("take_quiz",args=[quiz.pk]))
+        session=QuizSession.objects.get(quiz=quiz,student=self.student)
+        self.assertEqual(session.expires,quiz.closes)
+        self.assertEqual(session.adjustment_snapshot["extra_minutes"],0)
