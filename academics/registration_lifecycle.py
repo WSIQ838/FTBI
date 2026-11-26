@@ -18,10 +18,12 @@ def promote_locked(window):
         entry=WaitlistEntry.objects.filter(course=window.course).select_related("student").first()
         if not entry:
             break
-        profile=entry.student
+        profile=StudentProfile.objects.select_for_update().get(pk=entry.student_id)
+        from .finance_adjustments import evaluate_financial_hold
+        financial_hold=evaluate_financial_hold(profile).active
         from .student_records import WithdrawalRequest
         if WithdrawalRequest.objects.filter(enrollment__student=profile.user,enrollment__course=window.course,status="approved").exists(): break
-        if profile.status!="active" or profile.registration_hold or not profile.user.is_active or not prerequisites_met(profile,window.course):
+        if profile.status!="active" or profile.registration_hold or financial_hold or not profile.user.is_active or not prerequisites_met(profile,window.course):
             # Preserve queue order until registrar resolves an ineligible head.
             break
         Enrollment.objects.update_or_create(student=profile.user,course=window.course,defaults={"active":True})

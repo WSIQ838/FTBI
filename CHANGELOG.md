@@ -2,6 +2,10 @@
 
 ## Unreleased
 
+- Add append-only confirmed manual-payment refunds, withheld-funds disputes and once-only recovery postings.
+- Release affected invoice allocations without rewriting their history; show net payments on receipts and reconciliation exports.
+- Add disabled-by-default approved financial registration holds with installment/grace handling, independent manual holds and audited transitions.
+
 - Finalize immutable transcript/diploma PDF artifacts with optional required digital signing and fail-closed issuance.
 - Add private credential downloads, privacy-limited public verification/file comparison, revocation and replay-safe replacement.
 - Add approved text templates and cryptographic signature/tamper tests with ephemeral certificates; institutional signing acceptance remains outstanding.

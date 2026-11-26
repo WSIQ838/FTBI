@@ -101,7 +101,7 @@ admin.site.unregister(LedgerEntry)
 @admin.register(LedgerEntry)
 class LedgerAdmin(admin.ModelAdmin):
     def has_change_permission(self,request,obj=None):
-        if obj and (hasattr(obj,"invoice") or hasattr(obj,"payment_record")): return False
+        if obj and (hasattr(obj,"invoice") or hasattr(obj,"payment_record") or hasattr(obj,"payment_adjustment")): return False
         return super().has_change_permission(request,obj)
     def has_delete_permission(self,request,obj=None): return False
 
@@ -163,3 +163,7 @@ from .credentials import CredentialTemplate,CredentialArtifact,CredentialRevocat
 admin.site.register(CredentialTemplate)
 for model in [CredentialArtifact,CredentialRevocation,CredentialReplacement]:
     admin.site.register(model,AssessmentRecordAdmin)
+
+from .finance_adjustments import PaymentAdjustment,AllocationReduction,PaymentDispute,FinancialHoldPolicy,FinancialHold
+admin.site.register(FinancialHoldPolicy)
+for model in [PaymentAdjustment,AllocationReduction,PaymentDispute,FinancialHold]: admin.site.register(model,AssessmentRecordAdmin)

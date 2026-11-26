@@ -35,6 +35,9 @@ def register(request, pk):
         profile = StudentProfile.objects.select_for_update().filter(user=request.user,status="active",registration_hold=False).first()
         if not profile:
             return HttpResponseForbidden("Registration requires an active student account without a hold.")
+        from .finance_adjustments import evaluate_financial_hold
+        if evaluate_financial_hold(profile).active:
+            return HttpResponseForbidden("A financial registration hold is active. Contact finance for review.")
         now = timezone.now()
         if not window.course.published or not window.opens <= now < window.closes:
             return HttpResponseForbidden("Registration is closed.")

@@ -23,3 +23,7 @@ Choose Portal preferences to set your timezone, show or hide dashboard sections 
 ## Academic credentials
 
 Academic credentials lists your finalized transcripts and diplomas. Download the PDF and share its ID and verification code only with your intended recipient. The public verification portal checks current status and can compare a supplied PDF; it does not expose your name or grades. Contact the registrar about revoked documents or corrections. A registry match and a trusted digital signature are different checks. See CREDENTIALS.md.
+
+## Payment adjustments
+
+Payments links to private adjustment history and the last reviewed financial registration hold status. Refunds and disputed funds can change invoice balances. Contact finance to review evidence or challenge a hold. A payment reference alone does not confirm money moved.

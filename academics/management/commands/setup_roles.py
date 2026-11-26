@@ -11,7 +11,7 @@ ROLES={
     "Admissions":["application","applicationnote","admissioninterview","documentverification","privatedocument"],
     "Admissions Managers":["applicationreviewer"],
     "IT Audit":["auditevent"],
-    "Finance":["ledgerentry","financialaidaward","paymentrequest","invoice","paymentallocation","paymentplan","installment","tuitionschedule"],
+    "Finance":["paymentadjustment","allocationreduction","paymentdispute","financialholdpolicy","financialhold","ledgerentry","financialaidaward","paymentrequest","invoice","paymentallocation","paymentplan","installment","tuitionschedule"],
     "Academic Administration":["privatedocument","department","program","term","course","gradecategory","assignmentweight","attendance","learningoutcome","practicum","announcement","calendarevent","libraryresource"],
     "Institutional Reporting":["studentprofile","enrollment","application"],
 }
