@@ -422,16 +422,16 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Custom branding (institution/import regression tests and five local browser configurations; institutional acceptance separate)
 - [x] Logo uploads (institution/import regression tests and five local browser configurations; institutional acceptance separate)
 - [x] Custom color themes (institution/import regression tests and five local browser configurations; institutional acceptance separate)
-- [ ] Custom report builder
-- [ ] Accreditation reporting
-- [ ] Advanced institutional analytics
-- [ ] Dedicated president dashboard
-- [ ] Dedicated dean dashboard
+- [x] Custom report builder (bounded aggregate reporting with current role scope; see docs/INSTITUTIONAL_REPORTING.md)
+- [~] Accreditation reporting (reviewed immutable evidence snapshots; accreditor-specific definitions and acceptance outstanding)
+- [~] Advanced institutional analytics (scoped current aggregates; cohort retention, forecasting and advanced measures outstanding)
+- [x] Dedicated president dashboard (bounded aggregate reporting with current role scope; see docs/INSTITUTIONAL_REPORTING.md)
+- [x] Dedicated dean dashboard (bounded aggregate reporting with current role scope; see docs/INSTITUTIONAL_REPORTING.md)
 - [x] Bulk student imports (institution/import regression tests and five local browser configurations; institutional acceptance separate)
 - [x] Bulk course imports (institution/import regression tests and five local browser configurations; institutional acceptance separate)
-- [ ] Administrative approval workflows
+- [~] Administrative approval workflows (independent report snapshot approval; institution-wide governance workflows outstanding)
 - [ ] Institutional policy configuration
-- [ ] Multi-campus management
+- [~] Multi-campus management (campus classifications, admissions conversion and aggregate filtering; separate calendars/budgets/transfers outstanding)
 - [ ] Institutional document templates
 
 ## 14. User Interface and Accessibility

@@ -2,8 +2,9 @@ from django.core.management.base import BaseCommand
 from django.contrib.auth.models import Group, Permission
 
 ROLES={
+    "Reporting Access Administration":["deanassignment"],
     "Scholarship Administration":["scholarshipfund","scholarshipapplication","scholarshipaward","scholarshipevent"],
-    "Institution Administration":["institutionsettings"],
+    "Institution Administration":["institutionsettings","campus"],
     "Accommodation Administration":["studentaccommodation"],
     "AI Administration":["aiconfiguration","aiusage","knowledgedocument"],
     "Security Administration":["accountsecurity","accountsession","securityincident","durablenotification","accountcontrolevent"],
@@ -28,3 +29,11 @@ class Command(BaseCommand):
                 permissions=permissions.exclude(codename__startswith="delete_")
             group.permissions.set(permissions)
             self.stdout.write(name)
+
+        report_permissions=["view_institutionalreport","add_institutionalreport","view_reportsnapshot","add_reportsnapshot"]
+        for name,extra in [("President",["view_president_dashboard"]),("Dean",["view_dean_dashboard"]),("Report Reviewer",["review_report_snapshot","view_studentprofile","view_application","view_enrollment","view_finalgrade"])]:
+            group,_=Group.objects.get_or_create(name=name)
+            group.permissions.set(Permission.objects.filter(content_type__app_label="academics",codename__in=report_permissions+extra))
+            self.stdout.write(name)
+        group=Group.objects.get(name="Institutional Reporting")
+        group.permissions.add(*Permission.objects.filter(content_type__app_label="academics",codename__in=report_permissions))

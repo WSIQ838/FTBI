@@ -1,0 +1,27 @@
+# Institutional reports, campuses and leadership
+
+Campus records have a unique code, name, address and active flag. Authorized institution administrators maintain them. Registrars classify student profiles and academic administrators classify course sections through their existing controlled administration. Applications may select an active campus; conversion carries that campus into the student profile. Historical rows remain Unassigned until reviewed. Campus is an organizational classification, not a separate security tenant, billing entity or automatic registration restriction. Course code/term/section uniqueness remains institution-wide; campus-specific duplicate sections need distinct section codes. Bulk imports currently leave campus unassigned. Cross-campus transfer history, campus budgets and separate calendars remain unfinished.
+
+## Access and dashboards
+
+President provides institution-wide aggregate dashboards and report creation without granting individual record administration. Dean provides aggregate dashboards and reports only within active DeanAssignment departments. Reporting Access Administration controls those assignments; a dean cannot assign themself. Student/application scope follows the program department; enrollment/grade scope follows the course department. Current department scope is rechecked on each report and snapshot request. Removing assignments revokes access to old snapshots whose scope is no longer authorized. Do not grant deans unrelated broad record permissions: older institution-wide reports and administration retain their existing explicit permission contracts.
+
+The president and dean dashboards show current active students by program, applications by status, active enrollments by term and released grade records/earned credits by term. Enrollment counts are section registrations; distinct-student counts apply within each group and must not be added across groups. These are current-state figures, not historical cohort retention, forecasts or completion rates.
+
+## Saved aggregate report builder
+
+Supported datasets are students, admissions, enrollments and released grades. Group by department/campus/status; students and admissions also support program; enrollments and grades support term. Optional department/campus filters apply to all datasets. Term filtering applies only to enrollments/grades. Student status filters are active, leave, graduated and withdrawn; admissions filters are pending, accepted and rejected; enrollment filters are active and inactive. Grade status filters are not supported. Unsupported field paths and raw query expressions are rejected. Reports are private to their owner; dataset authority is checked again when running them. At most 500 result groups are returned; larger reports must be narrowed.
+
+CSV exports contain aggregate counts, distinct students for enrollments or earned credits for released grades. Formula-like labels are escaped. No names, student numbers, application statements or individual grade rows are exported. Small groups may still be identifiable; this is an internal authorized reporting tool, not a deidentification or public-disclosure mechanism. External sharing needs institutional privacy review. Demographic collection/reporting and accreditation-specific denominators/formulas are not implemented by this feature.
+
+## Reviewed accreditation evidence snapshots
+
+Capture a report with a reporting purpose or accreditation criterion and an institutional evidence reference. The immutable payload records dataset, grouping, filters, department scope, generation time and exact aggregate figures. A SHA-256 digest detects accidental or unauthorized payload changes; it does not provide external tamper-resistant audit storage. Later source changes cannot rewrite the captured figures. Snapshot metadata and figures remain private.
+
+Report Reviewer can inspect snapshots within their current authorized dataset scope. The creator cannot approve their own snapshot. A reasoned approval or rejection is retained once; retries do not produce duplicate decisions, and opposite decisions are refused. Approved snapshots can be downloaded as CSV; pending and rejected snapshots cannot use that export. Current reports remain exportable as explicitly current internal aggregates. Rejected snapshots require corrected source data and a fresh capture. No external message, regulator upload or accreditation submission is sent.
+
+This provides evidence preparation and independent review. It is not an accreditor's accepted report format, a legal compliance determination or a comprehensive institutional approval system. Applicable standards, reporting definitions, source-data reconciliation and institutional sign-off remain outstanding. Governance policies for unrelated finance, academic and privacy workflows remain their separate controls.
+
+## Verification
+
+academics.test_institutional_reporting covers dean/president scope, unauthorized datasets and field paths, owner privacy, current assignment revocation, campus/status/term filters, released-only grade totals, unassigned historical data, inactive application-campus rejection, fixed snapshots, independent review, export gates, replay protection, integrity mismatch and CSV formula escaping. Migration 0019 adds nullable campus links without inventing historical affiliations. Tests use synthetic records.

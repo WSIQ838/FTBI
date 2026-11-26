@@ -4,6 +4,7 @@ from django.core.exceptions import ValidationError
 from .models import Program, Course
 
 class StudentProfile(models.Model):
+    campus=models.ForeignKey("academics.Campus",on_delete=models.PROTECT,null=True,blank=True)
     user = models.OneToOneField(settings.AUTH_USER_MODEL,on_delete=models.PROTECT,related_name="student_profile")
     student_number = models.CharField(max_length=32,unique=True)
     program = models.ForeignKey(Program,on_delete=models.PROTECT)
@@ -23,6 +24,7 @@ class RegistrationWindow(models.Model):
     def __str__(self): return str(self.course)
 
 class Application(models.Model):
+    campus=models.ForeignKey("academics.Campus",on_delete=models.PROTECT,null=True,blank=True)
     applicant = models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT)
     program = models.ForeignKey(Program,on_delete=models.PROTECT)
     statement = models.TextField()

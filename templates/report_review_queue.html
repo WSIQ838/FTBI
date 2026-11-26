@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block content %}<h1>Report snapshot review</h1>{% for item in snapshots %}<p><a href="{% url 'report_snapshot' item.pk %}">{{ item.payload.title }} · {{ item.purpose }}</a></p>{% empty %}<p>No pending snapshots within your current scope.</p>{% endfor %}{% endblock %}

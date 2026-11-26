@@ -178,3 +178,8 @@ class FinancialAidAdmin(admin.ModelAdmin):
         if obj and hasattr(obj,"scholarship_award"): return False
         return super().has_change_permission(request,obj)
     def has_delete_permission(self,request,obj=None): return False
+
+from .institutional_reporting import Campus,DeanAssignment,InstitutionalReport,ReportSnapshot,ReportReview
+admin.site.register(Campus)
+admin.site.register(DeanAssignment)
+for model in [InstitutionalReport,ReportSnapshot,ReportReview]: admin.site.register(model,AssessmentRecordAdmin)
