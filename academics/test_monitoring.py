@@ -135,3 +135,24 @@ class MonitoringTests(TestCase):
         data=SafeJSONFormatter().format(record)
         for secret in ["SECRET","TOKEN","PRIVATE RECORD","private/path","password"]: self.assertNotIn(secret,data)
         self.assertEqual(json.loads(data)["exception_type"],"ValueError")
+
+
+class ProductionLoggingTests(SimpleTestCase):
+    def test_gunicorn_merged_logging_configuration_can_initialize(self):
+        import sys
+        from django.conf import settings
+        code="""
+import ast,importlib.util,logging.config,pathlib,runpy
+package=importlib.util.find_spec('gunicorn')
+source=pathlib.Path(next(iter(package.submodule_search_locations)))/'glogging.py'
+tree=ast.parse(source.read_text())
+defaults=next(ast.literal_eval(node.value) for node in tree.body if isinstance(node,ast.Assign) and any(isinstance(target,ast.Name) and target.id=='CONFIG_DEFAULTS' for target in node.targets))
+configured=runpy.run_path('ops/gunicorn.conf.py')['logconfig_dict']
+defaults.update(configured)
+logging.config.dictConfig(defaults)
+logging.getLogger('gunicorn.error').info('PRIVATE request content')
+"""
+        result=subprocess.run([sys.executable,"-c",code],cwd=settings.BASE_DIR,capture_output=True,text=True,timeout=20)
+        self.assertEqual(result.returncode,0,result.stderr)
+        self.assertNotIn("PRIVATE",result.stderr)
+        self.assertIn('"event": "log_event"',result.stderr)
