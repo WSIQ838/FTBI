@@ -35,3 +35,7 @@ Use Scholarships to review open funds, apply, request renewal of an earlier post
 ## Leadership and reports
 
 Authorized users have President dashboard, Dean dashboard or Report builder links. Reports contain internal aggregates. Capture a fixed report with an evidence reference when independent review is needed. See INSTITUTIONAL_REPORTING.md for scope, metric definitions and export limits. Applicants may select an active campus; existing campus assignments are maintained by authorized staff.
+
+## Policies and optional information
+
+Institution policies shows currently effective approved versions. Acknowledging a policy is separate from choosing to provide optional demographic information. If collection is enabled, review the displayed policy and choose which questions to answer. You may withdraw your current answers even after collection is disabled. See GOVERNANCE.md for access and retention limits.
