@@ -46,12 +46,15 @@ jobs:
           age-keygen -o "$BACKUP_AGE_IDENTITY_FILE"
           export BACKUP_AGE_RECIPIENT="$(age-keygen -y "$BACKUP_AGE_IDENTITY_FILE")"
           python scripts/database_fingerprint.py > "$RUNNER_TEMP/before.txt"
-          sh scripts/backup-encrypted.sh
+          python scripts/backup_catalog.py init "$BACKUP_DIR"
+          python scripts/backup_catalog.py run "$BACKUP_DIR"
           createdb "$FTBI_RESTORE_TEST_DB"
           sh scripts/restore-encrypted-check.sh "$BACKUP_DIR"/*.dump.age
           POSTGRES_DB="$FTBI_RESTORE_TEST_DB" python scripts/database_fingerprint.py > "$RUNNER_TEMP/after.txt"
           diff "$RUNNER_TEMP/before.txt" "$RUNNER_TEMP/after.txt"
           POSTGRES_DB="$FTBI_RESTORE_TEST_DB" python manage.py migrate --check
+          for archive in "$BACKUP_DIR"/*.dump.age; do python scripts/backup_catalog.py mark-restored "$BACKUP_DIR" --archive "$(basename "$archive")"; done
+          python scripts/backup_catalog.py prune "$BACKUP_DIR"
           cat "$RUNNER_TEMP/after.txt"
           echo "Encrypted synthetic-data restore and exact application-row comparison passed." > recovery-result.txt
       - uses: actions/upload-artifact@v4

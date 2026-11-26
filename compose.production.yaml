@@ -42,6 +42,7 @@ services:
       POSTGRES_DB: ftbi
       POSTGRES_USER: ftbi
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?required}
+      FTBI_MONITOR_TOKEN: ${FTBI_MONITOR_TOKEN:-}
       FTBI_REDIS_URL: redis://cache:6379/0
       FTBI_CLAMAV_HOST: ${FTBI_CLAMAV_HOST:-}
       FTBI_INSTITUTION_NAME: ${FTBI_INSTITUTION_NAME:-FTBI Academic Portal}
@@ -52,7 +53,7 @@ services:
       cache:
         condition: service_healthy
     expose: ["8000"]
-    command: ["sh","-c","python manage.py check_release && python manage.py collectstatic --noinput && gunicorn ftbi.wsgi:application --bind 0.0.0.0:8000 --workers 3 --access-logfile -"]
+    command: ["sh","-c","python manage.py check_release && python manage.py collectstatic --noinput && gunicorn -c ops/gunicorn.conf.py ftbi.wsgi:application --bind 0.0.0.0:8000 --workers 3 --access-logfile -"]
     healthcheck:
       test: ["CMD","python","-c","import urllib.request; r=urllib.request.Request('http://127.0.0.1:8000/health/ready/',headers={'X-Forwarded-Proto':'https','Host':'localhost'}); urllib.request.urlopen(r,timeout=5)"]
       interval: 30s

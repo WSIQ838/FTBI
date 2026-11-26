@@ -1,0 +1,19 @@
+# Operational monitoring and alert boundaries
+
+Operations provides a permission-restricted workspace with current database/cache probes, local disk free space, notification backlog/failure counts and configured encrypted-backup freshness. JSON metrics additionally include worker uptime, database probe latency and a one-minute OS load average where available. Disk figures describe the application's filesystem; they do not prove database-volume or offsite capacity. CPU/memory/container orchestration metrics require infrastructure monitoring that is not supplied here.
+
+The private /health/metrics/ endpoint is disabled unless FTBI_MONITOR_TOKEN is configured with at least 32 characters. It accepts the token only in the Authorization Bearer header, uses constant-time comparison and returns no-store responses. Query-string tokens are rejected. Healthy results use HTTP 200; failed/unconfigured checks use 503. These metrics contain counts and operational status, not names, notification bodies, connection strings or private paths. Existing live/readiness endpoints retain their minimal responses.
+
+check_operations evaluates the same checks, persists alert transitions and exits nonzero when checks fail. Members of the Operations group receive durable private notices only when a check enters or leaves failure. Repeated failing checks update counters without duplicate notices. The workspace shows the monitor's last persisted time so stale scheduling is visible. SMTP delivery uses the existing approved notification worker and is not proven until live service validation. A database outage can prevent persistence and in-app notices; the command reports failure and logs a generic event. Independent external uptime and alert delivery remain necessary.
+
+Operational thresholds are FTBI_MIN_DISK_FREE_MB (default 1024), FTBI_NOTIFICATION_MAX_WAIT_MINUTES (60) and FTBI_BACKUP_MAX_AGE_HOURS (26). A managed backup directory is supplied through FTBI_BACKUP_DIR. No store is configured by default; the backup check truthfully reports unconfigured. Backup freshness is not a restore guarantee. A running backup can retain healthy freshness from a recent success for up to one hour; longer runs, failed or stale results are unhealthy. Institutional monitoring deployment, secret provisioning, cadence and threshold acceptance remain external gates. The production Compose file exposes token configuration but does not mount an institutional backup store or create a scheduler.
+
+## Structured logs
+
+Production Django logging defaults to SafeJSONFormatter. It emits timestamp, logger, severity, validated event code, numeric status and exception type when present. Arbitrary messages, arguments, request paths, query strings, headers, bodies and exception values are excluded. Gunicorn production configuration logs numeric status, response bytes and duration only; application activation URLs and tokens are not written into access logs. This intentionally sacrifices raw trace detail; controlled incident investigation needs approved tooling and restricted diagnostic procedures.
+
+Logs are written to standard streams. No external log collector, retention service, immutable audit store, paging provider or security-monitoring backend has been provisioned. Structured local output is not centralized logging acceptance. Never enable raw access logging or dump request data while investigating real student records.
+
+## Evidence
+
+Monitoring tests cover bearer-only access, Unicode/wrong tokens, dependency failures, staff scope, deduplicated alert/recovery notifications, backup freshness, notification failures, persistence outage handling and log redaction. Production stack CI checks the real PostgreSQL/Redis/Gunicorn metrics endpoint and confirms missing backup configuration remains unhealthy. These do not test a real institutional domain, external uptime provider, real notification delivery or production resource capacity.

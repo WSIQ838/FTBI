@@ -188,3 +188,6 @@ from .governance import InstitutionPolicy,PolicyRevision,PolicyReview,PolicyWith
 admin.site.register(InstitutionPolicy)
 admin.site.register(DemographicCollection)
 for model in [PolicyRevision,PolicyReview,PolicyWithdrawal,PolicyAcknowledgment]: admin.site.register(model,AssessmentRecordAdmin)
+
+from .monitoring import OperationAlert
+admin.site.register(OperationAlert,AssessmentRecordAdmin)

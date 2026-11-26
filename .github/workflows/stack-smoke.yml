@@ -13,6 +13,7 @@ jobs:
       POSTGRES_PASSWORD: ci-only-disposable-db-password
       DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
       FTBI_DOMAIN: localhost
+      FTBI_MONITOR_TOKEN: synthetic-ci-monitor-token-never-use-in-production
       FTBI_CLAMAV_HOST: scanner
     steps:
       - uses: actions/checkout@v4

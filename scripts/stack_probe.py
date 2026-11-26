@@ -22,3 +22,23 @@ request=Request("http://127.0.0.1:8000/health/ready/",headers={"Host":"localhost
 with urlopen(request,timeout=10) as response:  # nosec B310
     if json.loads(response.read())["status"]!="ready": raise RuntimeError("Readiness failed")
 print("Production-mode PostgreSQL, Redis and Gunicorn readiness passed; public TLS and institution acceptance not tested.")
+
+from urllib.error import HTTPError
+endpoint="http://127.0.0.1:8000/health/metrics/"
+headers={"Host":"localhost","X-Forwarded-Proto":"https"}
+try:
+    urlopen(Request(endpoint,headers=headers),timeout=10)  # nosec B310
+    raise RuntimeError("Metrics accepted an unauthenticated request")
+except HTTPError as error:
+    if error.code!=401: raise
+headers["Authorization"]="Bearer "+settings.FTBI_MONITOR_TOKEN
+try:
+    response=urlopen(Request(endpoint,headers=headers),timeout=10)  # nosec B310
+except HTTPError as error:
+    if error.code!=503: raise
+    response=error
+with response:
+    payload=json.loads(response.read())
+    if not payload["checks"]["database"] or not payload["checks"]["cache"]: raise RuntimeError("Operational dependency checks failed")
+    if payload["metrics"]["backup"]["state"]!="unconfigured": raise RuntimeError("CI must not claim an institutional backup store is configured")
+print("Private operational metrics verified; missing institutional backup configuration correctly remains unhealthy.")
