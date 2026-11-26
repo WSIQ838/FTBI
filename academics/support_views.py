@@ -152,13 +152,10 @@ def add_support_action(request,pk,kind):
 @permission_required("academics.view_advisorassignment",raise_exception=True)
 @require_POST
 def flag_risk(request):
-    for student in advising_students(request.user):
-        standing=AcademicStanding.objects.filter(student=student).order_by("-term__ends","-created").first()
-        if standing and standing.status=="probation":
-            alert,created=AtRiskAlert.objects.get_or_create(standing=standing,advisor=request.user)
-            if created:
-                AuditEvent.objects.create(actor=request.user,action="academic_risk_flagged",target=str(alert.pk))
-                notify(request.user,"enrollment","Academic support review needed","Review standing alerts in your private student support workspace.",f"risk-alert:{alert.pk}")
+    from .risk_checks import check_assignment
+    assignments=AdvisorAssignment.objects.filter(advisor=request.user,active=True).values_list("pk",flat=True)
+    for assignment_id in assignments.iterator(chunk_size=200):
+        check_assignment(assignment_id,actor=request.user)
     return redirect("support_home")
 
 

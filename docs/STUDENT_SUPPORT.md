@@ -6,7 +6,7 @@ Students open support cases for assigned advisors, and advisors can open cases f
 
 Advisors record success plans with goals, actions and review dates. Each save adds a new snapshot; earlier plans remain visible to the student and advisor. Private interventions record an action, follow-up date and outcome. A completion action records the final outcome once. Case and intervention changes are audited.
 
-The academic-standing review action creates deduplicated advisor alerts for each student's latest recorded probation standing. It relies on the institution-approved standing policy used to calculate that record; it does not predict risk or change registration holds, student status or grades. Alerts can be acknowledged and remain in the history. Automated scheduled generation, richer signals and institutional intervention protocols remain outstanding.
+The academic-standing review action creates deduplicated advisor alerts for each student's latest recorded probation standing. It relies on the institution-approved standing policy used to calculate that record; it does not predict risk or change registration holds, student status or grades. Alerts can be acknowledged and remain in the history. The repeat-safe `check_academic_risk` management command shares the portal alert logic and can be invoked by an approved scheduler. It streams active assignments, rechecks account/role/student eligibility, and commits each alert, audit event and durable notification together. Its summary contains counts only; errors fail the run and safely permit a retry. It does not recalculate standing or send external email directly. Institutional scheduler deployment, richer signals and intervention protocols remain outstanding.
 
 ## Accommodations
 

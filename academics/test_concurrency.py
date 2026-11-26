@@ -94,6 +94,20 @@ class AccountConcurrencyTests(TransactionTestCase):
         self.assertEqual(sorted(codes),[302,403])
         self.assertEqual(AdvisorBooking.objects.filter(status="booked").count(),1)
 
+    def test_parallel_risk_checks_create_one_alert_and_notification(self):
+        from django.contrib.auth.models import Permission
+        from .advising import AdvisorAssignment
+        from .student_records import AcademicStanding
+        from .student_support import AtRiskAlert
+        from .notification_models import DurableNotification
+        from .risk_checks import check_assignment
+        self.teacher.user_permissions.add(Permission.objects.get(content_type__app_label="academics",codename="view_advisorassignment"))
+        assignment=AdvisorAssignment.objects.create(student=self.profiles[0],advisor=self.teacher)
+        AcademicStanding.objects.create(student=self.profiles[0],term=self.course.term,gpa=1,status="probation",policy_snapshot={},calculated_by=self.teacher)
+        self.assertEqual(sorted(self.simultaneous(lambda index:check_assignment(assignment.pk))),[False,True])
+        self.assertEqual(AtRiskAlert.objects.count(),1)
+        self.assertEqual(DurableNotification.objects.filter(deduplication_key__startswith="risk-alert:").count(),1)
+
     def test_simultaneous_policy_proposals_get_distinct_versions(self):
         from .governance import InstitutionPolicy,PolicyRevision,propose_revision
         policy=InstitutionPolicy.objects.create(code="synthetic-policy",title="Synthetic",kind="academic")
