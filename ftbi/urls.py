@@ -137,3 +137,6 @@ urlpatterns += [path('policies/',gv.policies,name='policies'),path('policies/rev
 from ftbi import observability
 from academics import monitoring_views
 urlpatterns += [path("health/metrics/",observability.metrics,name="operation_metrics"),path("operations/",monitoring_views.operations,name="operations")]
+
+from academics import withdrawal_appeals as wa
+urlpatterns += [path("withdrawals/<int:pk>/appeal/",wa.submit_appeal,name="withdrawal_appeal"),path("registrar/withdrawal-appeals/",wa.appeal_queue,name="withdrawal_appeals"),path("registrar/withdrawal-appeals/<int:pk>/",wa.review_appeal,name="review_withdrawal_appeal")]

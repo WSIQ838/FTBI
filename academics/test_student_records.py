@@ -91,3 +91,81 @@ class StudentRecordsTests(TestCase):
         self.client.force_login(self.other)
         self.assertEqual(self.client.get(url).status_code,404)
         self.assertEqual(self.client.get(reverse("personal_export")).status_code,404)
+
+    def appeal_fixture(self):
+        self.appeal_policy=WithdrawalWindow.objects.create(course=self.course,opens=timezone.now()-timedelta(days=3),closes=timezone.now()-timedelta(days=1),appeal_days=7,appeal_approval_reference="SYNTHETIC POLICY")
+        self.denial=WithdrawalRequest.objects.create(enrollment=self.enrollment,reason="Original request",status="denied",reviewed_by=self.registrar,reviewed_at=timezone.now())
+        self.appeal_url=reverse("withdrawal_appeal",args=[self.denial.pk])
+        self.reviewer=get_user_model().objects.create_user("appeal-reviewer",is_staff=True)
+        self.reviewer.user_permissions.set(Permission.objects.filter(content_type__app_label="academics"))
+        self.client.force_login(self.student)
+
+    def test_appeal_grant_preserves_original_and_records_w_once(self):
+        from .student_records import WithdrawalAppeal
+        self.appeal_fixture()
+        self.assertEqual(self.client.post(self.appeal_url,{"reason":"New grounds"}).status_code,302)
+        appeal=WithdrawalAppeal.objects.get()
+        self.assertEqual(self.client.post(self.appeal_url,{"reason":"Overwrite"}).status_code,200)
+        appeal.refresh_from_db();self.assertEqual(appeal.reason,"New grounds")
+        review=reverse("review_withdrawal_appeal",args=[appeal.pk])
+        self.client.force_login(self.registrar)
+        self.assertEqual(self.client.post(review,{"decision":"granted","reason":"Independent review required"}).status_code,403)
+        self.client.force_login(self.reviewer)
+        self.assertEqual(self.client.post(review,{"decision":"granted","reason":"Grounds accepted"}).status_code,302)
+        self.assertEqual(self.client.post(review,{"decision":"granted","reason":"Replay"}).status_code,403)
+        appeal.refresh_from_db();self.denial.refresh_from_db();self.enrollment.refresh_from_db()
+        self.assertEqual(appeal.original_decision["reviewed_by"],self.registrar.pk)
+        self.assertEqual(appeal.original_decision["status"],"denied")
+        self.assertEqual((appeal.status,self.denial.status,self.enrollment.active),("granted","approved",False))
+        self.assertEqual(FinalGrade.objects.get().letter,"W")
+        self.client.force_login(self.student)
+        self.assertContains(self.client.get(self.appeal_url),"Grounds accepted")
+        self.assertEqual(self.client.post(reverse("register",args=[self.window.pk])).status_code,403)
+
+    def test_appeals_disabled_expired_and_unapproved_policy_are_blocked(self):
+        self.appeal_fixture()
+        self.appeal_policy.appeal_days=0;self.appeal_policy.save()
+        self.assertEqual(self.client.post(self.appeal_url,{"reason":"Appeal"}).status_code,403)
+        self.appeal_policy.appeal_days=7;self.appeal_policy.appeal_approval_reference="";self.appeal_policy.save()
+        with self.assertRaises(ValidationError): self.appeal_policy.full_clean()
+        self.assertEqual(self.client.post(self.appeal_url,{"reason":"Appeal"}).status_code,403)
+        self.appeal_policy.appeal_approval_reference="TEST";self.appeal_policy.save()
+        self.denial.reviewed_at=timezone.now()-timedelta(days=8);self.denial.save()
+        self.assertEqual(self.client.post(self.appeal_url,{"reason":"Appeal"}).status_code,403)
+
+    def test_appeal_privacy_and_self_review_denied(self):
+        from .student_records import WithdrawalAppeal
+        self.appeal_fixture()
+        self.client.force_login(self.other)
+        self.assertEqual(self.client.post(self.appeal_url,{"reason":"Other student's request"}).status_code,404)
+        self.client.force_login(self.student)
+        self.client.post(self.appeal_url,{"reason":"Private grounds"})
+        appeal=WithdrawalAppeal.objects.get()
+        review=reverse("review_withdrawal_appeal",args=[appeal.pk])
+        self.assertEqual(self.client.get(review).status_code,403)
+        self.student.user_permissions.set(Permission.objects.filter(content_type__app_label="academics"))
+        self.assertEqual(self.client.post(review,{"decision":"granted","reason":"Self review"}).status_code,403)
+        self.client.force_login(self.other)
+        self.assertEqual(self.client.get(self.appeal_url).status_code,404)
+
+    def test_appeal_cannot_overwrite_released_grade(self):
+        from .student_records import WithdrawalAppeal
+        self.appeal_fixture();self.client.post(self.appeal_url,{"reason":"Grounds"})
+        appeal=WithdrawalAppeal.objects.get()
+        FinalGrade.objects.create(student=self.profile,course=self.course,letter="A",quality_points=4,credits_earned=3,released=True)
+        self.client.force_login(self.reviewer)
+        self.assertEqual(self.client.post(reverse("review_withdrawal_appeal",args=[appeal.pk]),{"decision":"granted","reason":"Reviewed"}).status_code,403)
+        appeal.refresh_from_db();self.denial.refresh_from_db();self.enrollment.refresh_from_db()
+        self.assertEqual((appeal.status,self.denial.status,self.enrollment.active),("pending","denied",True))
+        self.assertEqual(FinalGrade.objects.get().letter,"A")
+
+    def test_denied_appeal_keeps_enrollment_and_requires_reason(self):
+        from .student_records import WithdrawalAppeal
+        self.appeal_fixture();self.client.post(self.appeal_url,{"reason":"Grounds"})
+        appeal=WithdrawalAppeal.objects.get();url=reverse("review_withdrawal_appeal",args=[appeal.pk])
+        self.client.force_login(self.reviewer)
+        self.assertEqual(self.client.post(url,{"decision":"denied","reason":""}).status_code,200)
+        appeal.refresh_from_db();self.assertEqual(appeal.status,"pending")
+        self.assertEqual(self.client.post(url,{"decision":"denied","reason":"Original decision upheld"}).status_code,302)
+        self.enrollment.refresh_from_db();self.assertTrue(self.enrollment.active)
+        self.assertFalse(FinalGrade.objects.exists())

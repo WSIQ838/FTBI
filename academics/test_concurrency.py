@@ -94,6 +94,20 @@ class AccountConcurrencyTests(TransactionTestCase):
         self.assertEqual(sorted(codes),[302,403])
         self.assertEqual(AdvisorBooking.objects.filter(status="booked").count(),1)
 
+    def test_parallel_appeal_grants_record_withdrawal_once(self):
+        from django.contrib.auth.models import Permission
+        from .student_records import WithdrawalRequest,WithdrawalAppeal
+        from .services import FinalGrade
+        self.teacher.user_permissions.set(Permission.objects.filter(content_type__app_label="academics"))
+        enrollment=Enrollment.objects.create(student=self.students[0],course=self.course)
+        original=WithdrawalRequest.objects.create(enrollment=enrollment,reason="Request",status="denied",reviewed_by=self.students[1],reviewed_at=timezone.now())
+        appeal=WithdrawalAppeal.objects.create(request=original,reason="Grounds",original_decision={"status":"denied","reviewed_by":self.students[1].pk},policy_snapshot={"approval_reference":"SYNTHETIC"})
+        clients=[Client(),Client()]
+        for client in clients: client.force_login(self.teacher)
+        results=self.simultaneous(lambda index:clients[index].post(f"/registrar/withdrawal-appeals/{appeal.pk}/",{"decision":"granted","reason":"Independent review"}).status_code)
+        self.assertEqual(sorted(results),[302,403])
+        self.assertEqual(FinalGrade.objects.filter(student=self.profiles[0],course=self.course,letter="W").count(),1)
+
     def test_parallel_risk_checks_create_one_alert_and_notification(self):
         from django.contrib.auth.models import Permission
         from .advising import AdvisorAssignment
