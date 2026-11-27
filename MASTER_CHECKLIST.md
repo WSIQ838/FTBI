@@ -138,7 +138,7 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Attendance records
 - [~] Complete course withdrawal workflow (reviewed withdrawal and policy-gated independent appeals; exceptional corrections and institutional acceptance outstanding)
 - [x] Independent withdrawal deadlines (SIS regression tests; institutional policy acceptance separate)
-- [~] Advanced prerequisite and corequisite rules
+- [~] Advanced prerequisite and corequisite rules (grouped alternatives, grade thresholds and atomic mutual-corequisite registration; repeat/exception policies and institutional acceptance outstanding)
 - [x] Custom institutional grading scales (SIS regression tests; institutional policy acceptance separate)
 - [x] Academic probation tracking (SIS regression tests; institutional policy acceptance separate)
 - [x] Academic standing calculations (SIS regression tests; institutional policy acceptance separate)

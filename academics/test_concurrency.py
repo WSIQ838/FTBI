@@ -94,6 +94,25 @@ class AccountConcurrencyTests(TransactionTestCase):
         self.assertEqual(sorted(codes),[302,403])
         self.assertEqual(AdvisorBooking.objects.filter(status="booked").count(),1)
 
+    def test_overlapping_corequisite_carts_cannot_split_or_overbook_capacity(self):
+        from django.core.exceptions import ValidationError
+        from .registrar import RegistrationWindow
+        from .prerequisites import Prerequisite
+        from .registration_cart import register_together
+        other=Course.objects.create(code="CO",title="Corequisite",department=self.course.department,term=self.course.term,instructor=self.teacher,published=True)
+        second=RegistrationWindow.objects.create(course=other,opens=self.window.opens,closes=self.window.closes,capacity=1)
+        Prerequisite.objects.create(course=self.course,required_code=other.code,kind="corequisite")
+        Prerequisite.objects.create(course=other,required_code=self.course.code,kind="corequisite")
+        def submit(index):
+            ids=[self.window.pk,second.pk]
+            if index: ids.reverse()
+            try: register_together(self.students[index],ids);return "registered"
+            except ValidationError: return "blocked"
+        self.assertEqual(sorted(self.simultaneous(submit)),["blocked","registered"])
+        rows=list(Enrollment.objects.filter(active=True).values_list("student_id","course_id"))
+        self.assertEqual(len(rows),2)
+        self.assertEqual(len({student for student,course in rows}),1)
+
     def test_parallel_appeal_grants_record_withdrawal_once(self):
         from django.contrib.auth.models import Permission
         from .student_records import WithdrawalRequest,WithdrawalAppeal

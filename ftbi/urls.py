@@ -140,3 +140,6 @@ urlpatterns += [path("health/metrics/",observability.metrics,name="operation_met
 
 from academics import withdrawal_appeals as wa
 urlpatterns += [path("withdrawals/<int:pk>/appeal/",wa.submit_appeal,name="withdrawal_appeal"),path("registrar/withdrawal-appeals/",wa.appeal_queue,name="withdrawal_appeals"),path("registrar/withdrawal-appeals/<int:pk>/",wa.review_appeal,name="review_withdrawal_appeal")]
+
+from academics.registration_cart import registration_cart
+urlpatterns += [path("registration/together/",registration_cart,name="registration_cart")]

@@ -20,7 +20,7 @@ class WaitlistEntry(models.Model):
         constraints=[models.UniqueConstraint(fields=["course","student"],name="unique_waitlist")]
         ordering=["joined","pk"]
 
-def prerequisites_met(profile,course):
+def prerequisites_met(profile,course,concurrent_courses=()):
     from .services import FinalGrade
     from .operations import TransferCredit
     from .models import Enrollment
@@ -33,5 +33,6 @@ def prerequisites_met(profile,course):
             met=met or TransferCredit.objects.filter(student=profile,approved=True,credits__gt=0,equivalent_code=rule.required_code).exists()
         if rule.kind=="corequisite":
             met=met or Enrollment.objects.filter(student=profile.user,active=True,course__term=course.term,course__code=rule.required_code).exists()
+            met=met or any(candidate.pk!=course.pk and candidate.term_id==course.term_id and candidate.code==rule.required_code for candidate in concurrent_courses)
         groups.setdefault(rule.group or f"rule-{rule.pk}",[]).append(met)
     return all(any(options) for options in groups.values())

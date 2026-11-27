@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add all-or-nothing multi-course registration for mutual corequisites with ordered capacity locks, preserved waitlist priority and repeat-safe enrollment notices.
+
 - Batch dashboard/course related-record queries, reuse per-module access decisions within a request, and omit attachment binary payloads from course-page queries.
 
 - Add disabled-by-default, policy-gated withdrawal appeals with independent reasoned decisions, preserved original denial snapshots and replay-safe W posting.
