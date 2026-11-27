@@ -146,3 +146,6 @@ urlpatterns += [path("registration/together/",registration_cart,name="registrati
 
 from academics.personal_files import personal_files
 urlpatterns += [path("account/files.zip",personal_files,name="personal_files")]
+
+from academics import retention_views as frv
+urlpatterns += [path("records/retention/",frv.retention_home,name="file_retention"),path("records/retention/<int:pk>/",frv.review_batch,name="retention_batch"),path("records/retention/holds/new/",frv.add_hold,name="retention_hold"),path("records/retention/holds/<int:pk>/release/",frv.release_hold,name="retention_release_hold")]

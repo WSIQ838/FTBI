@@ -94,6 +94,51 @@ class AccountConcurrencyTests(TransactionTestCase):
         self.assertEqual(sorted(codes),[302,403])
         self.assertEqual(AdvisorBooking.objects.filter(status="booked").count(),1)
 
+    def test_retention_and_new_version_upload_do_not_deadlock_or_erase_latest(self):
+        import hashlib
+        from django.contrib.auth.models import Permission
+        from django.core.files.uploadedfile import SimpleUploadedFile
+        from .documents import PrivateDocument,DocumentVersion
+        from .file_retention import FileRetentionPolicy,propose_batch,apply_batch
+        self.teacher.user_permissions.set(Permission.objects.filter(content_type__app_label="academics"))
+        owner=self.students[0]
+        owner.user_permissions.add(Permission.objects.get(content_type__app_label="academics",codename="change_fileretentionbatch"))
+        document=PrivateDocument.objects.create(owner=owner,title="Synthetic version race",kind="student")
+        for number in [1,2]: DocumentVersion.objects.create(document=document,number=number,original_name="test.txt",data=b"DATA",size=4,sha256=hashlib.sha256(b"DATA").hexdigest(),uploaded_by=owner)
+        DocumentVersion.objects.filter(document=document).update(uploaded=timezone.now()-timedelta(days=100))
+        policy=FileRetentionPolicy.objects.create(kind="student",enabled=True,minimum_age_days=30,approval_reference="SYNTHETIC")
+        batch=propose_batch(policy,self.teacher,"Synthetic proposal")
+        client=Client();client.force_login(owner)
+        def action(index):
+            if index==0: return apply_batch(batch,owner)
+            return client.post(f"/documents/upload/version/{document.pk}/",{"title":"New","file":SimpleUploadedFile("new.txt",b"NEW")}).status_code
+        self.assertEqual(self.simultaneous(action),[1,302])
+        self.assertEqual(document.versions.count(),3)
+        self.assertEqual(bytes(document.versions.get(number=3).data),b"NEW")
+        self.assertEqual(document.versions.filter(purged_at__isnull=False).count(),1)
+
+    def test_retention_batch_cannot_be_applied_twice_concurrently(self):
+        import hashlib
+        from django.contrib.auth.models import Permission
+        from django.core.exceptions import ValidationError
+        from .documents import PrivateDocument,DocumentVersion
+        from .file_retention import FileRetentionPolicy,propose_batch,apply_batch
+        from .operations import AuditEvent
+        self.teacher.user_permissions.set(Permission.objects.filter(content_type__app_label="academics"))
+        reviewer=self.students[1]
+        reviewer.user_permissions.add(Permission.objects.get(content_type__app_label="academics",codename="change_fileretentionbatch"))
+        document=PrivateDocument.objects.create(owner=self.students[0],title="Synthetic retention",kind="student")
+        for number in [1,2]: DocumentVersion.objects.create(document=document,number=number,original_name="test.txt",data=b"DATA",size=4,sha256=hashlib.sha256(b"DATA").hexdigest(),uploaded_by=self.students[0])
+        DocumentVersion.objects.filter(document=document).update(uploaded=timezone.now()-timedelta(days=100))
+        policy=FileRetentionPolicy.objects.create(kind="student",enabled=True,minimum_age_days=30,approval_reference="SYNTHETIC")
+        batch=propose_batch(policy,self.teacher,"Synthetic proposal")
+        def apply(index):
+            try: apply_batch(batch,reviewer);return "applied"
+            except ValidationError: return "blocked"
+        self.assertEqual(sorted(self.simultaneous(apply)),["applied","blocked"])
+        self.assertEqual(DocumentVersion.objects.filter(purged_at__isnull=False).count(),1)
+        self.assertEqual(AuditEvent.objects.filter(action="file_retention_applied").count(),1)
+
     def test_overlapping_corequisite_carts_cannot_split_or_overbook_capacity(self):
         from django.core.exceptions import ValidationError
         from .registrar import RegistrationWindow

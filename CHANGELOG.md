@@ -2,6 +2,9 @@
 
 ## Unreleased
 
+- Add disabled-by-default document-retention policies, bounded previews, independent erasure review and preservation holds; retain version metadata and exclude erased payloads from downloads/exports.
+- Fix the personal-file streaming regression test to avoid a duplicate response close that invalidated PostgreSQL test transactions.
+
 - Add bounded private file archives with safe paths, digest manifests, current-access checks and revoked-credential exclusion.
 
 - Add all-or-nothing multi-course registration for mutual corequisites with ordered capacity locks, preserved waitlist priority and repeat-safe enrollment notices.

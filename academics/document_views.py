@@ -66,13 +66,14 @@ def upload_document(request,kind,pk=0):
 def document_detail(request,pk):
     document=get_object_or_404(PrivateDocument,pk=pk)
     if not document_access(request.user,document): raise Http404()
-    return render(request,"document_detail.html",{"document":document,"versions":document.versions.select_related("verification").all()})
+    return render(request,"document_detail.html",{"document":document,"versions":document.versions.select_related("verification").defer("data")})
 
 
 @login_required
 def document_download(request,pk):
     version=get_object_or_404(DocumentVersion.objects.select_related("document"),pk=pk)
     if not document_access(request.user,version.document): raise Http404()
+    if version.purged_at: return HttpResponse("This version’s file contents were erased under the reviewed retention policy.",status=410)
     AuditEvent.objects.create(actor=request.user,action="private_document_downloaded",target=str(pk))
     response=HttpResponse(bytes(version.data),content_type="application/octet-stream")
     response["Content-Disposition"]=content_disposition_header(True,version.original_name)
@@ -83,7 +84,7 @@ def document_download(request,pk):
 @login_required
 @permission_required("academics.add_documentverification",raise_exception=True)
 def verify_document(request,pk):
-    version=get_object_or_404(DocumentVersion.objects.select_related("document"),pk=pk)
+    version=get_object_or_404(DocumentVersion.objects.select_related("document"),pk=pk,purged_at__isnull=True)
     if version.document.owner_id==request.user.pk or not document_access(request.user,version.document) or version.document.kind not in {"admission","student"}: raise Http404()
     class VerifyForm(forms.Form):
         status=forms.ChoiceField(choices=DocumentVerification._meta.get_field("status").choices)
@@ -91,7 +92,7 @@ def verify_document(request,pk):
     form=VerifyForm(request.POST if request.method=="POST" else None)
     if request.method=="POST" and form.is_valid():
         with transaction.atomic():
-            DocumentVersion.objects.select_for_update().get(pk=pk)
+            version=get_object_or_404(DocumentVersion.objects.select_for_update(),pk=pk,purged_at__isnull=True)
             if DocumentVerification.objects.filter(version=version).exists(): return HttpResponseForbidden("This version has already been reviewed.")
             DocumentVerification.objects.create(version=version,reviewer=request.user,**form.cleaned_data)
             AuditEvent.objects.create(actor=request.user,action="document_"+form.cleaned_data["status"],target=str(pk))

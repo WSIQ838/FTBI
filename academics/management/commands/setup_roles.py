@@ -9,6 +9,7 @@ ROLES={
     "Accommodation Administration":["studentaccommodation"],
     "AI Administration":["aiconfiguration","aiusage","knowledgedocument"],
     "Security Administration":["accountsecurity","accountsession","securityincident","durablenotification","accountcontrolevent"],
+    "DataRetentionAdministration":["fileretentionpolicy","documentpreservationhold","fileretentionbatch"],
     "Registrar":["credentialtemplate","credentialartifact","credentialrevocation","credentialreplacement","privatedocument","documentverification","storagequota","withdrawalwindow","withdrawalrequest","withdrawalappeal","gradingscale","standingpolicy","academicstanding","emergencycontact","studentstatusrecord","enrollmentverification","studentprofile","registrationwindow","waitlistentry","prerequisite","application","enrollment","finalgrade","transfercredit","transcriptrequest","issuedtranscript","graduationapplication","degreerequirement","examaccommodation","advisorassignment","issueddiploma"],
     "Academic Advisor":["advisorassignment"],
     "Admissions":["application","applicationnote","admissioninterview","documentverification","privatedocument"],
