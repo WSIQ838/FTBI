@@ -1,0 +1,1 @@
+{% extends "base.html" %}{% block content %}<h1>My withdrawal appeal</h1><p>{{ item.get_status_display }} · {{ item.submitted }}</p>{{ item.reason|linebreaks }}{% if item.decision_reason %}<h2>Decision</h2>{{ item.decision_reason|linebreaks }}{% endif %}<p><a href="{% url 'student_record' %}">Academic record</a></p>{% endblock %}

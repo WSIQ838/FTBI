@@ -55,13 +55,9 @@ def decide_withdrawal(request,pk):
     decision=request.POST.get("decision")
     if item.status!="pending" or decision not in ("approved","denied"): return HttpResponseForbidden("Invalid or already reviewed request.")
     if decision=="approved":
-        if FinalGrade.objects.filter(student=student,course=enrollment.course,released=True).exists():
-            return HttpResponseForbidden("A released grade exists; use the registrar's grade correction process.")
-        enrollment.active=False; enrollment.save(update_fields=["active"])
-        FinalGrade.objects.update_or_create(student=student,course=enrollment.course,defaults={"letter":"W","quality_points":None,"credits_earned":0,"released":True})
-        if window:
-            from .registration_lifecycle import promote_locked
-            promote_locked(window)
+        from .withdrawal_appeals import apply_withdrawal
+        try: apply_withdrawal(enrollment,student,window)
+        except ValidationError as exc: return HttpResponseForbidden(exc.messages[0])
     item.status=decision; item.reviewed_by=request.user; item.reviewed_at=timezone.now(); item.save()
     AuditEvent.objects.create(actor=request.user,action="withdrawal_"+decision,target=str(pk))
     notify(student.user,"enrollment","Withdrawal decision available","Your course withdrawal request has been reviewed. Check your academic record.",f"withdrawal:{pk}:{decision}")

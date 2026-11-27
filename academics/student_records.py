@@ -9,10 +9,13 @@ from .registrar import StudentProfile
 
 
 class WithdrawalWindow(models.Model):
+    appeal_days=models.PositiveSmallIntegerField(default=0,validators=[MaxValueValidator(90)],help_text="0 disables appeals; otherwise days after denial.")
+    appeal_approval_reference=models.CharField(max_length=200,blank=True)
     course=models.OneToOneField(Course,on_delete=models.PROTECT)
     opens=models.DateTimeField()
     closes=models.DateTimeField()
     def clean(self):
+        if self.appeal_days and not self.appeal_approval_reference.strip(): raise ValidationError("Enabled appeals require an institutional approval reference.")
         if self.opens and self.closes and self.closes<=self.opens: raise ValidationError("Withdrawal must close after opening.")
 
 
@@ -21,6 +24,18 @@ class WithdrawalRequest(models.Model):
     reason=models.TextField(max_length=2000)
     status=models.CharField(max_length=12,default="pending",choices=[("pending","Pending"),("approved","Approved"),("denied","Denied")])
     requested=models.DateTimeField(auto_now_add=True)
+    reviewed_by=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT,null=True)
+    reviewed_at=models.DateTimeField(null=True)
+
+
+class WithdrawalAppeal(models.Model):
+    request=models.OneToOneField(WithdrawalRequest,on_delete=models.PROTECT,related_name="appeal")
+    reason=models.TextField(max_length=2000)
+    original_decision=models.JSONField()
+    policy_snapshot=models.JSONField()
+    submitted=models.DateTimeField(auto_now_add=True)
+    status=models.CharField(max_length=12,default="pending",choices=[("pending","Pending"),("granted","Granted"),("denied","Denied")])
+    decision_reason=models.TextField(max_length=2000,blank=True)
     reviewed_by=models.ForeignKey(settings.AUTH_USER_MODEL,on_delete=models.PROTECT,null=True)
     reviewed_at=models.DateTimeField(null=True)
 

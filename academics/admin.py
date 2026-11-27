@@ -135,9 +135,9 @@ class KnowledgeDocumentAdmin(admin.ModelAdmin):
     list_filter=("audience","approved")
     search_fields=("title","body")
 
-from .student_records import WithdrawalWindow,WithdrawalRequest,GradingScale,StandingPolicy,AcademicStanding,EmergencyContact,StudentStatusRecord,EnrollmentVerification
+from .student_records import WithdrawalWindow,WithdrawalRequest,WithdrawalAppeal,GradingScale,StandingPolicy,AcademicStanding,EmergencyContact,StudentStatusRecord,EnrollmentVerification
 for model in [WithdrawalWindow,GradingScale,StandingPolicy]: admin.site.register(model)
-for model in [WithdrawalRequest,AcademicStanding,StudentStatusRecord,EnrollmentVerification]: admin.site.register(model,AssessmentRecordAdmin)
+for model in [WithdrawalRequest,WithdrawalAppeal,AcademicStanding,StudentStatusRecord,EnrollmentVerification]: admin.site.register(model,AssessmentRecordAdmin)
 admin.site.register(EmergencyContact)
 admin.site.unregister(StudentProfile)
 @admin.register(StudentProfile)

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add disabled-by-default, policy-gated withdrawal appeals with independent reasoned decisions, preserved original denial snapshots and replay-safe W posting.
+
 - Document current HTTP/data-exchange interfaces and add a synthetic role-based training and acceptance workbook.
 
 - Correct obsolete registration, integration and scanner documentation; add troubleshooting and upgrade acceptance procedures with explicit external blockers.
