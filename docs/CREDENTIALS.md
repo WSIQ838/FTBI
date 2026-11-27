@@ -25,3 +25,11 @@ No institutional signing certificate, production secret mount or key custodian h
 ## Evidence
 
 academics.test_credentials covers private access, exact-byte downloads, verification mismatch and privacy, revocation, replacement replay, immutable snapshots/templates and issuance rollback. It generates an ephemeral self-signed certificate and validates actual transcript and diploma signatures against that explicitly trusted test root, then detects a modified PDF. This is cryptographic integration coverage, not acceptance of a real institutional certificate. Synthetic multipage transcript and diploma PDFs were rendered and visually checked. No production records or keys were used.
+
+## Enrollment-letter wording
+
+Credential templates also offer an **Enrollment verification** kind. Authorized template administrators can configure a plain heading, body and footer with the same five placeholders. Enabling requires a nonblank institutional approval reference; approval is recorded by reference, not independently obtained by the software. Disabled or absent templates use the standard wording. Invalid enabled templates stop new issuance without creating a letter or audit event.
+
+Enrollment letters capture the active enrollment list, institution, recipient, program and exact template text/reference at issuance. Subsequent changes do not rewrite that snapshot. Historical letters without a template snapshot continue to use the standard wording. Downloads wrap course titles and paginate with repeated column headings, record identifiers and page numbers. Access remains limited to the student or staff with both enrollment-verification and student-profile viewing permissions.
+
+These letters are dynamically rendered from their stored snapshot, explicitly unsigned and outside the transcript/diploma exact-byte artifact, revocation and public verification lifecycle. They are not a guarantee of unchanged PDF bytes across renderer upgrades. Institution-approved language, localization, accessible PDF assessment and templates for other institutional documents remain outstanding.

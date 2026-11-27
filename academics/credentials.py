@@ -11,13 +11,15 @@ from .diplomas import IssuedDiploma
 def verification_code(): return secrets.token_urlsafe(24)
 
 class CredentialTemplate(models.Model):
-    kind=models.CharField(max_length=12,unique=True,choices=[("transcript","Transcript"),("diploma","Diploma")])
+    kind=models.CharField(max_length=12,unique=True,choices=[("transcript","Transcript"),("diploma","Diploma"),("enrollment","Enrollment verification")])
     heading=models.CharField(max_length=100)
     body=models.TextField(max_length=2000,blank=True)
     footer=models.CharField(max_length=500,blank=True)
     enabled=models.BooleanField(default=False)
     approval_reference=models.CharField(max_length=200)
     def clean(self):
+        if self.enabled and not self.approval_reference.strip():
+            raise ValidationError({"approval_reference":"An enabled template requires an approval reference."})
         allowed={"recipient","program","institution","issued_date","identifier"}
         try:
             for text in [self.heading,self.body,self.footer]:

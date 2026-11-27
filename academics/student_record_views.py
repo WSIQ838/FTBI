@@ -1,5 +1,4 @@
 from .institution import institution_name
-from io import BytesIO
 from decimal import Decimal
 from django import forms
 from django.conf import settings
@@ -11,7 +10,6 @@ from django.http import HttpResponseForbidden,HttpResponse,JsonResponse,Http404
 from django.shortcuts import get_object_or_404,render,redirect
 from django.utils import timezone
 from django.views.decorators.http import require_POST
-from reportlab.pdfgen import canvas
 from .models import Enrollment,Term
 from .registrar import StudentProfile,RegistrationWindow
 from .student_records import WithdrawalWindow,WithdrawalRequest,GradingScale,AcademicStanding,EmergencyContact,EnrollmentVerification,standing_for
@@ -149,11 +147,15 @@ def release_final_grade(request,pk):
 
 @login_required
 @require_POST
+@transaction.atomic
 def issue_enrollment_letter(request):
     student=get_object_or_404(StudentProfile,user=request.user)
     rows=list(Enrollment.objects.filter(student=request.user,active=True).values("course__code","course__title","course__term__name"))
     if not rows: return HttpResponseForbidden("No active enrollments to verify.")
-    record=EnrollmentVerification.objects.create(student=student,snapshot={"institution":institution_name(),"name":request.user.get_full_name() or request.user.username,"student_number":student.student_number,"enrollments":rows})
+    from .enrollment_letters import template_snapshot
+    try: template=template_snapshot()
+    except ValidationError: return HttpResponse("The enrollment letter template is invalid. Contact the registrar.",status=400)
+    record=EnrollmentVerification.objects.create(student=student,snapshot={"institution":institution_name(),"name":request.user.get_full_name() or request.user.username,"program":student.program.name,"student_number":student.student_number,"enrollments":rows,"template":template})
     AuditEvent.objects.create(actor=request.user,action="enrollment_letter_issued",target=str(record.identifier))
     return redirect("enrollment_letter",identifier=record.identifier)
 
@@ -162,12 +164,8 @@ def issue_enrollment_letter(request):
 def enrollment_letter(request,identifier):
     record=get_object_or_404(EnrollmentVerification,identifier=identifier)
     if record.student.user_id!=request.user.pk and not request.user.has_perms(["academics.view_enrollmentverification","academics.view_studentprofile"]): raise Http404()
-    stream=BytesIO(); pdf=canvas.Canvas(stream); pdf.setTitle("Enrollment verification")
-    lines=[record.snapshot["institution"],"Enrollment verification",record.snapshot["name"],record.snapshot["student_number"],f"Issued: {record.issued.date()}",str(record.identifier)]
-    lines += [f'{row["course__code"]}: {row["course__title"]} - {row["course__term__name"]}' for row in record.snapshot["enrollments"]]
-    lines += ["Snapshot of active enrollments at issuance. Not digitally signed."]
-    y=790
-    for line in lines:
-        if y<60: pdf.showPage(); y=790
-        pdf.drawString(45,y,line[:110]); y-=25
-    pdf.save(); response=HttpResponse(stream.getvalue(),content_type="application/pdf"); response["Content-Disposition"]='attachment; filename="enrollment-verification.pdf"'; response["Cache-Control"]="private, no-store"; return response
+    from .enrollment_letters import render_letter
+    response=HttpResponse(render_letter(record.snapshot,record.identifier,record.issued),content_type="application/pdf")
+    response["Content-Disposition"]='attachment; filename="enrollment-verification.pdf"'
+    response["Cache-Control"]="private, no-store"
+    return response

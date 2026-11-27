@@ -27,3 +27,7 @@ Import students prepares a private CSV preview for existing active user accounts
 ## Credential registry
 
 Use Academic credentials to finalize historical issued records, revoke an artifact with a reason and issue a replacement of a revoked snapshot. New transcript and diploma issuance finalizes automatically. Required signing failures leave issuance uncommitted. See CREDENTIALS.md for template approval, exact-byte preservation, permissions and certificate acceptance limits.
+
+## Enrollment letter templates
+
+The Enrollment verification template in credential administration supports approved plain-text headings, body and footer wording. New letters preserve the selected wording and approval reference alongside the enrollment snapshot; later template edits affect only new letters. Long course titles wrap rather than being truncated, with repeated headings on later pages. An invalid enabled template blocks issuance until corrected. These letters remain unsigned. See CREDENTIALS.md for permitted placeholders and the distinction from finalized transcript/diploma artifacts.

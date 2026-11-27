@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add approved enrollment-letter template wording captured at issuance; reject invalid enabled templates, preserve private access and paginate long course titles without truncation. Existing letters retain standard wording; unsigned letters remain outside credential signing/revocation.
+
 - Audit locked browser-tool JavaScript dependencies in an independent CI job; retain advisory reports and fail on vulnerabilities or audit errors. Container and independent security acceptance remain outstanding.
 
 - Expand five-configuration browser/accessibility validation to student withdrawal appeals, independent review and private decision access using isolated synthetic fixtures.
