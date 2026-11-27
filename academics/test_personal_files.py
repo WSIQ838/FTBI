@@ -77,7 +77,7 @@ class PersonalFileTests(TestCase):
         response=self.client.post(url)
         self.assertEqual(response.status_code,200)
         self.assertIn("private",response["Cache-Control"]);self.assertIn("no-store",response["Cache-Control"])
-        payload=b"".join(response.streaming_content);response.close()
+        payload=b"".join(response.streaming_content);self.assertTrue(response.closed)
         with zipfile.ZipFile(BytesIO(payload)) as archive: self.assertIn("manifest.json",archive.namelist())
         self.assertEqual(self.client.post(url).status_code,429)
         from django.test import Client
