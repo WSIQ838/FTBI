@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.db import transaction
+from django.core.exceptions import PermissionDenied
 from .models import Department, Program, Term, Course, Enrollment, Lesson, Assignment, Submission
 # Only superusers have access by default. Delegate model permissions carefully.
 for model in [Department, Program, Term, Course, Enrollment, Lesson, Assignment, Submission]:
@@ -6,8 +8,27 @@ for model in [Department, Program, Term, Course, Enrollment, Lesson, Assignment,
 admin.site.site_header = "FTBI Administration"
 
 from .registrar import StudentProfile, RegistrationWindow, Application
-for model in [StudentProfile, RegistrationWindow, Application]:
+for model in [StudentProfile, RegistrationWindow]:
     admin.site.register(model)
+
+@admin.register(Application)
+class ApplicationAdmin(admin.ModelAdmin):
+    def get_readonly_fields(self,request,obj=None):
+        if obj and obj.status!="pending":
+            return tuple(field.name for field in self.model._meta.fields)
+        return ("status","decision_snapshot")
+    def has_delete_permission(self,request,obj=None):
+        # Deletion would remove the record behind a private decision letter.
+        return False
+    def save_model(self,request,obj,form,change):
+        with transaction.atomic():
+            if obj.pk:
+                current=Application.objects.select_for_update().get(pk=obj.pk)
+                if current.status!="pending": raise PermissionDenied("A decided application cannot be changed here.")
+                obj.status=current.status;obj.decision_snapshot=current.decision_snapshot
+            else:
+                obj.status="pending";obj.decision_snapshot={}
+            super().save_model(request,obj,form,change)
 
 from .services import FinalGrade, Attendance, Announcement, CalendarEvent, LedgerEntry, AdvisingNote, Practicum, LearningOutcome, LibraryResource
 for model in [FinalGrade, Attendance, Announcement, CalendarEvent, LedgerEntry, AdvisingNote, Practicum, LearningOutcome, LibraryResource]:

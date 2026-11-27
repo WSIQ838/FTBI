@@ -63,6 +63,22 @@ class AccountConcurrencyTests(TransactionTestCase):
         with ThreadPoolExecutor(max_workers=2) as executor:
             return list(executor.map(run,range(2)))
 
+    def test_competing_admissions_decisions_capture_one_consistent_letter(self):
+        from django.contrib.auth.models import Permission
+        from .registrar import Application
+        from .notification_models import DurableNotification
+        from .operations import AuditEvent
+        self.teacher.user_permissions.add(Permission.objects.get(content_type__app_label="academics",codename="change_application"))
+        application=Application.objects.create(applicant=self.students[0],program=self.profiles[0].program,statement="Synthetic")
+        clients=[Client(),Client()]
+        for client in clients: client.force_login(self.teacher)
+        codes=self.simultaneous(lambda i:clients[i].post(f"/admissions/review/{application.pk}/decide/",{"decision":["accepted","rejected"][i]}).status_code)
+        self.assertEqual(sorted(codes),[302,403])
+        application.refresh_from_db()
+        self.assertEqual(application.decision_snapshot["status"],application.status)
+        self.assertEqual(DurableNotification.objects.filter(user=self.students[0]).count(),1)
+        self.assertEqual(AuditEvent.objects.filter(action__in=["admission_accepted","admission_rejected"]).count(),1)
+
     def test_registration_cannot_overfill_last_seat(self):
         from .prerequisites import WaitlistEntry
         clients=[Client(),Client()]

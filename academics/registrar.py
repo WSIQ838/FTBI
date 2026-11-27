@@ -30,6 +30,7 @@ class Application(models.Model):
     statement = models.TextField()
     submitted_at = models.DateTimeField(auto_now_add=True)
     status = models.CharField(max_length=16,choices=[("pending","Pending"),("accepted","Accepted"),("rejected","Rejected")],default="pending")
+    decision_snapshot = models.JSONField(default=dict,blank=True,editable=False)
     class Meta:
         constraints = [models.UniqueConstraint(fields=["applicant","program"],name="one_application_per_program")]
     def __str__(self): return f"{self.applicant} / {self.program}"

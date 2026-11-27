@@ -33,3 +33,7 @@ Credential templates also offer an **Enrollment verification** kind. Authorized 
 Enrollment letters capture the active enrollment list, institution, recipient, program and exact template text/reference at issuance. Subsequent changes do not rewrite that snapshot. Historical letters without a template snapshot continue to use the standard wording. Downloads wrap course titles and paginate with repeated column headings, record identifiers and page numbers. Access remains limited to the student or staff with both enrollment-verification and student-profile viewing permissions.
 
 These letters are dynamically rendered from their stored snapshot, explicitly unsigned and outside the transcript/diploma exact-byte artifact, revocation and public verification lifecycle. They are not a guarantee of unchanged PDF bytes across renderer upgrades. Institution-approved language, localization, accessible PDF assessment and templates for other institutional documents remain outstanding.
+
+## Admissions wording
+
+Separate Admissions acceptance and Admissions rejection template kinds use the same plain placeholders and approval-reference validation. The decision workflow captures the public wording and recipient/program details atomically with the decision. These portal letters remain distinct from signed transcript/diploma artifacts. See ADMISSION_LIFECYCLE.md for legacy-letter limitations, applicant-only access and failure handling.
