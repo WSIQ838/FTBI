@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Capture admissions acceptance/rejection letter wording and recipient details atomically with decisions; add separate approved templates, escape plain text, preserve applicant-only access and prevent generic administration from rewriting decided applications. Legacy letters are labelled without inventing historical data.
+
 - Add approved enrollment-letter template wording captured at issuance; reject invalid enabled templates, preserve private access and paginate long course titles without truncation. Existing letters retain standard wording; unsigned letters remain outside credential signing/revocation.
 
 - Audit locked browser-tool JavaScript dependencies in an independent CI job; retain advisory reports and fail on vulnerabilities or audit errors. Container and independent security acceptance remain outstanding.

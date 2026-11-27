@@ -1,10 +1,11 @@
 import secrets
 from django import forms
+from django.core.exceptions import ValidationError
 from django.contrib.auth.decorators import login_required,permission_required
 from django.db import transaction
 from django.contrib.auth import get_user_model
 from django.shortcuts import render,redirect,get_object_or_404
-from django.http import HttpResponseForbidden
+from django.http import HttpResponseForbidden,HttpResponse
 from django.utils import timezone
 from django.views.decorators.http import require_POST
 from .registrar import Application,StudentProfile
@@ -32,8 +33,12 @@ def decide(request,pk):
         if not reviewable(request.user).filter(pk=pk).exists(): return HttpResponseForbidden()
         if item.status!="pending":
             return HttpResponseForbidden("Decision already recorded.")
-        item.status=form.cleaned_data["decision"]
-        item.save(update_fields=["status"])
+        from .admission_letters import capture_letter
+        status=form.cleaned_data["decision"]
+        try: snapshot=capture_letter(item,status)
+        except ValidationError: return HttpResponse("The admissions letter template is invalid. Correct it before recording the decision.",status=400)
+        item.status=status;item.decision_snapshot=snapshot
+        item.save(update_fields=["status","decision_snapshot"])
         AuditEvent.objects.create(actor=request.user,action="admission_"+item.status,target=str(item.pk))
         notify(item.applicant,"admissions","Admissions decision available","Your application decision is available in your private admissions portal.",f"admission-decision:{item.pk}:{item.status}")
     return redirect("admission_review")
@@ -58,4 +63,4 @@ def activate_student(request,pk):
 @login_required
 def decision_letter(request,pk):
     item=get_object_or_404(Application,pk=pk,applicant=request.user,status__in=["accepted","rejected"])
-    return render(request,"decision_letter.html",{"item":item})
+    return render(request,"decision_letter.html",{"item":item,"letter":item.decision_snapshot})

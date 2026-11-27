@@ -11,7 +11,7 @@ from .diplomas import IssuedDiploma
 def verification_code(): return secrets.token_urlsafe(24)
 
 class CredentialTemplate(models.Model):
-    kind=models.CharField(max_length=12,unique=True,choices=[("transcript","Transcript"),("diploma","Diploma"),("enrollment","Enrollment verification")])
+    kind=models.CharField(max_length=12,unique=True,choices=[("transcript","Transcript"),("diploma","Diploma"),("enrollment","Enrollment verification"),("acceptance","Admissions acceptance"),("rejection","Admissions rejection")])
     heading=models.CharField(max_length=100)
     body=models.TextField(max_length=2000,blank=True)
     footer=models.CharField(max_length=500,blank=True)
