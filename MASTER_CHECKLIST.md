@@ -585,7 +585,7 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [~] Cross-browser testing (five configurations with learning and independent withdrawal-appeal workflows automated; broader and manual acceptance outstanding)
 - [ ] External integration testing
 - [x] Production container smoke testing (disposable hosted production-mode stack, CI 45507440000; institution staging still outstanding)
-- [~] Dependency security audit (Python advisory scan on each CI head; container/JavaScript and independent review outstanding)
+- [~] Dependency security audit (Python and browser-tool JavaScript advisory scans on each CI head; container and independent review outstanding)
 - [ ] Authorized penetration testing
 - [~] Disaster recovery testing (encrypted synthetic PostgreSQL drill passed; production/offsite/key custody remains)
 - [ ] User acceptance testing

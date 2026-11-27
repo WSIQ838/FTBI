@@ -24,3 +24,20 @@ jobs:
           path: |
             dependency-audit.json
             static-analysis.json
+  browser-dependencies:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: npm ci --ignore-scripts
+        working-directory: browser-tests
+      - run: npm audit --audit-level=low --json > dependency-audit.json
+        working-directory: browser-tests
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: browser-dependency-audit
+          path: browser-tests/dependency-audit.json

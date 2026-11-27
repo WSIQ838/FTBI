@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Audit locked browser-tool JavaScript dependencies in an independent CI job; retain advisory reports and fail on vulnerabilities or audit errors. Container and independent security acceptance remain outstanding.
+
 - Expand five-configuration browser/accessibility validation to student withdrawal appeals, independent review and private decision access using isolated synthetic fixtures.
 
 - Add a bounded synthetic HTTP load workflow with disposable PostgreSQL/Redis/Gunicorn, authenticated concurrency ramps and latency/error artifacts.

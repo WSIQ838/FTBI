@@ -25,3 +25,7 @@ The Synthetic load validation workflow starts disposable PostgreSQL/Redis servic
 The probe requires explicit disposable-test opt-in and the guarded synthetic fixture, accepts only numeric loopback HTTP origins, disables proxies, confines redirects to the same origin and caps request counts/workers/timeouts. Tests cover those guards, percentiles and fail-closed error reporting. It is not a generic tool for loading a public or production system.
 
 These bounded ramps use one small synthetic course and one student session. They do not prove production capacity, multi-role/multi-user behavior, write-heavy workloads, sustained soak behavior, failover, connection-pool sizing or performance under an institution’s expected peak load. Representative datasets, approved load objectives and staged production-like acceptance remain outstanding.
+
+## Dependency advisory checks
+
+Security analysis runs independent Python and browser-tool dependency jobs. The JavaScript job installs the committed browser lockfile with lifecycle scripts disabled, then audits all installed dependencies including development tools. Any reported low-or-higher vulnerability or audit-service failure fails the job; the JSON report is retained even on failure. Python checks use pip-audit and Bandit. These automated results do not establish absence of vulnerabilities, container-image coverage or independent security acceptance.
