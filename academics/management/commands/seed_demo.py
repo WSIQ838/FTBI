@@ -34,4 +34,15 @@ class Command(BaseCommand):
             student=User.objects.create_user(username="demo-"+name,password=password,first_name="Demo",last_name=name.title())
             StudentProfile.objects.create(user=student,student_number=f"DEMO-{index:04d}",program=program,admitted_on=now.date())
             if name!="outsider": Enrollment.objects.create(student=student,course=course)
+        if os.environ.get("FTBI_BROWSER_TESTING")=="1":
+            from django.contrib.auth.models import Permission
+            from academics.student_records import WithdrawalWindow,WithdrawalRequest
+            reviewer=User.objects.create_user(username="demo-records-reviewer",password=password,first_name="Demo",last_name="Records reviewer")
+            reviewer.user_permissions.set(Permission.objects.filter(content_type__app_label="academics",codename__in=["change_withdrawalappeal","change_enrollment","add_finalgrade"]))
+            WithdrawalWindow.objects.create(course=course,opens=now-timedelta(days=1),closes=now+timedelta(days=1),appeal_days=7,appeal_approval_reference="SYNTHETIC BROWSER POLICY")
+            for index,name in enumerate(["chromium","firefox","webkit","mobile","dark"],1):
+                student=User.objects.create_user(username="demo-records-"+name,password=password,first_name="Demo",last_name="Records "+name)
+                StudentProfile.objects.create(user=student,student_number=f"DEMO-RECORDS-{index:04d}",program=program,admitted_on=now.date())
+                enrollment=Enrollment.objects.create(student=student,course=course)
+                WithdrawalRequest.objects.create(enrollment=enrollment,reason="Synthetic denied request",status="denied",reviewed_by=faculty,reviewed_at=now)
         self.stdout.write("Created synthetic faculty, students, course, lesson and assignment. No external notifications sent.")
