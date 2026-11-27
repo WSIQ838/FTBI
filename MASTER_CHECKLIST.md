@@ -488,7 +488,7 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [~] System resource monitoring (disk, worker uptime and available OS load; infrastructure CPU/memory/capacity monitoring outstanding)
 - [ ] Uptime alerts
 - [~] Failure alerts (transition-only durable staff alerts and nonzero checks; external outage delivery outstanding)
-- [ ] Database performance optimization
+- [~] Database performance optimization (dashboard/course related-record batching and query-growth regressions; large-scale profiling and tuning outstanding)
 - [ ] Connection pool tuning
 - [ ] Production secrets management review
 - [ ] High-availability strategy

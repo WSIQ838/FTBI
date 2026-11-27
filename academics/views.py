@@ -16,19 +16,24 @@ def visible_courses(user):
 def dashboard(request):
     preference=getattr(request,"portal_preference",None)
     order={"code":"code","title":"title","term":"-term__starts"}.get(getattr(preference,"course_order","code"),"code")
-    return render(request, "dashboard.html", {"courses":visible_courses(request.user).order_by(order,"pk")})
+    return render(request, "dashboard.html", {"courses":visible_courses(request.user).select_related("term","instructor").order_by(order,"pk")})
 
 @login_required
 def course(request, pk):
-    obj = get_object_or_404(visible_courses(request.user), pk=pk)
+    obj = get_object_or_404(visible_courses(request.user).select_related("term").prefetch_related("assignments__policy","assignments__rubric"), pk=pk)
     teaching = obj.instructor_id == request.user.pk
     submissions = Submission.objects.filter(assignment__course=obj)
     if not teaching:
         submissions = submissions.filter(student=request.user)
     from .learning import module_open,LessonCompletion
     completed=set(LessonCompletion.objects.filter(student=request.user,lesson__course=obj).values_list("lesson_id",flat=True))
-    lessons=[(lesson,teaching or module_open(lesson.module,request.user),lesson.pk in completed) for lesson in obj.lessons.select_related("module")]
-    return render(request, "course.html", {"course":obj,"lessons":lessons,"teaching":teaching,"submissions":submissions.select_related("assignment","student")})
+    access={None:True}
+    lessons=[]
+    for lesson in obj.lessons.select_related("module__course"):
+        if not teaching and lesson.module_id not in access:
+            access[lesson.module_id]=module_open(lesson.module,request.user)
+        lessons.append((lesson,teaching or access[lesson.module_id],lesson.pk in completed))
+    return render(request, "course.html", {"course":obj,"lessons":lessons,"teaching":teaching,"submissions":submissions.select_related("assignment","student","attachment").defer("attachment__data").prefetch_related("privatedocument_set")})
 
 @login_required
 @transaction.atomic
