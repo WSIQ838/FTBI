@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add bounded private file archives with safe paths, digest manifests, current-access checks and revoked-credential exclusion.
+
 - Add all-or-nothing multi-course registration for mutual corequisites with ordered capacity locks, preserved waitlist priority and repeat-safe enrollment notices.
 
 - Batch dashboard/course related-record queries, reuse per-module access decisions within a request, and omit attachment binary payloads from course-page queries.

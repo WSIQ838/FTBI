@@ -143,7 +143,7 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Academic probation tracking (SIS regression tests; institutional policy acceptance separate)
 - [x] Academic standing calculations (SIS regression tests; institutional policy acceptance separate)
 - [x] Student document management (admissions/document regression tests; live services and institutional acceptance separate)
-- [~] Student personal data exports
+- [~] Student personal data exports (portal JSON plus bounded access-controlled file archive; comprehensive reviewed records requests and privacy acceptance outstanding)
 - [~] Student demographic reporting (voluntary policy-gated choices and restricted aggregates; institutional privacy/retention acceptance outstanding)
 - [x] Emergency contact management (SIS regression tests; institutional policy acceptance separate)
 - [x] Enrollment verification letters (SIS regression tests; institutional policy acceptance separate)

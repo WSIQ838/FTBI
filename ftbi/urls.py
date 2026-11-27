@@ -143,3 +143,6 @@ urlpatterns += [path("withdrawals/<int:pk>/appeal/",wa.submit_appeal,name="withd
 
 from academics.registration_cart import registration_cart
 urlpatterns += [path("registration/together/",registration_cart,name="registration_cart")]
+
+from academics.personal_files import personal_files
+urlpatterns += [path("account/files.zip",personal_files,name="personal_files")]
