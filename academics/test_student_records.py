@@ -169,3 +169,66 @@ class StudentRecordsTests(TestCase):
         self.assertEqual(self.client.post(url,{"decision":"denied","reason":"Original decision upheld"}).status_code,302)
         self.enrollment.refresh_from_db();self.assertTrue(self.enrollment.active)
         self.assertFalse(FinalGrade.objects.exists())
+
+    def test_enrollment_letter_template_is_snapshotted_and_private(self):
+        from .credentials import CredentialTemplate
+        template=CredentialTemplate.objects.create(kind="enrollment",heading="Enrollment confirmation",
+            body="{recipient} is enrolled with {institution} in {program}.",footer="Reference {identifier}",
+            enabled=True,approval_reference="Synthetic approval")
+        self.client.force_login(self.student)
+        self.assertEqual(self.client.post(reverse("issue_enrollment_letter")).status_code,302)
+        record=EnrollmentVerification.objects.get()
+        captured=record.snapshot.copy()
+        self.assertEqual(captured["template"]["approval_reference"],"Synthetic approval")
+        self.assertEqual(captured["program"],self.program.name)
+        template.heading="Changed heading";template.save()
+        self.course.title="Changed course";self.course.save()
+        record.refresh_from_db();self.assertEqual(record.snapshot,captured)
+        url=reverse("enrollment_letter",args=[record.identifier])
+        from io import BytesIO
+        from pyhanko.pdf_utils.reader import PdfFileReader
+        rendered=PdfFileReader(BytesIO(self.client.get(url).content))
+        content=rendered.root["/Pages"]["/Kids"][0].get_object()["/Contents"].data
+        self.assertIn(b"Enrollment confirmation",content)
+        self.assertNotIn(b"Changed heading",content)
+        self.assertNotIn(b"Changed course",content)
+        self.client.force_login(self.other);self.assertEqual(self.client.get(url).status_code,404)
+        self.client.force_login(self.registrar);self.assertEqual(self.client.get(url).status_code,200)
+
+    def test_enrollment_letter_rejects_invalid_enabled_template_before_issuance(self):
+        from .credentials import CredentialTemplate
+        template=CredentialTemplate.objects.create(kind="enrollment",heading="{recipient.__class__}",enabled=True,approval_reference="Synthetic")
+        self.client.force_login(self.student)
+        self.assertEqual(self.client.post(reverse("issue_enrollment_letter")).status_code,400)
+        self.assertFalse(EnrollmentVerification.objects.exists())
+        template.heading="Enrollment";template.approval_reference="  ";template.save()
+        self.assertEqual(self.client.post(reverse("issue_enrollment_letter")).status_code,400)
+        self.assertFalse(EnrollmentVerification.objects.exists())
+        template.enabled=False;template.save()
+        self.assertEqual(self.client.post(reverse("issue_enrollment_letter")).status_code,302)
+        self.assertEqual(EnrollmentVerification.objects.get().snapshot["template"]["heading"],"Enrollment verification")
+
+    def test_enrollment_letter_paginates_without_truncation_and_supports_legacy_snapshot(self):
+        from io import BytesIO
+        from uuid import uuid4
+        from pyhanko.pdf_utils.reader import PdfFileReader
+        from .enrollment_letters import render_letter
+        snapshot={"institution":"Synthetic College","name":"Synthetic Student","student_number":"S001",
+                  "enrollments":[{"course__code":f"C{i}","course__title":"Long course title "*10+"ENDCOURSE",
+                                  "course__term__name":"Synthetic Term"} for i in range(60)]}
+        reader=PdfFileReader(BytesIO(render_letter(snapshot,uuid4(),timezone.now())))
+        self.assertGreater(reader.root["/Pages"]["/Count"],2)
+        def streams(node):
+            if node["/Type"]=="/Page": return [node["/Contents"].data]
+            return [data for child in node["/Kids"] for data in streams(child.get_object())]
+        data=b"\n".join(streams(reader.root["/Pages"]))
+        self.assertEqual(data.count(b"ENDCOURSE"),60)
+        self.assertIn(b"Not digitally signed",data)
+        self.assertIn(b"Enrollment verification",data)
+
+    def test_enrollment_letter_audit_failure_rolls_back_issuance(self):
+        from unittest.mock import patch
+        self.client.force_login(self.student)
+        with patch("academics.student_record_views.AuditEvent.objects.create",side_effect=RuntimeError("synthetic failure")):
+            with self.assertRaises(RuntimeError): self.client.post(reverse("issue_enrollment_letter"))
+        self.assertFalse(EnrollmentVerification.objects.exists())

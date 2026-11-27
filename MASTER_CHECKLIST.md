@@ -432,7 +432,7 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [~] Administrative approval workflows (independent report/policy approval and version history; broader transactional approval workflows outstanding)
 - [~] Institutional policy configuration (reviewed effective policy versions and demographic configuration; other feature controls remain separate)
 - [~] Multi-campus management (campus classifications, admissions conversion and aggregate filtering; separate calendars/budgets/transfers outstanding)
-- [ ] Institutional document templates
+- [~] Institutional document templates (transcript/diploma and snapshotted enrollment-letter wording; other documents, localization and institutional acceptance outstanding)
 
 ## 14. User Interface and Accessibility
 
