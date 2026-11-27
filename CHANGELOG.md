@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Document current HTTP/data-exchange interfaces and add a synthetic role-based training and acceptance workbook.
+
 - Correct obsolete registration, integration and scanner documentation; add troubleshooting and upgrade acceptance procedures with explicit external blockers.
 
 - Share portal and scheduled academic-risk checks with current assignment/role eligibility, atomic notification queuing and repeat-safe counts-only summaries.
