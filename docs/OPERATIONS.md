@@ -6,3 +6,5 @@ Encrypted backups use the age public-key recipient and PostgreSQL custom format.
 ## Monitoring and managed backup retention
 
 See OBSERVABILITY.md for protected operational checks, transition alerts and scrubbed logs. See BACKUP_RETENTION.md for managed encrypted archives, restore-gated retention and failure status. Institutional schedulers, external uptime monitoring, offsite storage and recovery acceptance remain outstanding.
+
+See [reviewed file retention](FILE_RETENTION.md) for disabled-by-default, independently reviewed obsolete-version erasure and preservation holds. This is separate from encrypted-backup retention; neither process proves physical erasure of all copies.

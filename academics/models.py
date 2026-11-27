@@ -140,3 +140,5 @@ from .institutional_reporting import Campus,DeanAssignment,InstitutionalReport,R
 from .governance import InstitutionPolicy,PolicyRevision,PolicyReview,PolicyWithdrawal,PolicyAcknowledgment,DemographicCollection,DemographicResponse
 
 from .monitoring import OperationAlert
+
+from .file_retention import FileRetentionPolicy,DocumentPreservationHold,FileRetentionBatch

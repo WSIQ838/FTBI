@@ -14,6 +14,7 @@ class PrivateDocument(models.Model):
     created=models.DateTimeField(auto_now_add=True)
 
 class DocumentVersion(models.Model):
+    purged_at=models.DateTimeField(null=True,blank=True,editable=False)
     document=models.ForeignKey(PrivateDocument,on_delete=models.PROTECT,related_name="versions")
     number=models.PositiveIntegerField()
     original_name=models.CharField(max_length=200)
@@ -42,7 +43,7 @@ def storage_used(user):
     from django.db.models.functions import Length
     from .attachments import SubmissionAttachment
     from .assessment_policy import SubmissionRevision
-    return ((DocumentVersion.objects.filter(document__owner=user).aggregate(n=Sum("size"))["n"] or 0)
+    return ((DocumentVersion.objects.filter(document__owner=user,purged_at__isnull=True).aggregate(n=Sum("size"))["n"] or 0)
         +(SubmissionAttachment.objects.filter(submission__student=user).aggregate(n=Sum("size"))["n"] or 0)
         +(SubmissionRevision.objects.filter(submission__student=user).aggregate(n=Sum(Length("attachment_data")))["n"] or 0))
 

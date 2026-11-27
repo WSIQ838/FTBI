@@ -24,7 +24,7 @@ MAX_BYTES=50*1024*1024
 def build_archive(user):
     courses=visible_courses(user)
     specs=[
-        ("document",DocumentVersion.objects.filter(document__owner=user).select_related("document","document__submission__assignment__course"),"data","original_name"),
+        ("document",DocumentVersion.objects.filter(document__owner=user,purged_at__isnull=True).select_related("document","document__submission__assignment__course"),"data","original_name"),
         ("attachment",SubmissionAttachment.objects.filter(submission__student=user,submission__assignment__course__in=courses),"data","original_name"),
         ("revision",SubmissionRevision.objects.filter(submission__student=user,submission__assignment__course__in=courses,attachment_data__isnull=False),"attachment_data","attachment_name"),
         ("credential",CredentialArtifact.objects.filter(student__user=user,revocation__isnull=True),"pdf",None),

@@ -191,3 +191,7 @@ for model in [PolicyRevision,PolicyReview,PolicyWithdrawal,PolicyAcknowledgment]
 
 from .monitoring import OperationAlert
 admin.site.register(OperationAlert,AssessmentRecordAdmin)
+
+from .file_retention import FileRetentionPolicy,DocumentPreservationHold,FileRetentionBatch
+admin.site.register(FileRetentionPolicy)
+for model in [DocumentPreservationHold,FileRetentionBatch]: admin.site.register(model,AssessmentRecordAdmin)

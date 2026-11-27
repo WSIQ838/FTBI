@@ -326,7 +326,7 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Admissions document repository (admissions/document regression tests; live services and institutional acceptance separate)
 - [x] Institutional document library (admissions/document regression tests; live services and institutional acceptance separate)
 - [x] Storage quotas (admissions/document regression tests; live services and institutional acceptance separate)
-- [ ] File retention policies
+- [~] File retention policies (disabled-by-default reviewed obsolete-version erasure and preservation holds; institutional retention/backup acceptance outstanding)
 - [ ] Object storage integration
 - [x] Document version history (admissions/document regression tests; live services and institutional acceptance separate)
 
@@ -383,7 +383,7 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Security incident notifications (PR #26; CI 45507439993; live-service acceptance separate)
 - [x] Incident management workflow (PR #26; CI 45507439993; live-service acceptance separate)
 - [ ] Tamper-resistant external audit logging
-- [ ] Data retention controls
+- [~] Data retention controls (bounded reviewed file batches and retained metadata; broader record lifecycle and institutional acceptance outstanding)
 - [ ] Student record deletion and anonymization policies
 - [x] Automated dependency vulnerability scanning (PR #26; CI 45507439993; live-service acceptance separate)
 - [x] Static application security testing (PR #26; CI 45507439993; live-service acceptance separate)
