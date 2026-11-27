@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Correct obsolete registration, integration and scanner documentation; add troubleshooting and upgrade acceptance procedures with explicit external blockers.
+
 - Share portal and scheduled academic-risk checks with current assignment/role eligibility, atomic notification queuing and repeat-safe counts-only summaries.
 
 - Apply current approved course accommodations to new exam sessions with bounded, non-stacking extra time/attempts and private decision snapshots.
