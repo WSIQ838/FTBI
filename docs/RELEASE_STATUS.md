@@ -8,7 +8,7 @@ Baseline confirmed: PR #21 merged into `55918912938420613bacaf5203a2e0aade0c381d
 
 ## Latest confirmed verification
 
-As of November 27, 2026 (America/Los_Angeles), main includes PR #49 at `30a83aba9d5fb0bd701245803ce57d251a461005`. No stable version has been published. The following are confirmed merged milestones, with checks evaluated on each change's exact head:
+As of November 27, 2026 (America/Los_Angeles), main includes PR #50 at `db99ccd72c6d232ff8fd82ad6e3f91cd5b461aeb`. No stable version has been published. The following are confirmed merged milestones, with checks evaluated on each change's exact head:
 
 | Changes | Verified scope | Remaining limitation |
 | --- | --- | --- |
@@ -24,6 +24,8 @@ As of November 27, 2026 (America/Los_Angeles), main includes PR #49 at `30a83aba
 PR #48 passed all ten push/PR checks for `f5b679d854c731746bd15a376a62bf2443ad3053`. PR runs: [regression/migrations](https://github.com/WSIQ838/FTBI/actions/runs/45964100849), [browsers/accessibility](https://github.com/WSIQ838/FTBI/actions/runs/45964100924), [security analysis](https://github.com/WSIQ838/FTBI/actions/runs/45964100922), [encrypted recovery](https://github.com/WSIQ838/FTBI/actions/runs/45964100919), [production stack](https://github.com/WSIQ838/FTBI/actions/runs/45964100906). Migration 0024 adds the reviewed retention records; no institutional documents were erased.
 
 PR #49 passed all twelve push/PR checks for `c99f2e6a37aaef235aa49623f823571d40b94fb4`, adding a sixth workflow. PR runs: [regression/migrations](https://github.com/WSIQ838/FTBI/actions/runs/45964758058), [browsers/accessibility](https://github.com/WSIQ838/FTBI/actions/runs/45964757956), [security analysis](https://github.com/WSIQ838/FTBI/actions/runs/45964757933), [encrypted recovery](https://github.com/WSIQ838/FTBI/actions/runs/45964757996), [production stack](https://github.com/WSIQ838/FTBI/actions/runs/45964757928), [synthetic load](https://github.com/WSIQ838/FTBI/actions/runs/45964758002). The load run completed 120 requests at each of 1, 4 and 12 workers without failures; p95 was 27.08, 52.64 and 148.63 milliseconds respectively. These are observed CI results for one small synthetic course and one authenticated session, not a service-level commitment.
+
+PR #50 passed all twelve push/PR checks for `f9b8d73e1418f9b4eec7bd457cde40f51a304a4f`. The [PostgreSQL regression run](https://github.com/WSIQ838/FTBI/actions/runs/45965713895) passed all 201 tests, including 14 database-specific concurrency checks skipped on SQLite. The [browser run](https://github.com/WSIQ838/FTBI/actions/runs/45965713875) passed ten scenarios across five configurations, covering both the learning flow and student appeal, independent review, private outcome and outsider denial. Sampled accessibility checks passed; comprehensive assistive-technology and institutional acceptance remain open.
 
 These checks use synthetic data and disposable infrastructure. They do not establish institutional deployment, external-provider acceptance, complete checklist coverage or independent security/privacy approval.
 
