@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Batch dashboard/course related-record queries, reuse per-module access decisions within a request, and omit attachment binary payloads from course-page queries.
+
 - Add disabled-by-default, policy-gated withdrawal appeals with independent reasoned decisions, preserved original denial snapshots and replay-safe W posting.
 
 - Document current HTTP/data-exchange interfaces and add a synthetic role-based training and acceptance workbook.
