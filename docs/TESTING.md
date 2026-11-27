@@ -17,3 +17,11 @@ Production stack smoke starts the real private ClamAV container. The application
 ## Portal query growth
 
 `academics.test_query_performance` compares warmed rendered requests with one versus 31 courses, and one versus 31 assignments/submissions/lessons in the same module. Related term/instructor, policy/rubric, attachment metadata and document queries must not grow per displayed item. Attachment binary payloads are excluded from these page queries. Module access decisions are reused only inside one request; permission/progress changes are rechecked on the next request. This is a query-count regression check, not a production latency, load, stress, memory-capacity or connection-pool acceptance test. Different module graphs still require further profiling.
+
+## Bounded synthetic HTTP load
+
+The Synthetic load validation workflow starts disposable PostgreSQL/Redis services, migrates an empty database, seeds guarded fictional accounts and serves Gunicorn with two workers/four threads each. The probe logs in once as a synthetic student and exercises dashboard, course, catalog and notification reads at 1, 4 and 12 concurrent workers, 120 requests per stage. It fails on any unexpected status/content/redirect or a stage p95 above 10 seconds. JSON artifacts report counts, throughput and latency percentiles without cookies, credentials or response bodies. The generous CI threshold detects severe regressions; it is not an institutional service-level objective.
+
+The probe requires explicit disposable-test opt-in and the guarded synthetic fixture, accepts only numeric loopback HTTP origins, disables proxies, confines redirects to the same origin and caps request counts/workers/timeouts. Tests cover those guards, percentiles and fail-closed error reporting. It is not a generic tool for loading a public or production system.
+
+These bounded ramps use one small synthetic course and one student session. They do not prove production capacity, multi-role/multi-user behavior, write-heavy workloads, sustained soak behavior, failover, connection-pool sizing or performance under an institution’s expected peak load. Representative datasets, approved load objectives and staged production-like acceptance remain outstanding.

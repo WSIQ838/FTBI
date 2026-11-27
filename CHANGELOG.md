@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add a bounded synthetic HTTP load workflow with disposable PostgreSQL/Redis/Gunicorn, authenticated concurrency ramps and latency/error artifacts.
+
 - Add disabled-by-default document-retention policies, bounded previews, independent erasure review and preservation holds; retain version metadata and exclude erased payloads from downloads/exports.
 - Fix the personal-file streaming regression test to avoid a duplicate response close that invalidated PostgreSQL test transactions.
 
