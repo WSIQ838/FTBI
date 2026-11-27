@@ -1,0 +1,53 @@
+name: Synthetic load validation
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  load:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_DB: ftbi_load
+          POSTGRES_USER: ftbi
+          POSTGRES_PASSWORD: synthetic-load-only-password
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd "pg_isready -U ftbi -d ftbi_load"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+      redis:
+        image: redis:7-alpine
+        ports: ['6379:6379']
+        options: --health-cmd "redis-cli ping" --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      DJANGO_DEBUG: '1'
+      POSTGRES_HOST: '127.0.0.1'
+      POSTGRES_DB: ftbi_load
+      POSTGRES_USER: ftbi
+      POSTGRES_PASSWORD: synthetic-load-only-password
+      FTBI_REDIS_URL: redis://127.0.0.1:6379/0
+      FTBI_ALLOW_DEMO: '1'
+      FTBI_LOAD_TESTING: '1'
+      FTBI_DEMO_PASSWORD: synthetic-load-fixture-password
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: python manage.py migrate --noinput
+      - run: python manage.py collectstatic --noinput
+      - run: python manage.py seed_demo
+      - name: Exercise bounded authenticated load
+        run: |
+          gunicorn ftbi.wsgi:application --bind 127.0.0.1:8766 --workers 2 --threads 4 --timeout 30 > /tmp/ftbi-load-server.log 2>&1 &
+          fixture_pid=$!
+          trap 'kill "$fixture_pid" 2>/dev/null || true' EXIT
+          python scripts/load_probe.py --output load-report.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: synthetic-load-report
+          path: load-report.json

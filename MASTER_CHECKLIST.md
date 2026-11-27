@@ -578,8 +578,8 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Concurrent registration testing (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
 - [x] Concurrent payment testing (PR #24; SQLite/PostgreSQL CI 45504802477; live provider acceptance separate)
 - [x] Concurrent examination testing (PR #23; SQLite/PostgreSQL CI 45503670966)
-- [ ] Load testing
-- [ ] Stress testing
+- [~] Load testing (bounded synthetic HTTP workflow; representative multi-user datasets and institutional peak-load acceptance outstanding)
+- [~] Stress testing (bounded concurrency ramp; sustained saturation, failover and institutional acceptance outstanding)
 - [~] Mobile testing (five configurations and sampled learning workflow automated; broader and manual acceptance outstanding)
 - [~] Accessibility testing (five configurations and sampled learning workflow automated; broader and manual acceptance outstanding)
 - [~] Cross-browser testing (five configurations and sampled learning workflow automated; broader and manual acceptance outstanding)
