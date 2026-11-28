@@ -300,7 +300,7 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Notification preferences (PR #26; CI 45507439993; live-service acceptance separate)
 - [x] Durable notification history (PR #26; CI 45507439993; live-service acceptance separate)
 - [ ] SMS integration
-- [ ] Live SMTP validation
+- [~] Live SMTP validation (PR #56 isolated authenticated STARTTLS capture passed; institutional provider, domain authentication, deliverability and scheduler acceptance remain open)
 
 ## 10. File and Document Management
 

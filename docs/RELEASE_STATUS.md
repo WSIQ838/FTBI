@@ -8,7 +8,7 @@ Baseline confirmed: PR #21 merged into `55918912938420613bacaf5203a2e0aade0c381d
 
 ## Latest confirmed verification
 
-As of November 27, 2026 (America/Los_Angeles), main includes PR #50 at `db99ccd72c6d232ff8fd82ad6e3f91cd5b461aeb`. No stable version has been published. The following are confirmed merged milestones, with checks evaluated on each change's exact head:
+As of November 27, 2026 (America/Los_Angeles), main includes PR #55 at `ee9662069e7f0c78db566d86c67aff883dc58ad4`. No stable version has been published. The following are confirmed merged milestones, with checks evaluated on each change's exact head:
 
 | Changes | Verified scope | Remaining limitation |
 | --- | --- | --- |
@@ -28,6 +28,14 @@ PR #49 passed all twelve push/PR checks for `c99f2e6a37aaef235aa49623f823571d40b
 PR #50 passed all twelve push/PR checks for `f9b8d73e1418f9b4eec7bd457cde40f51a304a4f`. The [PostgreSQL regression run](https://github.com/WSIQ838/FTBI/actions/runs/45965713895) passed all 201 tests, including 14 database-specific concurrency checks skipped on SQLite. The [browser run](https://github.com/WSIQ838/FTBI/actions/runs/45965713875) passed ten scenarios across five configurations, covering both the learning flow and student appeal, independent review, private outcome and outsider denial. Sampled accessibility checks passed; comprehensive assistive-technology and institutional acceptance remain open.
 
 These checks use synthetic data and disposable infrastructure. They do not establish institutional deployment, external-provider acceptance, complete checklist coverage or independent security/privacy approval.
+
+## Subsequent verified work
+
+PR #52 adds locked browser dependency auditing; #53 and #54 preserve approved enrollment/admissions letter wording and private access. PR #55 adds optional passkey MFA with cryptographic proof, single-use challenges, revocation and recovery checks, plus a real browser virtual-authenticator scenario. All twelve final push/PR workflow runs passed for each of these changes. Passkey final head: `ed34d2775df26bdefc3e39fae827c2eb7804df3c`; [regression](https://github.com/WSIQ838/FTBI/actions/runs/46105410680), [browser](https://github.com/WSIQ838/FTBI/actions/runs/46105410732), [security](https://github.com/WSIQ838/FTBI/actions/runs/46105410725), [recovery](https://github.com/WSIQ838/FTBI/actions/runs/46105410642), [stack](https://github.com/WSIQ838/FTBI/actions/runs/46105410641), [load](https://github.com/WSIQ838/FTBI/actions/runs/46105410686). Physical authenticators, institutional domain and independent security acceptance remain open.
+
+PR #56's initial head `04d44b22bd725c667c7c157a115adb7888971329` passed the [isolated SMTP job](https://github.com/WSIQ838/FTBI/actions/runs/46106215999/job/140859446625): four captured messages, eleven transport/privacy/failure checks, fresh migrations through 0027. This is a real authenticated STARTTLS connection to disposable Mailpit, with no forwarding or real recipients. It does not close the approved outbound-provider gate. Subsequent changes require their own final-head workflow verification before merge.
+
+The user has not selected a staging host/domain or approved service providers. These choices remain unresolved; no provider purchase, credential creation or institutional acceptance is inferred.
 
 ## External gates
 
