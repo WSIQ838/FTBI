@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Correct outdated degree-audit, advisor-caseload and demographic-reporting manual statements against implemented behavior; preserve outstanding workflow and institutional acceptance limits.
+
 - Add isolated real SMTP/STARTTLS integration coverage for notification privacy, opt-out, authentication and certificate failures, retries and terminal failure. Institutional provider acceptance remains open.
 
 - Add disabled-by-default WebAuthn passkey verification after sign-in, with password-confirmed enrollment/revocation, session-bound single-use challenges, strict origin/ownership checks, recovery support and real cryptographic/virtual-authenticator validation. Production domain, physical-device and independent security acceptance remain open.
