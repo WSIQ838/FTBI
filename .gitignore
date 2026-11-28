@@ -12,3 +12,5 @@ node_modules/
 browser-tests/playwright-report/
 browser-tests/test-results/
 .browser-test.sqlite3
+
+smtp-validation.json

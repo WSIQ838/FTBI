@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add isolated real SMTP/STARTTLS integration coverage for notification privacy, opt-out, authentication and certificate failures, retries and terminal failure. Institutional provider acceptance remains open.
+
 - Add disabled-by-default WebAuthn passkey verification after sign-in, with password-confirmed enrollment/revocation, session-bound single-use challenges, strict origin/ownership checks, recovery support and real cryptographic/virtual-authenticator validation. Production domain, physical-device and independent security acceptance remain open.
 
 - Capture admissions acceptance/rejection letter wording and recipient details atomically with decisions; add separate approved templates, escape plain text, preserve applicant-only access and prevent generic administration from rewriting decided applications. Legacy letters are labelled without inventing historical data.
