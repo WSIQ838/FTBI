@@ -79,6 +79,31 @@ class AccountConcurrencyTests(TransactionTestCase):
         self.assertEqual(DurableNotification.objects.filter(user=self.students[0]).count(),1)
         self.assertEqual(AuditEvent.objects.filter(action__in=["admission_accepted","admission_rejected"]).count(),1)
 
+    @override_settings(DEBUG=True,FTBI_PASSKEYS_ENABLED=True,FTBI_PASSKEY_RP_ID="portal.example.test",FTBI_PASSKEY_ORIGIN="https://portal.example.test")
+    def test_simultaneous_passkey_assertion_is_consumed_once(self):
+        import copy,json
+        from django.core.cache import cache
+        from .test_passkeys import SyntheticAuthenticator,PASSWORD
+        from .passkeys import PasskeyDevice
+        from .operations import AuditEvent
+        cache.clear()
+        self.teacher.set_password(PASSWORD);self.teacher.save()
+        client=Client();client.force_login(self.teacher)
+        authenticator=SyntheticAuthenticator()
+        options=client.post("/account/passkeys/register/begin/",{"label":"Concurrent key","password":PASSWORD}).json()
+        self.assertEqual(client.post("/account/passkeys/register/finish/",json.dumps(authenticator.response(options,register=True)),content_type="application/json").status_code,200)
+        client.logout();client.force_login(self.teacher)
+        options=client.post("/account/passkeys/authenticate/begin/").json()
+        payload=json.dumps(authenticator.response(options))
+        clients=[Client(),Client()]
+        for other in clients: other.cookies=copy.deepcopy(client.cookies)
+        codes=self.simultaneous(lambda i:clients[i].post("/account/passkeys/authenticate/finish/",payload,content_type="application/json").status_code)
+        self.assertEqual(codes.count(200),1)
+        # Session rotation can reject the other request before it reaches the challenge lock.
+        self.assertTrue(all(code in {200,400,302} for code in codes))
+        self.assertEqual(PasskeyDevice.objects.get().sign_count,1)
+        self.assertEqual(AuditEvent.objects.filter(action="passkey_verified").count(),1)
+
     def test_registration_cannot_overfill_last_seat(self):
         from .prerequisites import WaitlistEntry
         clients=[Client(),Client()]

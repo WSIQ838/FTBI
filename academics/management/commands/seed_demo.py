@@ -35,6 +35,7 @@ class Command(BaseCommand):
             StudentProfile.objects.create(user=student,student_number=f"DEMO-{index:04d}",program=program,admitted_on=now.date())
             if name!="outsider": Enrollment.objects.create(student=student,course=course)
         if os.environ.get("FTBI_BROWSER_TESTING")=="1":
+            User.objects.create_user(username="demo-passkey",password=password,first_name="Demo",last_name="Passkey")
             from django.contrib.auth.models import Permission
             from academics.student_records import WithdrawalWindow,WithdrawalRequest
             reviewer=User.objects.create_user(username="demo-records-reviewer",password=password,first_name="Demo",last_name="Records reviewer")

@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+- Add disabled-by-default WebAuthn passkey verification after sign-in, with password-confirmed enrollment/revocation, session-bound single-use challenges, strict origin/ownership checks, recovery support and real cryptographic/virtual-authenticator validation. Production domain, physical-device and independent security acceptance remain open.
+
 - Capture admissions acceptance/rejection letter wording and recipient details atomically with decisions; add separate approved templates, escape plain text, preserve applicant-only access and prevent generic administration from rewriting decided applications. Legacy letters are labelled without inventing historical data.
 
 - Add approved enrollment-letter template wording captured at issuance; reject invalid enabled templates, preserve private access and paginate long course titles without truncation. Existing letters retain standard wording; unsigned letters remain outside credential signing/revocation.

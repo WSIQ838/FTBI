@@ -363,7 +363,7 @@ PR #28 merged as 94766b6; 83 regression tests passed on PostgreSQL, with SQLite,
 - [x] Account lockout management (PR #26; CI 45507439993; live-service acceptance separate)
 - [x] Suspicious login detection (PR #26; CI 45507439993; live-service acceptance separate)
 - [ ] Trusted-device management
-- [ ] WebAuthn and passkeys
+- [~] WebAuthn and passkeys (optional user-verified second factor, scoped enrollment/revocation and recovery; passwordless login, physical devices, domain and independent acceptance outstanding)
 - [ ] Independent MFA security review
 
 ## 12. Security Administration and Compliance

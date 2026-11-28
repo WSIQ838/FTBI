@@ -5,3 +5,4 @@ class AcademicsConfig(AppConfig):
     def ready(self):
         from . import audit
         from . import security_signals
+        from ftbi import passkey_checks
