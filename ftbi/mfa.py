@@ -7,7 +7,7 @@ from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.shortcuts import redirect, render
 from django.urls import reverse
-from django_otp import login as otp_login
+from django_otp import login as otp_login,DEVICE_ID_SESSION_KEY
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from academics.passkeys import PasskeyDevice
 
@@ -22,6 +22,10 @@ class MFAGate:
         self.get_response=get_response
     def __call__(self,request):
         if request.user.is_authenticated:
+            device=getattr(request.user,"otp_device",None)
+            if isinstance(device,PasskeyDevice) and not device.confirmed:
+                request.user.otp_device=None
+                request.session.pop(DEVICE_ID_SESSION_KEY,None)
             exempt={reverse("mfa_setup"),reverse("mfa_verify"),reverse("logout"),reverse("mfa_recover"),reverse("passkey_manage"),reverse("passkey_verify"),*[reverse(name,args=[purpose]) for name in ["passkey_begin","passkey_finish"] for purpose in ["register","authenticate"]]}
             if request.path_info not in exempt and not request.user.is_verified():
                 has_device=TOTPDevice.objects.filter(user=request.user,confirmed=True).exists() or PasskeyDevice.objects.filter(user=request.user,confirmed=True).exists()
