@@ -142,3 +142,5 @@ from .governance import InstitutionPolicy,PolicyRevision,PolicyReview,PolicyWith
 from .monitoring import OperationAlert
 
 from .file_retention import FileRetentionPolicy,DocumentPreservationHold,FileRetentionBatch
+
+from .passkeys import PasskeyIdentity,PasskeyDevice,PasskeyChallenge

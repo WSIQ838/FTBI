@@ -216,3 +216,6 @@ admin.site.register(OperationAlert,AssessmentRecordAdmin)
 from .file_retention import FileRetentionPolicy,DocumentPreservationHold,FileRetentionBatch
 admin.site.register(FileRetentionPolicy)
 for model in [DocumentPreservationHold,FileRetentionBatch]: admin.site.register(model,AssessmentRecordAdmin)
+
+from .passkeys import PasskeyDevice
+admin.site.register(PasskeyDevice,AssessmentRecordAdmin)

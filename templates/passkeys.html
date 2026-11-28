@@ -1,0 +1,12 @@
+{% extends "base.html" %}{% load static %}{% block content %}
+<h1>Passkeys</h1>
+{% if unavailable %}<p>Passkey verification is unavailable. Use your authenticator or recovery code, or contact support.</p>{% endif %}
+{% if enroll %}<p>Use your device PIN or biometric verification after signing in. Confirm your password to add a passkey. Keep a recovery code or another verification method available.</p>
+<form method="post" action="{% url 'passkey_begin' 'register' %}" id="passkey-register" data-purpose="register" data-begin="{% url 'passkey_begin' 'register' %}" data-finish="{% url 'passkey_finish' 'register' %}" data-success="{% url 'passkey_manage' %}">{% csrf_token %}
+<p><label for="passkey-label">Passkey name</label><input id="passkey-label" name="label" maxlength="64" required autocomplete="off"></p>
+<p><label for="passkey-password">Password confirmation</label><input id="passkey-password" name="password" type="password" required autocomplete="current-password"></p><button>Add passkey</button></form>
+<p><a href="{% url 'recovery_codes' %}">Generate recovery codes</a></p><h2>Registered passkeys</h2>{% for device in devices %}<article><h3>{{ device.name }}</h3><p>Added {{ device.created }}{% if device.last_used %}; last used {{ device.last_used }}{% endif %}</p>
+<form method="post" action="{% url 'passkey_revoke' device.pk %}">{% csrf_token %}<label for="revoke-{{ device.pk }}">Password to revoke {{ device.name }}</label><input id="revoke-{{ device.pk }}" name="password" type="password" required autocomplete="current-password"><button>Revoke {{ device.name }}</button></form></article>{% empty %}<p>No passkeys registered.</p>{% endfor %}{% endif %}
+{% if verify %}<p>Confirm with your device PIN or biometric verification.</p><form method="post" action="{% url 'passkey_begin' 'authenticate' %}" id="passkey-authenticate" data-purpose="authenticate" data-begin="{% url 'passkey_begin' 'authenticate' %}" data-finish="{% url 'passkey_finish' 'authenticate' %}" data-success="{% url 'dashboard' %}">{% csrf_token %}<button>Verify passkey</button></form>{% endif %}
+<p id="passkey-status" role="status" aria-live="polite"></p><p><a href="{% url 'mfa_verify' %}">Use an authenticator</a> | <a href="{% url 'mfa_recover' %}">Use a recovery code</a></p>
+<script src="{% static 'ftbi/passkeys.js' %}" defer></script>{% endblock %}

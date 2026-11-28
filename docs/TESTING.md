@@ -29,3 +29,7 @@ These bounded ramps use one small synthetic course and one student session. They
 ## Dependency advisory checks
 
 Security analysis runs independent Python and browser-tool dependency jobs. The JavaScript job installs the committed browser lockfile with lifecycle scripts disabled, then audits all installed dependencies including development tools. Any reported low-or-higher vulnerability or audit-service failure fails the job; the JSON report is retained even on failure. Python checks use pip-audit and Bandit. These automated results do not establish absence of vulnerabilities, container-image coverage or independent security acceptance.
+
+## Passkey validation
+
+Signed synthetic authenticator responses exercise the real WebAuthn verification library: accepted signatures, invalid origin/RP/challenge/signature/verification flags/backup eligibility, credential ownership and user-handle checks, expiring/session-bound challenges, replay, revocation, recovery, CSRF, rate limits and notification rollback. PostgreSQL additionally races the same assertion to require one successful consumption and audit event. The Chromium project runs an isolated account through browser enrollment, gated sign-in, verification and revocation using the browser's virtual CTAP2 authenticator; the other four projects continue their existing learning/records scenarios. This passkey scenario does not claim Firefox/WebKit, physical device, synced-provider or independent security acceptance.

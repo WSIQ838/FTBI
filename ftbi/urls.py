@@ -149,3 +149,6 @@ urlpatterns += [path("account/files.zip",personal_files,name="personal_files")]
 
 from academics import retention_views as frv
 urlpatterns += [path("records/retention/",frv.retention_home,name="file_retention"),path("records/retention/<int:pk>/",frv.review_batch,name="retention_batch"),path("records/retention/holds/new/",frv.add_hold,name="retention_hold"),path("records/retention/holds/<int:pk>/release/",frv.release_hold,name="retention_release_hold")]
+
+from ftbi import passkeys
+urlpatterns += [path("account/passkeys/",passkeys.manage,name="passkey_manage"),path("account/passkeys/verify/",passkeys.verify,name="passkey_verify"),path("account/passkeys/<str:purpose>/begin/",passkeys.begin,name="passkey_begin"),path("account/passkeys/<str:purpose>/finish/",passkeys.finish,name="passkey_finish"),path("account/passkeys/<int:pk>/revoke/",passkeys.revoke,name="passkey_revoke")]

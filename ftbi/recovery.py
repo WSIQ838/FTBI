@@ -10,6 +10,7 @@ from django.views.decorators.debug import sensitive_post_parameters
 from django_otp import login as otp_login
 from django_otp.plugins.otp_totp.models import TOTPDevice
 from academics.recovery_models import RecoveryCode
+from academics.passkeys import PasskeyDevice
 from academics.operations import AuditEvent
 from django.core.cache import cache
 
@@ -55,7 +56,7 @@ def recover(request):
             return HttpResponseForbidden("Too many recovery attempts.")
         with transaction.atomic():
             get_user_model().objects.select_for_update().get(pk=request.user.pk)
-            device=TOTPDevice.objects.filter(user=request.user,confirmed=True).first()
+            device=TOTPDevice.objects.filter(user=request.user,confirmed=True).first() or PasskeyDevice.objects.filter(user=request.user,confirmed=True).first()
             if device:
                 for record in RecoveryCode.objects.select_for_update().filter(user=request.user):
                     if check_password(form.cleaned_data["code"].lower(),record.digest):

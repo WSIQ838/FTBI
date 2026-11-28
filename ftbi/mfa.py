@@ -9,6 +9,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse
 from django_otp import login as otp_login
 from django_otp.plugins.otp_totp.models import TOTPDevice
+from academics.passkeys import PasskeyDevice
 
 class PasswordForm(forms.Form):
     password=forms.CharField(widget=forms.PasswordInput,strip=False)
@@ -21,9 +22,9 @@ class MFAGate:
         self.get_response=get_response
     def __call__(self,request):
         if request.user.is_authenticated:
-            exempt={reverse("mfa_setup"),reverse("mfa_verify"),reverse("logout"),reverse("mfa_recover")}
+            exempt={reverse("mfa_setup"),reverse("mfa_verify"),reverse("logout"),reverse("mfa_recover"),reverse("passkey_manage"),reverse("passkey_verify"),*[reverse(name,args=[purpose]) for name in ["passkey_begin","passkey_finish"] for purpose in ["register","authenticate"]]}
             if request.path_info not in exempt and not request.user.is_verified():
-                has_device=TOTPDevice.objects.filter(user=request.user,confirmed=True).exists()
+                has_device=TOTPDevice.objects.filter(user=request.user,confirmed=True).exists() or PasskeyDevice.objects.filter(user=request.user,confirmed=True).exists()
                 required=settings.FTBI_REQUIRE_MFA or (settings.FTBI_REQUIRE_STAFF_MFA and request.user.is_staff)
                 if has_device or required:
                     return redirect("mfa_verify" if has_device else "mfa_setup")
@@ -31,7 +32,7 @@ class MFAGate:
 
 @login_required
 def setup(request):
-    if TOTPDevice.objects.filter(user=request.user,confirmed=True).exists():
+    if TOTPDevice.objects.filter(user=request.user,confirmed=True).exists() or (PasskeyDevice.objects.filter(user=request.user,confirmed=True).exists() and not request.user.is_verified()):
         return redirect("mfa_verify" if not request.user.is_verified() else "dashboard")
     form=PasswordForm(request.POST if request.method=="POST" else None)
     token_form=TokenForm()
@@ -64,14 +65,14 @@ def setup(request):
                     return redirect("dashboard")
             token_form.add_error(None,"Code invalid or temporarily throttled.")
     secret=base64.b32encode(device.bin_key).decode("ascii") if device and device.pk==request.session.get("mfa_setup_device") else None
-    return render(request,"mfa_setup.html",{"form":form,"token_form":token_form,"secret":secret})
+    return render(request,"mfa_setup.html",{"form":form,"token_form":token_form,"secret":secret,"passkeys_enabled":settings.FTBI_PASSKEYS_ENABLED})
 
 @login_required
 def verify(request):
     if request.user.is_verified():
         return redirect("dashboard")
     if not TOTPDevice.objects.filter(user=request.user,confirmed=True).exists():
-        return redirect("mfa_setup")
+        return redirect("passkey_verify" if PasskeyDevice.objects.filter(user=request.user,confirmed=True).exists() else "mfa_setup")
     form=TokenForm(request.POST if request.method=="POST" else None)
     if request.method=="POST" and form.is_valid():
         with transaction.atomic():
@@ -81,4 +82,4 @@ def verify(request):
                 request.session.cycle_key()
                 return redirect("dashboard")
         form.add_error(None,"Code invalid or temporarily throttled.")
-    return render(request,"mfa_verify.html",{"form":form})
+    return render(request,"mfa_verify.html",{"form":form,"passkeys_available":PasskeyDevice.objects.filter(user=request.user,confirmed=True).exists()})

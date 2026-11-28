@@ -15,3 +15,5 @@ stripe>=11,<14
 redis>=5,<7
 
 pyHanko>=0.38.2,<0.39
+
+webauthn>=2.8,<3

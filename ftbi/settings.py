@@ -133,3 +133,7 @@ FTBI_NOTIFICATION_MAX_WAIT_MINUTES = int(os.environ.get('FTBI_NOTIFICATION_MAX_W
 if min(FTBI_BACKUP_MAX_AGE_HOURS,FTBI_MIN_DISK_FREE_MB,FTBI_NOTIFICATION_MAX_WAIT_MINUTES)<1: raise RuntimeError('Operational thresholds must be positive')
 if os.environ.get('FTBI_JSON_LOGGING','0' if DEBUG else '1')=='1':
     LOGGING={'version':1,'disable_existing_loggers':False,'formatters':{'safe_json':{'()':'ftbi.observability.SafeJSONFormatter'}},'handlers':{'console':{'class':'logging.StreamHandler','formatter':'safe_json'}},'root':{'handlers':['console'],'level':'INFO'},'loggers':{'django':{'handlers':['console'],'level':'INFO','propagate':False}}}
+
+FTBI_PASSKEYS_ENABLED = os.environ.get('FTBI_PASSKEYS_ENABLED','0') == '1'
+FTBI_PASSKEY_RP_ID = os.environ.get('FTBI_PASSKEY_RP_ID','')
+FTBI_PASSKEY_ORIGIN = os.environ.get('FTBI_PASSKEY_ORIGIN','')

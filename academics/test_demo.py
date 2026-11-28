@@ -10,13 +10,13 @@ from .models import Enrollment,Course
 class DemoTests(TestCase):
     @override_settings(DEBUG=False)
     def test_demo_refuses_production(self):
-        with patch.dict(os.environ,{"FTBI_ALLOW_DEMO":"1","FTBI_DEMO_PASSWORD":"synthetic-only-demo-password"}):
+        with patch.dict(os.environ,{"FTBI_ALLOW_DEMO":"1","FTBI_BROWSER_TESTING":"0","FTBI_DEMO_PASSWORD":"synthetic-only-demo-password"}):
             with self.assertRaises(CommandError): call_command("seed_demo")
         self.assertFalse(get_user_model().objects.exists())
 
     @override_settings(DEBUG=True)
     def test_demo_generates_synthetic_roles_and_refuses_existing_records(self):
-        with patch.dict(os.environ,{"FTBI_ALLOW_DEMO":"1","FTBI_DEMO_PASSWORD":"synthetic-only-demo-password"}):
+        with patch.dict(os.environ,{"FTBI_ALLOW_DEMO":"1","FTBI_BROWSER_TESTING":"0","FTBI_DEMO_PASSWORD":"synthetic-only-demo-password"}):
             call_command("seed_demo")
             self.assertEqual(Enrollment.objects.count(),5)
             self.assertEqual(Course.objects.get().lessons.count(),1)
@@ -34,4 +34,4 @@ class DemoTests(TestCase):
         self.assertFalse(reviewer.is_staff);self.assertFalse(reviewer.is_superuser)
         self.assertFalse(reviewer.has_perm("academics.view_studentprofile"))
         self.assertEqual(WithdrawalRequest.objects.filter(status="denied").count(),5)
-        self.assertEqual(get_user_model().objects.count(),13)
+        self.assertEqual(get_user_model().objects.count(),14)

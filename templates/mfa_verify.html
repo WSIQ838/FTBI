@@ -1,1 +1,1 @@
-{% extends "base.html" %}{% block content %}<h1>Verify authenticator</h1><form method="post">{% csrf_token %}{{ form.as_p }}<button>Verify</button></form><p><a href="{% url 'mfa_recover' %}">Use a recovery code</a></p>{% endblock %}
+{% extends "base.html" %}{% block content %}<h1>Verify authenticator</h1><form method="post">{% csrf_token %}{{ form.as_p }}<button>Verify</button></form><p><a href="{% url 'mfa_recover' %}">Use a recovery code</a></p>{% if passkeys_available %}<p><a href="{% url 'passkey_verify' %}">Verify with a passkey</a></p>{% endif %}{% endblock %}
